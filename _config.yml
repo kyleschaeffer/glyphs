@@ -1,0 +1,15 @@
+title: Glyphs
+description: The handy developer’s glyph reference
+email: kyle@spirito.us
+baseurl: ""
+url: "https://glyphs.io"
+twitter_username: kyleschaeffer
+github_username:  kyleschaeffer
+
+permalink: pretty
+markdown: kramdown
+sass:
+  sass_dir: sass
+  style: compressed
+plugins:
+  - jekyll-feed

@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Glyphs</title>
+  <link rel="stylesheet" href="{{ site.baseurl }}{% link sass/app.scss %}">
+  <script async src="https://www.googletagmanager.com/gtag/js?id=UA-5789165-17"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'UA-5789165-17');
+  </script>
+</head>
+<body>
+  <main class="main" role="main">
+    {{ content }}
+  </main>
+  <footer class="colophon" role="contentinfo">Glyphs by <a href="https://twitter.com/kyleschaeffer">@kyleschaeffer</a></footer>
+  <script defer src="{{ site.baseurl }}{% link js/app.js %}"></script>
+</body>
+</html>
