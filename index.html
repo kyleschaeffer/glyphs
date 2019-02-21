@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Glyphs</title>
-  <link rel="stylesheet" href="{{ site.baseurl }}{% link sass/app.scss %}">
+  <link rel="stylesheet" href="sass/app.scss">
   <script async src="https://www.googletagmanager.com/gtag/js?id=UA-5789165-17"></script>
   <script>
     window.dataLayer = window.dataLayer || [];
@@ -15,10 +15,11 @@
 </head>
 <body>
   <main class="main" role="main">
-    <div id="glyphs">Loading&hellip;</div>
-    {{ content }}
+    <ul id="glyphs">
+      <li class="loading">Loading&hellip;</li>
+    </ul>
   </main>
   <footer class="colophon" role="contentinfo">Glyphs by <a href="https://twitter.com/kyleschaeffer">@kyleschaeffer</a></footer>
-  <script defer src="{{ site.baseurl }}{% link js/app.js %}"></script>
+  <script defer src="js/app.js"></script>
 </body>
 </html>

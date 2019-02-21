@@ -1,0 +1,21 @@
+{
+  "name": "glyphs",
+  "version": "1.0.0",
+  "description": "The handy developer’s glyph reference",
+  "main": "js/app.js",
+  "scripts": {
+    "dev": "parcel index.html --open --out-dir docs",
+    "build": "yarn run clean && parcel build index.html --out-dir docs",
+    "clean": "rm docs/app.*"
+  },
+  "repository": "git@github.com:sprtus/glyphs.git",
+  "author": "@kyleschaeffer",
+  "license": "MIT",
+  "dependencies": {
+    "axios": "^0.18.0"
+  },
+  "devDependencies": {
+    "parcel-bundler": "^1.11.0",
+    "sass": "^1.17.1"
+  }
+}
