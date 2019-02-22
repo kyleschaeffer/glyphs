@@ -9,13 +9,14 @@ body {
   background: $white;
   color: $darker;
   font-family: $font-body;
-  font-size: $s*.8;
+  font-size: $s;
   line-height: $h;
   margin: 0;
-  padding: 0;
+  padding: 80px 0 0 0;
 
-  @include mq-up($screen-sm) {
+  @include mq-up($screen-md) {
     font-size: $s;
+    padding-top: 120px;
   }
 }
 

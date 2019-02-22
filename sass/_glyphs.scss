@@ -3,7 +3,7 @@
   margin: 0;
   padding: 0;
 
-  .glyph {
+  > li {
     border: 1px solid transparentize($black, .95);
     float: left;
     font-size: 40px;
