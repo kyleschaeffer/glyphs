@@ -1,0 +1,339 @@
+.search {
+  background: #fff;
+  border-bottom: 1px solid #f1f2f3;
+  height: 80px;
+  left: 0;
+  padding: 15px;
+  position: fixed;
+  right: 0;
+  top: 0;
+  z-index: 2;
+}
+@media only screen and (min-width: 801px) {
+  .search {
+    height: 120px;
+    padding: 30px;
+  }
+}
+.search input[type=search] {
+  background: #f1f2f3;
+  border: 1px solid #e4e4e4;
+  color: inherit;
+  display: block;
+  font-family: inherit;
+  font-size: 16px;
+  font-weight: 300;
+  height: 100%;
+  padding: 0 15px;
+  width: 100%;
+}
+.search input[type=search]::placeholder {
+  color: #8c9397;
+}
+.search input[type=search]:focus, .search input[type=search]:hover {
+  border-color: #1d9acc;
+}
+.search input[type=search]:focus {
+  outline: none;
+  box-shadow: inset 0 0 4px #1d9acc;
+}
+.search input[type=search][disabled]:hover {
+  border-color: #e4e4e4;
+}
+@media only screen and (min-width: 801px) {
+  .search input[type=search] {
+    font-size: 20px;
+    padding: 0 20px;
+  }
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+body {
+  background: #f6f7f8;
+  color: #2e2e2e;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+  font-size: 16px;
+  line-height: 1.6em;
+  margin: 0;
+  padding: 80px 0 0 0;
+}
+@media only screen and (min-width: 801px) {
+  body {
+    font-size: 16px;
+    padding-top: 120px;
+  }
+}
+
+a {
+  color: inherit;
+  text-decoration: underline;
+  text-decoration-color: #1d9acc;
+  transition: color 0.2s ease;
+}
+a:hover, a:focus {
+  color: #1b90bf;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  color: #000;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+  font-weight: 700;
+  line-height: 1.2em;
+  margin: 0 0 0.2em;
+}
+p + h1, ul + h1, ol + h1, pre + h1,
+p + h2,
+ul + h2,
+ol + h2,
+pre + h2,
+p + h3,
+ul + h3,
+ol + h3,
+pre + h3,
+p + h4,
+ul + h4,
+ol + h4,
+pre + h4,
+p + h5,
+ul + h5,
+ol + h5,
+pre + h5,
+p + h6,
+ul + h6,
+ol + h6,
+pre + h6 {
+  margin-top: 1em;
+}
+
+h1 {
+  font-size: 1.25em;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+  font-weight: 900;
+}
+@media only screen and (min-width: 601px) {
+  h1 {
+    font-size: 2em;
+  }
+}
+
+h2 {
+  font-size: 1.5em;
+  font-weight: 700;
+}
+
+h3 {
+  font-size: 1.25em;
+  font-weight: 500;
+}
+
+h4 {
+  font-size: 1em;
+}
+
+h5 {
+  font-size: 0.9em;
+}
+
+h6 {
+  font-size: 0.8em;
+}
+
+p {
+  margin: 0 0 1.6em;
+}
+p:empty {
+  display: none;
+}
+
+ol,
+ul {
+  margin: 0 0 1.6em;
+  padding: 0 0 0 2.2em;
+}
+ol li + li,
+ul li + li {
+  margin-top: 0.75em;
+}
+
+ul {
+  list-style-type: square;
+}
+ul ul {
+  list-style-type: circle;
+}
+
+blockquote {
+  border-left: 4px solid #1d9acc;
+  color: #8c9397;
+  font-size: 1.1em;
+  font-style: italic;
+  margin: 1.6em 1.6em 1.6em 0;
+  padding-left: 1.6em;
+}
+@media only screen and (min-width: 801px) {
+  blockquote {
+    margin: 2.2em 2.2em 2.2em 0;
+    padding-left: 2.2em;
+  }
+}
+
+hr {
+  background: #f1f2f3;
+  border: 0;
+  height: 1px;
+  margin: 1.6em 0;
+}
+@media only screen and (min-width: 801px) {
+  hr {
+    margin: 2.2em 0;
+  }
+}
+
+.glyphs {
+  text-align: center;
+}
+.glyphs > button {
+  background: #fff;
+  border: 0;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+  cursor: pointer;
+  direction: ltr;
+  display: inline-block;
+  font-family: sans-serif;
+  font-size: 40px;
+  height: 80px;
+  line-height: 80px;
+  margin: 7.5px;
+  overflow: hidden;
+  position: relative;
+  text-align: center;
+  white-space: pre;
+  width: 80px;
+  transition: box-shadow 0.2s ease;
+}
+@media only screen and (min-width: 801px) {
+  .glyphs > button {
+    margin: 15px;
+  }
+}
+.glyphs > button:hover, .glyphs > button:focus {
+  box-shadow: 0 3px 6px rgba(0, 0, 0, 0.15);
+}
+.glyphs > button .glyph-char {
+  margin: 0 -100%;
+}
+.glyphs > button .hex {
+  color: #666d71;
+  font-size: 10px;
+  left: 0;
+  line-height: 20px;
+  opacity: 0.4;
+  position: absolute;
+  text-align: center;
+  top: 0;
+  width: 100%;
+}
+
+.glyph {
+  background: #fff;
+  margin-top: -80px;
+  padding: 15px;
+  position: relative;
+}
+.glyph .close {
+  background: transparent;
+  border: 0;
+  color: #2e2e2e;
+  cursor: pointer;
+  font-size: 15px;
+  height: 40px;
+  line-height: 40px;
+  position: absolute;
+  right: 0;
+  text-align: center;
+  top: 0;
+  width: 40px;
+}
+.glyph h1 {
+  color: #2e2e2e;
+  font-size: 20px;
+  font-weight: 600;
+  letter-spacing: 0.01em;
+  margin: 0 0 10px;
+  padding: 0 30px;
+  text-align: center;
+}
+.glyph h2 {
+  color: #000;
+  font-family: sans-serif;
+  font-size: 11em;
+  font-weight: 400;
+  line-height: 1.2;
+  margin: 0 auto 20px;
+  text-align: center;
+  width: 1.25em;
+  border: 5px dotted #f1f2f3;
+}
+.glyph h2 span {
+  margin: 0 -100%;
+}
+.glyph h3 {
+  color: #8c9397;
+  font-size: 15px;
+  font-weight: 500;
+  letter-spacing: 0.01em;
+  margin: 0 0 5px;
+}
+.glyph pre {
+  line-height: 2;
+  margin: 0;
+  color: #4e4e4e;
+}
+.glyph .codes {
+  display: grid;
+  grid-gap: 30px;
+  text-align: center;
+}
+@media only screen and (min-width: 801px) {
+  .glyph {
+    margin-top: -120px;
+    padding: 30px;
+  }
+  .glyph .close {
+    font-size: 20px;
+    height: 60px;
+    line-height: 60px;
+    width: 60px;
+  }
+  .glyph h1 {
+    margin: 0 0 20px;
+  }
+  .glyph h2 {
+    margin-bottom: 40px;
+  }
+  .glyph .codes {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+.colophon {
+  background: #fff;
+  bottom: 0;
+  color: #8c9397;
+  font-size: 13px;
+  font-weight: 300;
+  padding: 2px 8px;
+  position: fixed;
+  right: 0;
+  z-index: 2;
+}

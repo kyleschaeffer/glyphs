@@ -1,0 +1,125 @@
+<template>
+  <div class="app">
+    <search v-if="!select" v-model="query" :loading="loading" placeholder="Search glyphs"></search>
+    <glyphs v-if="!select" :results="results" @glyph-select="selectGlyph"></glyphs>
+    <char v-if="select" :glyph="select" @glyph-close="unselectGlyph"></char>
+    <colophon></colophon>
+  </div>
+</template>
+
+<script>
+import { clearTimeout, setTimeout } from 'timers';
+import axios from 'axios';
+import Char from './Char.vue';
+import Colophon from './Colophon.vue';
+import Fuse from '../fuse';
+import Glyphs from './Glyphs.vue';
+import queryString from 'query-string';
+import Search from './Search.vue';
+
+export default {
+  components: {
+    Char,
+    Colophon,
+    Glyphs,
+    Search,
+  },
+
+  data() {
+    return {
+      fuse: null,
+      query: '',
+      lastQuery: null,
+      results: [],
+      select: null,
+      loading: true,
+      searchTimer: null,
+      searchDelay: 500,
+    };
+  },
+
+  watch: {
+    query() {
+      clearTimeout(this.searchTimer);
+      this.searchTimer = setTimeout(this.search, 500);
+    },
+  },
+
+  computed: {
+    stateHash() {
+      return `#q=${encodeURIComponent(this.query)}${this.select ? `&c=${encodeURIComponent(this.select.char)}` : ''}`;
+    },
+  },
+
+  methods: {
+    search() {
+      // Query unchanged
+      if (this.query === this.lastQuery) return;
+
+      // Empty query
+      if (!this.query) {
+        this.results = [];
+      }
+
+      // Execute query
+      else {
+        this.results = this.fuse.search(this.query);
+      }
+
+      // Update last query
+      this.lastQuery = this.query;
+
+      // Update state hash
+      this.updateHash();
+    },
+
+    selectGlyph(char) {
+      this.select = this.fuse.find(char);
+      this.updateHash();
+    },
+
+    unselectGlyph() {
+      this.select = null;
+      this.updateHash();
+    },
+
+    hashChange() {
+      // Get hash
+      const { q, c } = queryString.parse(location.hash);
+
+      // Update query
+      this.query = q ? decodeURIComponent(q) : '';
+      this.select = c ? this.fuse.find(decodeURIComponent(c)) : null;
+    },
+
+    updateHash() {
+      const newStateHash = this.stateHash;
+      if (location.hash != newStateHash) location.hash = newStateHash;
+    },
+  },
+
+  async mounted() {
+    // Get glyph data
+    try {
+      const glyphs = await axios.get('glyphs/utf.json');
+      this.fuse = Fuse.init(glyphs.data.chars);
+    } catch (e) {
+      console.error(e);
+    }
+
+    // Load state
+    this.hashChange();
+
+    // Handle hash changes
+    window.addEventListener('hashchange', this.hashChange);
+
+    // Close on escape
+    window.addEventListener('keyup', e => {
+      if (e.keyCode === 27) this.unselectGlyph();
+    });
+
+    // Done loading
+    this.loading = false;
+  },
+}
+</script>
