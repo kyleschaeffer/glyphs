@@ -4,7 +4,7 @@
   "description": "The handy developer’s glyph reference",
   "main": "js/app.js",
   "scripts": {
-    "dev": "parcel index.html --open --out-dir docs",
+    "dev": "yarn run clean && parcel index.html --open --out-dir docs",
     "build": "yarn run clean && parcel build index.html --out-dir docs",
     "clean": "rm docs/app.*"
   },
@@ -12,7 +12,9 @@
   "author": "@kyleschaeffer",
   "license": "MIT",
   "dependencies": {
-    "axios": "^0.18.0"
+    "axios": "^0.18.0",
+    "fuse.js": "^3.4.2",
+    "query-string": "^6.2.0"
   },
   "devDependencies": {
     "babel-core": "^6.26.3",

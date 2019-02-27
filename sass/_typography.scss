@@ -6,7 +6,7 @@
 
 // Document
 body {
-  background: $white;
+  background: lighten($lighter, 2%);
   color: $darker;
   font-family: $font-body;
   font-size: $s;

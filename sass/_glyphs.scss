@@ -2,21 +2,32 @@
   list-style: none;
   margin: 0;
   padding: 0;
+  text-align: center;
 
   > li {
-    border: 1px solid transparentize($black, .95);
-    float: left;
+    background: $white;
+    box-shadow: 0 1px 2px transparentize($black, .95);
+    cursor: pointer;
+    direction: ltr;
+    display: inline-block;
+    font-family: sans-serif;
     font-size: 40px;
     height: 80px;
     line-height: 80px;
-    margin: 5px;
+    margin: 7.5px;
+    overflow: hidden;
     position: relative;
     text-align: center;
+    white-space: pre;
     width: 80px;
-    transition: border-color $t ease;
+    transition: box-shadow $t ease;
+
+    @include mq-up($screen-md) {
+      margin: 15px;
+    }
 
     &:hover {
-      border-color: transparentize($primary, .85);
+      box-shadow: 0 3px 6px transparentize($black, .85);
     }
 
     .unicode,
