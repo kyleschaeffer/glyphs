@@ -199,6 +199,56 @@ hr {
   }
 }
 
+.copy-icon {
+  display: inline-block;
+  height: 1em;
+  position: relative;
+  width: 1em;
+}
+.copy-icon::before {
+  border-radius: 2px;
+  border: 1px solid #8c9397;
+  content: "";
+  display: block;
+  height: 0.8em;
+  left: 0;
+  position: absolute;
+  top: 0;
+  width: 0.65em;
+  transition: border-color 0.3s ease;
+}
+.copy-icon::after {
+  background: #fff;
+  border-radius: 2px;
+  border: 1px solid #8c9397;
+  bottom: 0;
+  box-shadow: 0 0 0 1px #fff;
+  content: "";
+  display: block;
+  height: 0.8em;
+  position: absolute;
+  right: 0;
+  width: 0.65em;
+  transition: border-color 0.3s ease;
+}
+
+button:hover > .copy-icon::before, button:hover > .copy-icon::after,
+button:focus > .copy-icon::before,
+button:focus > .copy-icon::after {
+  border-color: #1d9acc;
+}
+
+.sr-only {
+  border: 0;
+  clip: rect(0, 0, 0, 0);
+  height: 1px;
+  margin: -1px;
+  overflow: hidden;
+  padding: 0;
+  position: absolute;
+  width: 1px;
+}
+
 .glyphs {
   text-align: center;
 }
@@ -272,6 +322,7 @@ hr {
   margin: 0 0 10px;
   padding: 0 30px;
   text-align: center;
+  text-transform: uppercase;
 }
 .glyph h2 {
   color: #000;
@@ -280,12 +331,19 @@ hr {
   font-weight: 400;
   line-height: 1.2;
   margin: 0 auto 20px;
+  position: relative;
   text-align: center;
   width: 1.25em;
   border: 5px dotted #f1f2f3;
 }
-.glyph h2 span {
+.glyph h2 #glyph {
+  font-family: inherit;
+  font-size: inherit;
+  line-height: inherit;
   margin: 0 -100%;
+}
+.glyph h2 .copy {
+  right: -35px;
 }
 .glyph h3 {
   color: #8c9397;
@@ -299,10 +357,42 @@ hr {
   margin: 0;
   color: #4e4e4e;
 }
-.glyph .codes {
-  display: grid;
-  grid-gap: 30px;
+.glyph pre.js, .glyph pre.html, .glyph pre.css {
+  color: #8c9397;
+}
+.glyph pre.js span, .glyph pre.html span, .glyph pre.css span {
+  color: #4e4e4e;
+}
+.glyph .copy {
+  background: 0;
+  border: 0;
+  cursor: pointer;
+  font-size: 14px;
+  height: 30px;
+  line-height: 30px;
+  padding: 0;
+  position: absolute;
+  right: 0;
   text-align: center;
+  top: 0;
+  width: 30px;
+}
+.glyph .examples {
+  margin-top: 30px;
+}
+.glyph .code,
+.glyph .example {
+  background: #f1f2f3;
+  border-radius: 2px;
+  border: 1px solid #e4e4e4;
+  margin: 0 0 10px;
+  padding: 6px 12px;
+  position: relative;
+}
+.glyph .code .copy-icon::after,
+.glyph .example .copy-icon::after {
+  background-color: #f1f2f3;
+  box-shadow: 0 0 0 1px #f1f2f3;
 }
 @media only screen and (min-width: 801px) {
   .glyph {
@@ -316,14 +406,20 @@ hr {
     width: 60px;
   }
   .glyph h1 {
+    font-size: 30px;
     margin: 0 0 20px;
   }
   .glyph h2 {
     margin-bottom: 40px;
   }
-  .glyph .codes {
-    grid-template-columns: repeat(3, 1fr);
-  }
+}
+
+.tab-panel {
+  margin: auto;
+  max-width: 30em;
+}
+.tab-panel[aria-hidden=true] {
+  display: none;
 }
 
 .colophon {

@@ -142,3 +142,61 @@ hr {
     margin: $hh 0;
   }
 }
+
+// Copy icon
+.copy-icon {
+  display: inline-block;
+  height: 1em;
+  position: relative;
+  width: 1em;
+
+  &::before {
+    border-radius: 2px;
+    border: 1px solid $medium;
+    content: '';
+    display: block;
+    height: .8em;
+    left: 0;
+    position: absolute;
+    top: 0;
+    width: .65em;
+    transition: border-color .3s ease;
+  }
+
+  &::after {
+    background: $white;
+    border-radius: 2px;
+    border: 1px solid $medium;
+    bottom: 0;
+    box-shadow: 0 0 0 1px $white;
+    content: '';
+    display: block;
+    height: .8em;
+    position: absolute;
+    right: 0;
+    width: .65em;
+    transition: border-color .3s ease;
+  }
+}
+
+button:hover,
+button:focus {
+  > .copy-icon {
+    &::before,
+    &::after {
+      border-color: $primary;
+    }
+  }
+}
+
+// Screen-reader text
+.sr-only {
+  border: 0;
+  clip: rect(0, 0, 0, 0);
+  height: 1px;
+  margin: -1px;
+  overflow: hidden;
+  padding: 0;
+  position: absolute;
+  width: 1px;
+}

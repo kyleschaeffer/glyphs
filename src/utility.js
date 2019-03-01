@@ -1,3 +1,5 @@
+const _ = require('lodash');
+
 module.exports = {
   /**
    * Convert a potentially large decimal value to one or more hexes
@@ -5,7 +7,7 @@ module.exports = {
    */
   decimalToHexes (decimal) {
     // Normal hexadecimal
-    if (decimal <= 0xFFFF) return [ decimal.toString(16) ];
+    if (decimal <= 0xFFFF) return [ _.padStart(decimal.toString(16).toUpperCase(), 4, '0') ];
 
     // Convert to lead & tail hexadecimals
     decimal -= 0x10000;
@@ -24,7 +26,7 @@ module.exports = {
    * @return {string}
    */
   charToHex (char) {
-    return this.charToDecimal(char).toString(16).toUpperCase();
+    return _.padStart(this.charToDecimal(char).toString(16).toUpperCase(), 4, '0');
   },
 
   /**

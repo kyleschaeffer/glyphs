@@ -28,6 +28,7 @@
     margin: 0 0 10px;
     padding: 0 30px;
     text-align: center;
+    text-transform: uppercase;
   }
 
   h2 {
@@ -37,12 +38,20 @@
     font-weight: 400;
     line-height: 1.2;
     margin: 0 auto 20px;
+    position: relative;
     text-align: center;
     width: 1.25em;
     border: 5px dotted $lighter;
 
-    span {
+    #glyph {
+      font-family: inherit;
+      font-size: inherit;
+      line-height: inherit;
       margin: 0 -100%;
+    }
+
+    .copy {
+      right: -35px;
     }
   }
 
@@ -58,12 +67,52 @@
     line-height: 2;
     margin: 0;
     color: $dark;
+
+    &.js,
+    &.html,
+    &.css {
+      color: $medium;
+
+      span {
+        color: $dark;
+      }
+    }
   }
 
-  .codes {
-    display: grid;
-    grid-gap: 30px;
+  .copy {
+    background: 0;
+    border: 0;
+    cursor: pointer;
+    font-size: 14px;
+    height: 30px;
+    line-height: 30px;
+    padding: 0;
+    position: absolute;
+    right: 0;
     text-align: center;
+    top: 0;
+    width: 30px;
+  }
+
+  .examples {
+    margin-top: 30px;
+  }
+
+  .code,
+  .example {
+    background: $lighter;
+    border-radius: 2px;
+    border: 1px solid $light;
+    margin: 0 0 10px;
+    padding: 6px 12px;
+    position: relative;
+
+    .copy-icon {
+      &::after {
+        background-color: $lighter;
+        box-shadow: 0 0 0 1px $lighter;
+      }
+    }
   }
 
   @include mq-up($screen-md) {
@@ -78,15 +127,12 @@
     }
 
     h1 {
+      font-size: 30px;
       margin: 0 0 20px;
     }
 
     h2 {
       margin-bottom: 40px;
-    }
-
-    .codes {
-      grid-template-columns: repeat(3, 1fr);
     }
   }
 }

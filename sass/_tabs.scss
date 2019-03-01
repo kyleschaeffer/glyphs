@@ -1,0 +1,8 @@
+.tab-panel {
+  margin: auto;
+  max-width: 30em;
+
+  &[aria-hidden="true"] {
+    display: none;
+  }
+}

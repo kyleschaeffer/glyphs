@@ -11,6 +11,7 @@
 import { clearTimeout, setTimeout } from 'timers';
 import axios from 'axios';
 import Char from './Char.vue';
+import ClipboardJS from 'clipboard';
 import Colophon from './Colophon.vue';
 import Fuse from '../fuse';
 import Glyphs from './Glyphs.vue';
@@ -40,7 +41,7 @@ export default {
 
   computed: {
     stateHash() {
-      return `#q=${encodeURIComponent(this.query)}${this.select ? `&c=${encodeURIComponent(this.select.char)}` : ''}`;
+      return `#q=${encodeURIComponent(this.query)}${this.select ? `&c=${encodeURIComponent(this.select.c)}` : ''}`;
     },
   },
 
@@ -71,6 +72,9 @@ export default {
       if (e.keyCode === 27) this.unselectGlyph();
     });
 
+    // Copy to clipboard
+    new ClipboardJS('.copy');
+
     // Done loading
     this.loading = false;
   },
@@ -95,9 +99,13 @@ export default {
 
       // Update state hash
       this.updateHash();
+
+      // Scroll top
+      this.scrollTop();
     },
 
     selectGlyph(char) {
+      this.scrollTop();
       this.select = this.fuse.find(char);
       this.updateHash();
     },
@@ -119,6 +127,10 @@ export default {
     updateHash() {
       const newStateHash = this.stateHash;
       if (location.hash != newStateHash) location.hash = newStateHash;
+    },
+
+    scrollTop() {
+      document.body.scrollTop = document.documentElement.scrollTop = 0;
     },
   },
 };
