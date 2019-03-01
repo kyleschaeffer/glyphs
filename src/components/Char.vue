@@ -1,12 +1,12 @@
 <template>
   <div class="glyph">
     <button class="close" @click.prevent="$emit('glyph-close')">╳</button>
-    <h1>{{ glyph.name }}</h1>
-    <h2><span>{{ glyph.char }}</span></h2>
+    <h1>{{ glyph.n }}</h1>
+    <h2><span>{{ glyph.c }}</span></h2>
     <div class="codes">
       <div class="unicode">
         <h3>Unicode:</h3>
-        <pre>{{ glyph.hex }}</pre>
+        <pre>{{ glyph.u }}</pre>
       </div>
       <div class="html">
         <h3>HTML:</h3>
@@ -14,7 +14,7 @@
       </div>
       <div class="js">
         <h3>JavaScript:</h3>
-        <pre>\u{{ glyph.hex }}</pre>
+        <pre>{{ js(glyph.h) }}</pre>
       </div>
     </div>
   </div>
@@ -27,15 +27,15 @@ export default {
   },
 
   methods: {
+    js(hexes) {
+      return hexes.split(' ').map(hex => `\\u${hex}`).join('');
+    },
+
     html(glyph) {
-      const codes = [];
-      if (glyph.entity) {
-        const entities = glyph.entity.split(' ');
-        entities.forEach(entity => codes.push(entity));
-      }
-      codes.push(glyph.html);
-      return codes.join('\n');
+      let html = glyph.h.split(' ').map(hex => `&#${hex};`).join('\n');
+      if (glyph.e) html += glyph.e.split(' ').map(entity => `&${entity};`).join('\n');
+      return html;
     },
   },
-}
+};
 </script>

@@ -11,5 +11,5 @@ export default {
     placeholder: String,
     value: String,
   },
-}
+};
 </script>

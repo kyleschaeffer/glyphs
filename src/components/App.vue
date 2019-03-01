@@ -38,6 +38,12 @@ export default {
     };
   },
 
+  computed: {
+    stateHash() {
+      return `#q=${encodeURIComponent(this.query)}${this.select ? `&c=${encodeURIComponent(this.select.char)}` : ''}`;
+    },
+  },
+
   watch: {
     query() {
       clearTimeout(this.searchTimer);
@@ -45,10 +51,28 @@ export default {
     },
   },
 
-  computed: {
-    stateHash() {
-      return `#q=${encodeURIComponent(this.query)}${this.select ? `&c=${encodeURIComponent(this.select.char)}` : ''}`;
-    },
+  async mounted() {
+    // Get glyph data
+    try {
+      const glyphs = await axios.get('glyphs/unicode-11.0.0.json');
+      this.fuse = Fuse.init(glyphs.data.glyphs);
+    } catch (e) {
+      console.error(e);
+    }
+
+    // Load state
+    this.hashChange();
+
+    // Handle hash changes
+    window.addEventListener('hashchange', this.hashChange);
+
+    // Close on escape
+    window.addEventListener('keyup', e => {
+      if (e.keyCode === 27) this.unselectGlyph();
+    });
+
+    // Done loading
+    this.loading = false;
   },
 
   methods: {
@@ -97,29 +121,5 @@ export default {
       if (location.hash != newStateHash) location.hash = newStateHash;
     },
   },
-
-  async mounted() {
-    // Get glyph data
-    try {
-      const glyphs = await axios.get('glyphs/utf.json');
-      this.fuse = Fuse.init(glyphs.data.chars);
-    } catch (e) {
-      console.error(e);
-    }
-
-    // Load state
-    this.hashChange();
-
-    // Handle hash changes
-    window.addEventListener('hashchange', this.hashChange);
-
-    // Close on escape
-    window.addEventListener('keyup', e => {
-      if (e.keyCode === 27) this.unselectGlyph();
-    });
-
-    // Done loading
-    this.loading = false;
-  },
-}
+};
 </script>

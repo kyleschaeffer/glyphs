@@ -13,9 +13,11 @@ export default {
     maxPatternLength: 32,
     minMatchCharLength: 1,
     keys: [
-      'name',
-      'entity',
-      'hex',
+      'c',
+      'n',
+      'k',
+      'e',
+      'h',
     ],
   },
 
@@ -40,8 +42,8 @@ export default {
   // Find single character
   find(char) {
     for (let i = 0; i < this.fuse.list.length; i++) {
-      if (this.fuse.list[i].char === char) return this.fuse.list[i];
+      if (this.fuse.list[i].c === char) return this.fuse.list[i];
     }
     return null;
   },
-}
+};
