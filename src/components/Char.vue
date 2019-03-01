@@ -9,29 +9,16 @@
       </h2>
     </div>
     <tabs :tabs="[
-      { name: 'Unicode', id: 'unicode' },
-      { name: 'JavaScript', id: 'js' },
-      { name: 'HTML', id: 'html' },
-      { name: 'CSS', id: 'css' },
-    ]">
-      <div id="unicode" class="tab-panel">
+      { name: 'JavaScript', id: 'j' },
+      { name: 'HTML', id: 'h' },
+      { name: 'CSS', id: 'c' },
+      { name: 'Unicode', id: 'u' },
+    ]" :selected="tab" @select-tab="$emit('select-tab', $event)">
+      <div id="j" class="tab-panel">
         <div class="codes">
-          <h3>Unicode:</h3>
+          <h3>Values:</h3>
           <div class="code">
-            <pre id="hex-code">{{ glyph.u }}</pre>
-            <button class="copy" title="Copy to clipboard" data-clipboard-target="#hex-code"><i class="copy-icon"><span class="sr-only">Copy</span></i></button>
-          </div>
-          <div v-if="glyph.u.split(' ').length === 1" class="code">
-            <pre id="decimal-code">{{ parseInt(glyph.u, 16) }}</pre>
-            <button class="copy" title="Copy to clipboard" data-clipboard-target="#decimal-code"><i class="copy-icon"><span class="sr-only">Copy</span></i></button>
-          </div>
-        </div>
-      </div>
-      <div id="js" class="tab-panel">
-        <div class="codes">
-          <h3>JavaScript:</h3>
-          <div class="code">
-            <pre id="js-code-0">{{ glyph.c }}</pre>
+            <pre id="js-code-0">{{ escapedJs(glyph) }}</pre>
             <button class="copy" title="Copy to clipboard" data-clipboard-target="#js-code-0"><i class="copy-icon"><span class="sr-only">Copy</span></i></button>
           </div>
           <div class="code">
@@ -42,18 +29,18 @@
         <div class="examples">
           <h3>Examples:</h3>
           <div class="example">
-            <pre id="js-example-0" class="js">const str = "<span>{{ glyph.c }}</span>";</pre>
+            <pre id="js-example-0" class="js">let s = "<span>{{ escapedJs(glyph) }}</span>";</pre>
             <button class="copy" title="Copy to clipboard" data-clipboard-target="#js-example-0"><i class="copy-icon"><span class="sr-only">Copy</span></i></button>
           </div>
           <div class="example">
-            <pre id="js-example-1" class="js">const str = "<span>{{ js(glyph) }}</span>";</pre>
+            <pre id="js-example-1" class="js">let s = "<span>{{ js(glyph) }}</span>";</pre>
             <button class="copy" title="Copy to clipboard" data-clipboard-target="#js-example-1"><i class="copy-icon"><span class="sr-only">Copy</span></i></button>
           </div>
         </div>
       </div>
-      <div id="html" class="tab-panel">
+      <div id="h" class="tab-panel">
         <div class="codes">
-          <h3>HTML:</h3>
+          <h3>Values:</h3>
           <div v-for="(entity, i) in html(glyph)" :key="i" class="code">
             <pre :id="`html-code-${i}`">{{ entity }}</pre>
             <button class="copy" title="Copy to clipboard" :data-clipboard-target="`#html-code-${i}`"><i class="copy-icon"><span class="sr-only">Copy</span></i></button>
@@ -62,14 +49,14 @@
         <div class="examples">
           <h3>Examples:</h3>
           <div v-for="(entity, i) in html(glyph)" :key="i" class="example">
-            <pre :id="`html-example-${i}`" class="html">&lt;span&gt;<span>{{ entity }}</span>&lt;/span&gt;</pre>
+            <pre :id="`html-example-${i}`" class="html">&lt;i&gt;<span>{{ entity }}</span>&lt;/i&gt;</pre>
             <button class="copy" title="Copy to clipboard" :data-clipboard-target="`#html-example-${i}`"><i class="copy-icon"><span class="sr-only">Copy</span></i></button>
           </div>
         </div>
       </div>
-      <div id="css" class="tab-panel">
+      <div id="c" class="tab-panel">
         <div class="codes">
-          <h3>CSS:</h3>
+          <h3>Values:</h3>
           <div v-for="(code, i) in css(glyph)" :key="i" class="code">
             <pre :id="`css-code-${i}`">{{ code }}</pre>
             <button class="copy" title="Copy to clipboard" :data-clipboard-target="`#css-code-${i}`"><i class="copy-icon"><span class="sr-only">Copy</span></i></button>
@@ -83,14 +70,34 @@
           </div>
         </div>
       </div>
+      <div id="u" class="tab-panel">
+        <div class="codes">
+          <h3>Values:</h3>
+          <div class="code">
+            <pre id="hex-code">{{ glyph.u }}</pre>
+            <button class="copy" title="Copy to clipboard" data-clipboard-target="#hex-code"><i class="copy-icon"><span class="sr-only">Copy</span></i></button>
+          </div>
+          <div v-if="glyph.u.split(' ').length === 1" class="code">
+            <pre id="decimal-code">{{ parseInt(glyph.u, 16) }}</pre>
+            <button class="copy" title="Copy to clipboard" data-clipboard-target="#decimal-code"><i class="copy-icon"><span class="sr-only">Copy</span></i></button>
+          </div>
+        </div>
+      </div>
     </tabs>
   </div>
 </template>
 
 <script>
+import Tabs from './Tabs.vue';
+
 export default {
+  components: {
+    Tabs,
+  },
+
   props: {
     glyph: Object,
+    tab: String,
   },
 
   methods: {
@@ -98,8 +105,14 @@ export default {
       return glyph.h.split(' ').map(hex => `\\u${hex}`).join('');
     },
 
+    escapedJs(glyph) {
+      const json = JSON.stringify(glyph.c);
+      return json.substring(1, json.length - 1);
+    },
+
     html(glyph) {
-      let html = [glyph.c];
+      let html = [];
+      if (['"', '\'', '&', '<', '>'].indexOf(glyph.c) === -1) html.push(glyph.c);
       if (glyph.e) glyph.e.split(' ').forEach(e => html.push(`&${e};`));
       const hexes = glyph.h.split(' ');
       if (glyph.u.split(' ').length === 1) html.push(`&#${parseInt(glyph.u, 16)};`);

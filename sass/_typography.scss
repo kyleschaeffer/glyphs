@@ -143,6 +143,12 @@ hr {
   }
 }
 
+// Monospaced elements
+code,
+pre {
+  font-family: $font-mono;
+}
+
 // Copy icon
 .copy-icon {
   display: inline-block;

@@ -2,7 +2,7 @@
   <div class="app">
     <search v-if="!select" v-model="query" :loading="loading" placeholder="Search glyphs"></search>
     <glyphs v-if="!select" :results="results" @glyph-select="selectGlyph"></glyphs>
-    <char v-if="select" :glyph="select" @glyph-close="unselectGlyph"></char>
+    <char v-if="select" :glyph="select" :tab="tab" @glyph-close="unselectGlyph" @select-tab="selectTab"></char>
     <colophon></colophon>
   </div>
 </template>
@@ -33,6 +33,7 @@ export default {
       lastQuery: null,
       results: [],
       select: null,
+      tab: 'j',
       loading: true,
       searchTimer: null,
       searchDelay: 500,
@@ -41,7 +42,7 @@ export default {
 
   computed: {
     stateHash() {
-      return `#q=${encodeURIComponent(this.query)}${this.select ? `&c=${encodeURIComponent(this.select.c)}` : ''}`;
+      return `#q=${encodeURIComponent(this.query)}${this.select ? `&c=${encodeURIComponent(this.select.c)}` : ''}${this.tab != 'j' ? `&t=${this.tab}` : ''}`;
     },
   },
 
@@ -115,13 +116,19 @@ export default {
       this.updateHash();
     },
 
+    selectTab(id) {
+      this.tab = id;
+      this.updateHash();
+    },
+
     hashChange() {
       // Get hash
-      const { q, c } = queryString.parse(location.hash);
+      const { q, c, t } = queryString.parse(location.hash);
 
-      // Update query
+      // Update state
       this.query = q ? decodeURIComponent(q) : '';
       this.select = c ? this.fuse.find(decodeURIComponent(c)) : null;
+      this.tab = t ? t : 'j';
     },
 
     updateHash() {
