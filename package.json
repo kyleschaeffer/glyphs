@@ -6,7 +6,8 @@
   "scripts": {
     "dev": "yarn run clean && parcel index.html --open --out-dir docs",
     "build": "yarn run clean && parcel build index.html --out-dir docs",
-    "clean": "rm -f docs/app.*"
+    "clean": "rm -f docs/app.*",
+    "scrape": "node scrape/scrape.js"
   },
   "repository": "git@github.com:sprtus/glyphs.git",
   "author": "@kyleschaeffer",
@@ -22,6 +23,9 @@
     "babel-core": "^6.26.3",
     "babel-plugin-transform-runtime": "^6.23.0",
     "babel-preset-env": "^1.7.0",
+    "chalk": "^2.4.2",
+    "fs": "^0.0.1-security",
+    "node-fetch": "^2.3.0",
     "parcel-bundler": "^1.11.0",
     "sass": "^1.17.1",
     "vue-hot-reload-api": "^2.3.3",
