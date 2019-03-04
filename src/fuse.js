@@ -32,7 +32,7 @@ export default {
     // Character query
     if (query.length === 1) {
       const foundChar = this.find(query);
-      return foundChar ? [foundChar] : [];
+      return foundChar ? [foundChar] : this.fuse.search(query);
     }
 
     // Keyword query
