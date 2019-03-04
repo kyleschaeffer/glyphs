@@ -71,13 +71,18 @@
     line-height: 30px;
     padding: 0;
     position: absolute;
-    right: 14px;
-    top: 14px;
+    right: 10px;
+    top: 10px;
     width: 30px;
 
     &:hover,
     &:focus {
       color: $primary;
+    }
+
+    @include mq-up($screen-md) {
+      right: 14px;
+      top: 14px;
     }
   }
 }

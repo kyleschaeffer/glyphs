@@ -128,10 +128,15 @@ const scrape = async function() {
     glyphs.push(glyph);
   }
 
-  // Find duplicates
+  // Process glyphs
   const knownGlyphs = [];
   const duplicateGlyphs = [];
   for (let i = 0; i < glyphs.length; i++) {
+    // Fix &amp; in names
+    if (glyphs[i].n) glyphs[i].n = glyphs[i].n.replace(/&amp;/ig, '&');
+    if (glyphs[i].k) glyphs[i].k = glyphs[i].k.replace(/&amp;/ig, '&');
+
+    // Check for duplicates
     if (knownGlyphs.indexOf(glyphs[i].c) !== -1) duplicateGlyphs.push(i);
     else knownGlyphs.push(glyphs[i].c);
   }

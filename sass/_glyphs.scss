@@ -5,6 +5,7 @@
     background: $white;
     border: 0;
     box-shadow: 0 1px 2px transparentize($black, .95);
+    color: $black;
     cursor: pointer;
     direction: ltr;
     display: inline-block;
@@ -23,11 +24,6 @@
 
     @include mq-up($screen-md) {
       margin: 15px;
-    }
-
-    &:hover,
-    &:focus {
-      box-shadow: 0 3px 6px transparentize($black, .85);
     }
 
     .glyph-char {
@@ -50,6 +46,15 @@
       text-overflow: ellipsis;
       text-transform: uppercase;
       width: 100%;
+    }
+
+    &:hover,
+    &:focus {
+      box-shadow: 0 3px 6px transparentize($black, .85);
+
+      .label {
+        color: $dark;
+      }
     }
   }
 }

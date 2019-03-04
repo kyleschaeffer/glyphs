@@ -14324,7 +14324,14 @@ var _default = {
       if (e.keyCode === 27) this.unselectGlyph();
     }); // Copy to clipboard
 
-    new _clipboard.default('.copy'); // Done loading
+    const clipboard = new _clipboard.default('.copy');
+    clipboard.on('success', function (e) {
+      e.trigger.classList.add('copied');
+      (0, _timers.setTimeout)(() => {
+        e.trigger.classList.remove('copied');
+      }, 3000);
+      e.clearSelection();
+    }); // Done loading
 
     this.loading = false;
   },

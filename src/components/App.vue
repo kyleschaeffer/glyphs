@@ -74,7 +74,14 @@ export default {
     });
 
     // Copy to clipboard
-    new ClipboardJS('.copy');
+    const clipboard = new ClipboardJS('.copy');
+    clipboard.on('success', function(e) {
+      e.trigger.classList.add('copied');
+      setTimeout(() => {
+        e.trigger.classList.remove('copied');
+      }, 3000);
+      e.clearSelection();
+    });
 
     // Done loading
     this.loading = false;
