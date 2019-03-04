@@ -128,6 +128,19 @@ const scrape = async function() {
     glyphs.push(glyph);
   }
 
+  // Find duplicates
+  const knownGlyphs = [];
+  const duplicateGlyphs = [];
+  for (let i = 0; i < glyphs.length; i++) {
+    if (knownGlyphs.indexOf(glyphs[i].c) !== -1) duplicateGlyphs.push(i);
+    else knownGlyphs.push(glyphs[i].c);
+  }
+
+  // Remove duplicates
+  for (let i = 0; i < duplicateGlyphs.length; i++) {
+    glyphs.splice(duplicateGlyphs[i] - i, 1);
+  }
+
   // Write to file
   console.log(`Writing ${chalk.cyan.bold(glyphs.length)} glyphs to file...`);
   fs.writeFileSync('docs/glyphs/unicode-11.0.0.json', JSON.stringify({glyphs}), { flag: 'w' });
