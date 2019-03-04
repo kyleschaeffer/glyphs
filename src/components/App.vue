@@ -2,9 +2,9 @@
   <div class="app">
     <search ref="search" v-if="!select" v-model="query" :loading="loading" placeholder="Search glyphs"></search>
     <main class="main" role="main">
-      <glyphs v-if="!select" :results="results" @glyph-select="selectGlyph"></glyphs>
+      <glyphs v-if="query.length && !select" :results="results" :searching="searching" @glyph-select="selectGlyph"></glyphs>
       <char v-if="select" :glyph="select" :tab="tab" @glyph-close="unselectGlyph" @select-tab="selectTab"></char>
-      <splash v-if="!select && !results.length" :count="fuse && fuse.fuse && fuse.fuse.list ? fuse.fuse.list.length : 0"></splash>
+      <splash v-if="!select && !query && !results.length" :count="fuse && fuse.fuse && fuse.fuse.list ? fuse.fuse.list.length : 0"></splash>
     </main>
     <colophon></colophon>
   </div>
@@ -42,6 +42,7 @@ export default {
       loading: true,
       searchTimer: null,
       searchDelay: 500,
+      searching: false,
     };
   },
 
@@ -54,6 +55,7 @@ export default {
   watch: {
     query() {
       clearTimeout(this.searchTimer);
+      this.searching = true;
       this.searchTimer = setTimeout(this.search, 500);
     },
   },
@@ -118,6 +120,9 @@ export default {
 
       // Scroll top
       this.scrollTop();
+
+      // Not searching
+      this.searching = false;
     },
 
     selectGlyph(char) {
