@@ -15,8 +15,13 @@
     padding: 30px;
   }
 
+  .input {
+    height: 100%;
+    position: relative;
+  }
+
   // Search box
-  input[type="search"] {
+  .search-box {
     background: $lighter;
     border: 1px solid $light;
     border-radius: 4px;
@@ -52,6 +57,27 @@
     @include mq-up($screen-md) {
       font-size: 20px;
       padding: 0 20px;
+    }
+  }
+
+  .clear {
+    background: $light;
+    border: 0;
+    border-radius: 50%;
+    color: $medium;
+    cursor: pointer;
+    font-size: 12px;
+    height: 30px;
+    line-height: 30px;
+    padding: 0;
+    position: absolute;
+    right: 14px;
+    top: 14px;
+    width: 30px;
+
+    &:hover,
+    &:focus {
+      color: $primary;
     }
   }
 }

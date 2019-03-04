@@ -33,7 +33,7 @@ export default {
       lastQuery: null,
       results: [],
       select: null,
-      tab: 'j',
+      tab: 'h',
       loading: true,
       searchTimer: null,
       searchDelay: 500,
@@ -42,7 +42,7 @@ export default {
 
   computed: {
     stateHash() {
-      return `#q=${encodeURIComponent(this.query)}${this.select ? `&c=${encodeURIComponent(this.select.c)}` : ''}${this.tab != 'j' ? `&t=${this.tab}` : ''}`;
+      return `#q=${encodeURIComponent(this.query)}${this.select ? `&c=${encodeURIComponent(this.select.c)}` : ''}${this.tab != 'h' ? `&t=${this.tab}` : ''}`;
     },
   },
 
@@ -128,7 +128,7 @@ export default {
       // Update state
       this.query = q ? decodeURIComponent(q) : '';
       this.select = c ? this.fuse.find(decodeURIComponent(c)) : null;
-      this.tab = t ? t : 'j';
+      this.tab = t ? t : 'h';
     },
 
     updateHash() {

@@ -149,6 +149,10 @@ pre {
   font-family: $font-mono;
 }
 
+pre {
+  overflow-x: auto;
+}
+
 // Copy icon
 .copy-icon {
   display: inline-block;

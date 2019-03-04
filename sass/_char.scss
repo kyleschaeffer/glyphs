@@ -18,6 +18,11 @@
     text-align: center;
     top: 0;
     width: 40px;
+
+    &:hover,
+    &:focus {
+      color: $primary;
+    }
   }
 
   h1 {
@@ -44,6 +49,7 @@
     border: 5px dotted $lighter;
 
     #glyph {
+      display: block;
       font-family: inherit;
       font-size: inherit;
       line-height: inherit;
@@ -57,17 +63,18 @@
   }
 
   h3 {
-    color: $medium;
-    font-size: 15px;
+    color: $dark;
+    font-size: 14px;
     font-weight: 500;
     letter-spacing: 0.01em;
     margin: 0 0 5px;
   }
 
   pre {
+    color: $dark;
+    font-size: 18px;
     line-height: 2;
     margin: 0;
-    color: $dark;
 
     &.js,
     &.html,
@@ -89,7 +96,7 @@
     line-height: 30px;
     padding: 0;
     position: absolute;
-    right: 8px;
+    right: 0px;
     text-align: center;
     top: 8px;
     width: 30px;
@@ -101,18 +108,15 @@
 
   .code,
   .example {
-    background: lighten($lighter, 3%);
-    border-radius: 2px;
-    border: 1px solid $lighter;
-    margin: 0 0 10px;
-    padding: 6px 12px;
+    padding-right: 30px;
     position: relative;
 
-    .copy-icon {
-      &::after {
-        background-color: $lighter;
-        box-shadow: 0 0 0 1px $lighter;
-      }
+    pre {
+      background: lighten($lighter, 3%);
+      border-radius: 2px;
+      border: 1px solid $lighter;
+      margin: 0 0 10px;
+      padding: 6px 12px;
     }
   }
 

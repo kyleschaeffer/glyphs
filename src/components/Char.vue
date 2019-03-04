@@ -9,9 +9,9 @@
       </h2>
     </div>
     <tabs :tabs="[
-      { name: 'JavaScript', id: 'j' },
       { name: 'HTML', id: 'h' },
       { name: 'CSS', id: 'c' },
+      { name: 'JavaScript', id: 'j' },
       { name: 'Unicode', id: 'u' },
     ]" :selected="tab" @select-tab="$emit('select-tab', $event)">
       <div id="j" class="tab-panel">
@@ -65,19 +65,22 @@
         <div class="examples">
           <h3>Examples:</h3>
           <div v-for="(code, i) in css(glyph)" :key="i" class="example">
-            <pre :id="`css-example-${i}`" class="css">content: '<span>{{ code }}</span>';</pre>
+            <pre :id="`css-example-${i}`" class="css">content: '<span>{{ code.replace(/'/g, '\\\'') }}</span>';</pre>
             <button class="copy" title="Copy to clipboard" :data-clipboard-target="`#css-example-${i}`"><i class="copy-icon"><span class="sr-only">Copy</span></i></button>
           </div>
         </div>
       </div>
       <div id="u" class="tab-panel">
         <div class="codes">
-          <h3>Values:</h3>
+          <h3>Hexadecimal:</h3>
           <div class="code">
             <pre id="hex-code">{{ glyph.u }}</pre>
             <button class="copy" title="Copy to clipboard" data-clipboard-target="#hex-code"><i class="copy-icon"><span class="sr-only">Copy</span></i></button>
           </div>
-          <div v-if="glyph.u.split(' ').length === 1" class="code">
+        </div>
+        <div class="examples" v-if="glyph.u.split(' ').length === 1">
+          <h3>Decimal:</h3>
+          <div class="code">
             <pre id="decimal-code">{{ parseInt(glyph.u, 16) }}</pre>
             <button class="copy" title="Copy to clipboard" data-clipboard-target="#decimal-code"><i class="copy-icon"><span class="sr-only">Copy</span></i></button>
           </div>
