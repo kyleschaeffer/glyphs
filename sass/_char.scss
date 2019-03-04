@@ -49,6 +49,7 @@
     border: 5px dotted $lighter;
 
     #glyph {
+      -webkit-font-smoothing: antialiased;
       display: block;
       font-family: inherit;
       font-size: inherit;

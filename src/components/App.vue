@@ -1,8 +1,11 @@
 <template>
   <div class="app">
-    <search v-if="!select" v-model="query" :loading="loading" placeholder="Search glyphs"></search>
-    <glyphs v-if="!select" :results="results" @glyph-select="selectGlyph"></glyphs>
-    <char v-if="select" :glyph="select" :tab="tab" @glyph-close="unselectGlyph" @select-tab="selectTab"></char>
+    <search ref="search" v-if="!select" v-model="query" :loading="loading" placeholder="Search glyphs"></search>
+    <main class="main" role="main">
+      <glyphs v-if="!select" :results="results" @glyph-select="selectGlyph"></glyphs>
+      <char v-if="select" :glyph="select" :tab="tab" @glyph-close="unselectGlyph" @select-tab="selectTab"></char>
+      <splash v-if="!select && !results.length" :count="fuse && fuse.fuse && fuse.fuse.list ? fuse.fuse.list.length : 0"></splash>
+    </main>
     <colophon></colophon>
   </div>
 </template>
@@ -17,6 +20,7 @@ import Fuse from '../fuse';
 import Glyphs from './Glyphs.vue';
 import queryString from 'query-string';
 import Search from './Search.vue';
+import Splash from './Splash.vue';
 
 export default {
   components: {
@@ -24,6 +28,7 @@ export default {
     Colophon,
     Glyphs,
     Search,
+    Splash,
   },
 
   data() {
@@ -85,6 +90,9 @@ export default {
 
     // Done loading
     this.loading = false;
+
+    // Focus on search box
+    this.$refs.search.$el.querySelector('input').focus();
   },
 
   methods: {
