@@ -71,3 +71,14 @@
     }
   }
 }
+
+// No glyphs found query info
+.query-info {
+  background: $white;
+  padding: 15px;
+  text-align: left;
+
+  @include mq-up($screen-md) {
+    padding: 30px;
+  }
+}

@@ -2,7 +2,7 @@
   <div class="app">
     <search ref="search" v-if="!select" v-model="query" :loading="loading" placeholder="Search glyphs"></search>
     <main class="main" role="main">
-      <glyphs v-if="query.length && !select" :results="results" :searching="searching" @glyph-select="selectGlyph"></glyphs>
+      <glyphs v-if="query.length && !select" :query="query" :tab="tab" :results="results" :searching="searching" @glyph-select="selectGlyph" @select-tab="selectTab"></glyphs>
       <char v-if="select" :glyph="select" :tab="tab" @glyph-close="unselectGlyph" @select-tab="selectTab"></char>
       <splash v-if="!select && !query && !results.length" :count="fuse && fuse.fuse && fuse.fuse.list ? fuse.fuse.list.length : 0"></splash>
     </main>
