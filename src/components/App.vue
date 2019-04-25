@@ -174,6 +174,11 @@ export default {
       this.query = q ? decodeURIComponent(q) : ''
       this.select = c ? this.collection.find(decodeURIComponent(c)) : null
       this.tab = t ? t : 'h'
+
+      // Update document title
+      if (this.select) document.title = `Glyphs - ${this.select.c} - ${this.select.n}`
+      else if (q) document.title = `Glyphs - ${q}`
+      else document.title = 'Glyphs'
     },
 
     updateHash() {
