@@ -1,7 +1,16 @@
 <template>
   <header class="search" role="search">
     <div class="input">
-      <input class="search-box" ref="searchBox" :placeholder="loading ? 'Loading glyphs\u2026' : placeholder" :value="value" @input="$emit('input', $event.target.value)" autofocus :disabled="loading">
+      <input
+        ref="searchBox"
+        autofocus
+        class="search-box"
+        :disabled="loading"
+        :placeholder="loading ? 'Loading glyphs\u2026' : placeholder"
+        :value="value"
+        @input="$emit('input', $event.target.value)"
+      >
+
       <button v-if="value" class="clear" @click.prevent="clear">╳</button>
     </div>
   </header>
@@ -11,15 +20,15 @@
 export default {
   props: {
     loading: Boolean,
-    placeholder: String,
-    value: String,
+    placeholder: { type: String, default: '' },
+    value: { type: String, default: '' },
   },
 
   methods: {
     clear() {
-      this.$emit('input', '');
-      this.$refs.searchBox.focus();
+      this.$emit('input', '')
+      this.$refs.searchBox.focus()
     },
   },
-};
+}
 </script>

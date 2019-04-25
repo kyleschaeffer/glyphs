@@ -1,15 +1,27 @@
 <template>
   <div class="glyphs">
-    <button v-for="(result, i) in results" :key="i" :title="result.n" @click.prevent="$emit('glyph-select', result.c)"><span class="label">{{ result.n }}</span><span class="glyph-char" v-html="result.c"></span></button>
+    <button
+      v-for="(result, i) in results"
+      :key="i"
+      :title="result.n"
+      @click.prevent="$emit('glyph-select', result.c)"
+    ><span class="label">{{ result.n }}</span><span class="glyph-char">{{ result.c }}</span></button>
+
     <div v-if="searching" class="searching">Searching&hellip;</div>
+
     <div v-if="!searching && !results.length">
       <div class="empty">No glyphs found: <strong>{{ query }}</strong></div>
-      <tabs class="query-info" :tabs="[
-        { name: 'HTML', id: 'h' },
-        { name: 'CSS', id: 'c' },
-        { name: 'JavaScript', id: 'j' },
-        { name: 'Unicode', id: 'u' },
-      ]" :selected="tab" @select-tab="$emit('select-tab', $event)">
+      <tabs
+        class="query-info"
+        :tabs="[
+          { name: 'HTML', id: 'h' },
+          { name: 'CSS', id: 'c' },
+          { name: 'JavaScript', id: 'j' },
+          { name: 'Unicode', id: 'u' },
+        ]"
+        :selected="tab"
+        @select-tab="$emit('select-tab', $event)"
+      >
         <div id="h" class="tab-panel">
           <div class="codes">
             <h3>Values:</h3>
@@ -88,8 +100,8 @@
 </template>
 
 <script>
-import Tabs from './Tabs.vue';
-import * as utility from '../utility';
+import Tabs from './Tabs.vue'
+import * as utility from '../utility'
 
 export default {
   components: {
@@ -97,57 +109,57 @@ export default {
   },
 
   props: {
-    results: Array,
+    query: { type: String, required: true },
+    results: { type: Array, default: () => [] },
     searching: Boolean,
-    query: String,
-    tab: String,
+    tab: { type: String, default: 'h' },
   },
 
   methods: {
-    js(query) {
-      return utility.strToJs(query).join('');
+    js (query) {
+      return utility.strToJs(query).join('')
     },
 
-    escapedJs(query) {
-      const json = JSON.stringify(query);
-      return json.substring(1, json.length - 1);
+    escapedJs (query) {
+      const json = JSON.stringify(query)
+      return json.substring(1, json.length - 1)
     },
 
-    html(query) {
-      const html = [];
-      const specials = ['"', '\'', '&', '<', '>'];
-      const entities = ['&quot;', '&apos;', '&amp;', '&lt;', '&gt;'];
-      let str = '';
+    html (query) {
+      const html = []
+      const specials = ['"', '\'', '&', '<', '>']
+      const entities = ['&quot;', '&apos;', '&amp;', '&lt;', '&gt;']
+      let str = ''
       for (let c of query) {
-        str += specials.indexOf(c) === -1 ? c : entities[specials.indexOf(c)];
+        str += specials.indexOf(c) === -1 ? c : entities[specials.indexOf(c)]
       }
-      html.push(str);
-      const htmlHexes = utility.strToHtml(query);
-      if (htmlHexes.length === 1) html.push(`&#x${htmlHexes[0]};`);
-      return html;
+      html.push(str)
+      const htmlHexes = utility.strToHtml(query)
+      if (htmlHexes.length === 1) html.push(`&#x${htmlHexes[0]};`)
+      return html
     },
 
-    css(query) {
-      const css = [query];
-      css.push(utility.strToCss(query).join(''));
-      return css;
+    css (query) {
+      const css = [query]
+      css.push(utility.strToCss(query).join(''))
+      return css
     },
 
-    decimals(query) {
-      const decimals = [];
+    decimals (query) {
+      const decimals = []
       for (let c of query) {
-        decimals.push(utility.charToDecimal(c));
+        decimals.push(utility.charToDecimal(c))
       }
-      return decimals;
+      return decimals
     },
 
-    hexes(query) {
-      const hexes = [];
+    hexes (query) {
+      const hexes = []
       for (let c of query) {
-        hexes.push(utility.charToHex(c));
+        hexes.push(utility.charToHex(c))
       }
-      return hexes;
+      return hexes
     },
   },
-};
+}
 </script>

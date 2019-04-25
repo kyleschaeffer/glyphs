@@ -1,0 +1,17 @@
+env:
+  browser: true
+  es6: true
+parserOptions:
+  ecmaVersion: 2018
+  sourceType: "module"
+extends:
+  "plugin:vue/recommended"
+rules:
+  comma-dangle: ["error", "always-multiline"]
+  indent: ["error", 2]
+  no-console: 0
+  quotes: ["error", "single"]
+  semi: ["error", "never"]
+  vue/html-self-closing: 0
+  vue/max-attributes-per-line: 0
+  vue/singleline-html-element-content-newline: 0
