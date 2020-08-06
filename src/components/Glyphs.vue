@@ -3,9 +3,9 @@
     <button
       v-for="(result, i) in results"
       :key="i"
-      :title="result.n"
-      @click.prevent="$emit('glyph-select', result.c)"
-    ><span class="label">{{ result.n }}</span><span class="glyph-char">{{ result.c }}</span></button>
+      :title="result.item.n"
+      @click.prevent="$emit('glyph-select', result.item.c)"
+    ><span class="label">{{ result.item.n }}</span><span class="glyph-char">{{ result.item.c }}</span></button>
 
     <div v-if="searching" class="searching">Searching&hellip;</div>
 

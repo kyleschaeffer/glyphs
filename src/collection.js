@@ -10,7 +10,6 @@ export const Collection = {
     threshold: 0.2,
     location: 0,
     distance: 100,
-    maxPatternLength: 32,
     minMatchCharLength: 1,
     keys: [
       'c',
@@ -59,8 +58,8 @@ export const Collection = {
    * @return {string|null}
    */
   find (char) {
-    for (let i = 0; i < this.fuse.list.length; i++) {
-      if (this.fuse.list[i].c === char) return this.fuse.list[i]
+    for (let i = 0; i < this.fuse._docs.length; i++) {
+      if (this.fuse._docs[i].c === char) return this.fuse._docs[i]
     }
     return null
   },
@@ -70,6 +69,6 @@ export const Collection = {
    * @return {any[]}
    */
   items () {
-    return this.fuse && this.fuse.list ? this.fuse.list : []
+    return this.fuse && this.fuse._docs ? this.fuse._docs : []
   },
 }
