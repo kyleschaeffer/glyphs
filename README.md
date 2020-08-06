@@ -26,7 +26,7 @@ Be sure to run in production mode before making any pull requests, as the `docs`
 
 ### Scraping Utility
 
-Glyphs uses data published in the [Unicode 11.0.0](http://unicode.org/versions/Unicode11.0.0/) standard. The [Unicode 12.0.0](https://unicode.org/versions/Unicode12.0.0/) standard is available, but it is not yet widely available across operating systems and browsers, so it will not yet be implemented into Glyphs.
+Glyphs uses data published in the [Unicode 12.0.0](http://unicode.org/versions/Unicode12.0.0/) standard.
 
 ```sh
 # Update Unicode JSON data

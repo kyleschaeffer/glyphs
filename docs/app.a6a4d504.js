@@ -35115,8 +35115,8 @@ exports.default = _default;
         _vm._v(" glyphs from the "),
         _c(
           "a",
-          { attrs: { href: "http://unicode.org/versions/Unicode11.0.0/" } },
-          [_vm._v("Unicode 11.0.0")]
+          { attrs: { href: "http://unicode.org/versions/Unicode12.0.0/" } },
+          [_vm._v("Unicode 12.0.0")]
         ),
         _vm._v(" standard")
       ]),
@@ -35292,7 +35292,7 @@ var _default = {
   async mounted() {
     // Get glyph data
     try {
-      const glyphs = await _axios.default.get('glyphs/unicode-11.0.0.json');
+      const glyphs = await _axios.default.get('glyphs/unicode-12.0.0.json');
       this.collection = _collection.Collection.init(glyphs.data.glyphs);
     } catch (e) {
       console.error(e);
@@ -35549,7 +35549,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "51790" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "53057" + '/');
 
   ws.onmessage = function (event) {
     checkedAssets = {};
