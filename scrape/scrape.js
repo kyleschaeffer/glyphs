@@ -8,20 +8,20 @@ const scrape = async function() {
   const glyphs = []
 
   // Get unicode data (semi-colon separated w/ 14 columns)
-  console.log(`${chalk.green('GET')} ${chalk.underline('https://www.unicode.org/Public/12.0.0/ucd/UnicodeData.txt')}`)
-  const unicodeData = await fetch('https://www.unicode.org/Public/12.0.0/ucd/UnicodeData.txt').then(r => r.text())
+  console.log(`${chalk.green('GET')} ${chalk.underline('https://www.unicode.org/Public/13.0.0/ucd/UnicodeData.txt')}`)
+  const unicodeData = await fetch('https://www.unicode.org/Public/13.0.0/ucd/UnicodeData.txt').then(r => r.text())
 
   // Get HTML entity data
   console.log(`${chalk.green('GET')} ${chalk.underline('https://dev.w3.org/html5/html-author/charref')}`)
   const entityData = await fetch('https://dev.w3.org/html5/html-author/charref').then(r => r.text())
 
   // Get Emoji list
-  console.log(`${chalk.green('GET')} ${chalk.underline('https://www.unicode.org/emoji/charts-12.0/emoji-list.html')}`)
-  const emojiData = await fetch('https://www.unicode.org/emoji/charts-12.0/emoji-list.html').then(r => r.text())
+  console.log(`${chalk.green('GET')} ${chalk.underline('https://www.unicode.org/emoji/charts-13.0/emoji-list.html')}`)
+  const emojiData = await fetch('https://www.unicode.org/emoji/charts-13.0/emoji-list.html').then(r => r.text())
 
   // Get Emoji tones
-  console.log(`${chalk.green('GET')} ${chalk.underline('https://www.unicode.org/emoji/charts-12.0/full-emoji-modifiers.html')}`)
-  const emojiToneData = await fetch('https://www.unicode.org/emoji/charts-12.0/full-emoji-modifiers.html').then(r => r.text())
+  console.log(`${chalk.green('GET')} ${chalk.underline('https://www.unicode.org/emoji/charts-13.0/full-emoji-modifiers.html')}`)
+  const emojiToneData = await fetch('https://www.unicode.org/emoji/charts-13.0/full-emoji-modifiers.html').then(r => r.text())
 
   // Process entities
   const entities = []
@@ -158,7 +158,7 @@ const scrape = async function() {
 
   // Write to file
   console.log(`Writing ${chalk.cyan.bold(glyphs.length)} glyphs to file...`)
-  fs.writeFileSync('docs/glyphs/unicode-12.0.0.json', JSON.stringify({glyphs}), { flag: 'w' })
+  fs.writeFileSync('docs/glyphs/unicode-13.0.0.json', JSON.stringify({glyphs}), { flag: 'w' })
 }
 
 scrape()

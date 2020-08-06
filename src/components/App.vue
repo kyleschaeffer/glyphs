@@ -88,7 +88,7 @@ export default {
   async mounted() {
     // Get glyph data
     try {
-      const glyphs = await axios.get('glyphs/unicode-12.0.0.json')
+      const glyphs = await axios.get('glyphs/unicode-13.0.0.json')
       this.collection = Collection.init(glyphs.data.glyphs)
     } catch (e) {
       console.error(e)
