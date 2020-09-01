@@ -152,7 +152,8 @@ export default {
 
     selectGlyph(char) {
       this.scrollTop()
-      this.select = this.collection.find(char)
+      const foundGlyph = this.collection.find(char)
+      this.select = foundGlyph ? foundGlyph.item : null
       this.updateHash()
     },
 
@@ -170,9 +171,12 @@ export default {
       // Get hash
       const { q, c, t } = queryString.parse(location.hash)
 
+      // Find glyph
+      const foundGlyph = c ? this.collection.find(decodeURIComponent(c)) : null
+
       // Update state
       this.query = q ? decodeURIComponent(q) : ''
-      this.select = c ? this.collection.find(decodeURIComponent(c)) : null
+      this.select = foundGlyph ? foundGlyph.item : null
       this.tab = t ? t : 'h'
 
       // Update document title

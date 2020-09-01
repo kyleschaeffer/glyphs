@@ -21,6 +21,12 @@ export const Collection = {
   },
 
   /**
+   * Character indicies map
+   * @type {Map<string, number>}
+   */
+  charMap: new Map(),
+
+  /**
    * Fuse.js instance
    * @type {Fuse|null}
    */
@@ -33,6 +39,12 @@ export const Collection = {
    */
   init (items) {
     this.fuse = new Fuse(items, this.config)
+
+    // Add to character map
+    for (let i = 0; i < items.length; i++) {
+      this.charMap.set(items[i].c, i)
+    }
+
     return this
   },
 
@@ -55,11 +67,12 @@ export const Collection = {
   /**
    * Search item collection for a single character match
    * @param {string} char - Character query
-   * @return {string|null}
+   * @return {object|null}
    */
   find (char) {
-    for (let i = 0; i < this.fuse._docs.length; i++) {
-      if (this.fuse._docs[i].c === char) return this.fuse._docs[i]
+    const i = this.charMap.get(char)
+    if (i !== undefined) {
+      return { item: this.fuse._docs[i] }
     }
     return null
   },

@@ -1,6 +1,6 @@
 {
   "name": "glyphs",
-  "version": "1.1.1",
+  "version": "1.1.2",
   "description": "The handy developer’s glyph reference",
   "main": "src/app.js",
   "scripts": {
