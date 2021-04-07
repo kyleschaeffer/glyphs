@@ -1,0 +1,14 @@
+.bar {
+  appearance: none;
+  display: block;
+  height: 4px;
+  width: 100%;
+
+  &::-webkit-progress-bar {
+    background: hsl(var(--color-white) / 10%);
+  }
+
+  &::-webkit-progress-value {
+    background: hsl(var(--color-primary));
+  }
+}

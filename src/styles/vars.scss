@@ -1,0 +1,63 @@
+:root {
+  // Color: mono
+  --color-mono-0: 263 2% 0%;
+  --color-mono-1: 263 2% 12.5%;
+  --color-mono-2: 263 2% 25%;
+  --color-mono-3: 263 2% 37.5%;
+  --color-mono-4: 263 2% 50%;
+  --color-mono-5: 263 2% 62.5%;
+  --color-mono-6: 263 2% 75%;
+  --color-mono-7: 263 2% 87.5%;
+  --color-mono-8: 263 2% 100%;
+
+  // Color: palette
+  --color-red: 351 76% 53%;
+  --color-orange: 15 90% 59%;
+  --color-yellow: 46 89% 65%;
+  --color-green: 134 67% 58%;
+  --color-aqua: 175 73% 56%;
+  --color-blue: 219 87% 55%;
+  --color-violet: 264 74% 61%;
+  --color-pink: 314 87% 69%;
+
+  // Color: app
+  --color-black: 0 0% 0%;
+  --color-white: 0 0% 100%;
+  --color-primary: var(--color-red);
+  --color-success: var(--color-green);
+  --color-warning: var(--color-orange);
+  --color-danger: var(--color-red);
+
+  // Typography: size
+  --size-xxs: 8px;
+  --size-xs: 10px;
+  --size-sm: 12px;
+  --size-md: 15px;
+  --size-lg: 18px;
+  --size-xl: 24px;
+  --size-xxl: 32px;
+  --size-inherit: inherit;
+
+  // Typography: family
+  --font-family-body: BlinkMacSystemFont, -apple-system, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Fira Sans',
+    'Droid Sans', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  --font-family-head: var(--font-family-body);
+  --font-family-mono: SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New', monospace;
+
+  // Typography: line height
+  --line-height-compact: 1.1;
+  --line-height-normal: 1.4;
+  --line-height-expanded: 1.8;
+  --line-height-inherit: inherit;
+
+  // Gap
+  --gap-0: 0;
+  --gap-1: 2px;
+  --gap-2: 4px;
+  --gap-3: 8px;
+  --gap-4: 12px;
+  --gap-5: 16px;
+  --gap-6: 24px;
+  --gap-7: 32px;
+  --gap-8: 48px;
+}

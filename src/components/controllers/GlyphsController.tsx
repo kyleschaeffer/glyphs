@@ -1,9 +1,8 @@
 import axios from 'axios'
 import React, { useEffect, useMemo, useState } from 'react'
 
+import { UNICODE_DATA_LENGTH, UNICODE_VERSION } from '../../config/unicode'
 import { Glyph } from '../../types/glyphs'
-
-const UNICODE_DATA_LENGTH = 2749550
 
 export type GlyphsState = {
   glyphs: Map<string, Glyph>
@@ -28,7 +27,7 @@ export const GlyphsController: React.FC = ({ children }) => {
   useEffect(() => {
     const fetchGlyphs = async () => {
       try {
-        const response = await axios.get<[string, Glyph][]>('/unicode/13.0.0.json', {
+        const response = await axios.get<[string, Glyph][]>(`/unicode/${UNICODE_VERSION}.json`, {
           onDownloadProgress: (e: ProgressEvent) => {
             setProgress(e.loaded / UNICODE_DATA_LENGTH)
           },
