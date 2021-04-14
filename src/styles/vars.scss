@@ -1,28 +1,32 @@
 :root {
   // Color: mono
-  --color-mono-0: 263 2% 0%;
-  --color-mono-1: 263 2% 12.5%;
-  --color-mono-2: 263 2% 25%;
-  --color-mono-3: 263 2% 37.5%;
-  --color-mono-4: 263 2% 50%;
-  --color-mono-5: 263 2% 62.5%;
-  --color-mono-6: 263 2% 75%;
-  --color-mono-7: 263 2% 87.5%;
-  --color-mono-8: 263 2% 100%;
+  --color-mono-0: #131212;
+  --color-mono-1: #1a1818;
+  --color-mono-2: #2e2c2c;
+  --color-mono-3: #3f3c3c;
+  --color-mono-4: #504d4d;
+  --color-mono-5: #646161;
+  --color-mono-6: #7c7979;
+  --color-mono-7: #979393;
+  --color-mono-8: #afacac;
+  --color-mono-9: #c5c2c2;
+  --color-mono-10: #e2e0e0;
+  --color-mono-11: #f1eeee;
+  --color-mono-12: #f7f5f5;
 
   // Color: palette
-  --color-red: 351 76% 53%;
-  --color-orange: 15 90% 59%;
-  --color-yellow: 46 89% 65%;
-  --color-green: 134 67% 58%;
-  --color-aqua: 175 73% 56%;
-  --color-blue: 219 87% 55%;
-  --color-violet: 264 74% 61%;
-  --color-pink: 314 87% 69%;
+  --color-red: #e22c47;
+  --color-orange: #eb6f45;
+  --color-yellow: #f5d056;
+  --color-green: #4cdc6e;
+  --color-aqua: #51d8cd;
+  --color-blue: #3570dd;
+  --color-violet: #8d52e5;
+  --color-pink: #f56bd5;
 
   // Color: app
-  --color-black: 0 0% 0%;
-  --color-white: 0 0% 100%;
+  --color-black: #000;
+  --color-white: #fff;
   --color-primary: var(--color-red);
   --color-success: var(--color-green);
   --color-warning: var(--color-orange);
