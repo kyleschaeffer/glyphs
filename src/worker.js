@@ -1,5 +1,4 @@
 const CACHE_NAME = 'v1'
-const urlsToCache = ['/']
 
 self.addEventListener('install', (event) => {
   event.waitUntil(
