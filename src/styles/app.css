@@ -16,7 +16,7 @@
 
   /* Color: palette */
   --color-red: #e22c47;
-  --color-orange: #eb6f45;
+  --color-orange: #ec5f56;
   --color-yellow: #f5d056;
   --color-green: #4cdc6e;
   --color-aqua: #51d8cd;
@@ -27,7 +27,7 @@
   /* Color: app */
   --color-black: #000;
   --color-white: #fff;
-  --color-primary: var(--color-red);
+  --color-primary: var(--color-orange);
   --color-success: var(--color-green);
   --color-warning: var(--color-orange);
   --color-danger: var(--color-red);

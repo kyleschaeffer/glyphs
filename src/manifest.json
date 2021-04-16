@@ -1,7 +1,7 @@
 {
   "short_name": "Glyphs",
   "name": "Glyphs",
-  "description": "Glyphs provides a searchable reference to over 36,000 Unicode characters and symbols.",
+  "description": "Glyphs provides a searchable reference to over 35,000 Unicode characters and symbols.",
   "icons": [
     {
       "src": "favicon.ico",
@@ -22,6 +22,6 @@
   "start_url": ".",
   "display_override": ["minimal_ui"],
   "display": "standalone",
-  "theme_color": "#ff7456",
+  "theme_color": "#ec5f56",
   "background_color": "#ffffff"
 }

@@ -8,11 +8,24 @@
     <link rel="apple-touch-icon" href="favicon192.png" />
     <link rel="manifest" href="manifest.json" />
     <link rel="stylesheet" href="styles/app.css" />
-    <title>Glyphs</title>
+    <title>Glyphs — Unicode Character and Symbol Reference</title>
   </head>
   <body>
     <noscript>Glyphs requires JavaScript to run.</noscript>
-    <div id="app"></div>
-    <script src="scripts/app.js" type="module"></script>
+
+    <glyphs-app>
+      <p slot="content">Content</p>
+    </glyphs-app>
+
+    <template id="glyphs-app-template">
+      <div class="app">
+        <h1>Glyphs</h1>
+        <div class="content">
+          <slot name="content"></slot>
+        </div>
+      </div>
+    </template>
+
+    <script src="index.js" type="module"></script>
   </body>
 </html>

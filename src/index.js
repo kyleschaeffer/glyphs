@@ -1,4 +1,4 @@
-import * as config from './config.js'
+import './components/app.js'
 
 /**
  * @typedef Glyph
@@ -18,15 +18,3 @@ if ('serviceWorker' in navigator) {
     }
   })
 }
-
-const app = document.getElementById('app')
-if (app) {
-  app.innerHTML = `Unicode: <a href="#">${config.UNICODE_VERSION}</a>`
-}
-console.log('Hi loaded')
-
-const fetchGlyphs = async () => {
-  const glyphs = await fetch(`../glyphs/${config.UNICODE_VERSION}.json`).then((res) => res.json())
-  console.log(new Map(glyphs))
-}
-fetchGlyphs()
