@@ -1,5 +1,5 @@
 :root {
-  // Color: mono
+  /* Color: mono */
   --color-mono-0: #131212;
   --color-mono-1: #1a1818;
   --color-mono-2: #2e2c2c;
@@ -14,7 +14,7 @@
   --color-mono-11: #f1eeee;
   --color-mono-12: #f7f5f5;
 
-  // Color: palette
+  /* Color: palette */
   --color-red: #e22c47;
   --color-orange: #eb6f45;
   --color-yellow: #f5d056;
@@ -24,7 +24,7 @@
   --color-violet: #8d52e5;
   --color-pink: #f56bd5;
 
-  // Color: app
+  /* Color: app */
   --color-black: #000;
   --color-white: #fff;
   --color-primary: var(--color-red);
@@ -32,7 +32,7 @@
   --color-warning: var(--color-orange);
   --color-danger: var(--color-red);
 
-  // Typography: size
+  /* Typography: size */
   --size-xxs: 8px;
   --size-xs: 10px;
   --size-sm: 12px;
@@ -42,19 +42,19 @@
   --size-xxl: 32px;
   --size-inherit: inherit;
 
-  // Typography: family
-  --font-family-body: BlinkMacSystemFont, -apple-system, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Fira Sans',
-    'Droid Sans', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  /* Typography: family */
+  --font-family-body: 'BlinkMacSystemFont', -apple-system, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell',
+    'Fira Sans', 'Droid Sans', 'Helvetica Neue', 'Helvetica', 'Arial', sans-serif;
   --font-family-head: var(--font-family-body);
-  --font-family-mono: SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New', monospace;
+  --font-family-mono: 'SFMono-Regular', 'Menlo', 'Monaco', 'Consolas', 'Liberation Mono', 'Courier New', monospace;
 
-  // Typography: line height
+  /* Typography: line height */
   --line-height-compact: 1.1;
   --line-height-normal: 1.4;
   --line-height-expanded: 1.8;
   --line-height-inherit: inherit;
 
-  // Gap
+  /* Gap */
   --gap-0: 0;
   --gap-1: 2px;
   --gap-2: 4px;
@@ -64,4 +64,53 @@
   --gap-6: 24px;
   --gap-7: 32px;
   --gap-8: 48px;
+}
+
+html {
+  box-sizing: border-box;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: inherit;
+}
+
+html,
+body {
+  background: var(--color-mono-12);
+  color: var(--color-mono-2);
+  font-family: var(--font-family-body);
+  font-size: var(--size-md);
+  line-height: var(--line-height-normal);
+}
+
+body {
+  overflow: hidden;
+}
+
+a {
+  color: var(--color-primary);
+  outline: none;
+  text-decoration-color: transparent;
+  transition: text-decoration-color 0.15s ease;
+}
+
+a:hover,
+a:focus,
+a:active {
+  text-decoration-color: var(--color-primary);
+}
+
+button,
+input,
+textarea {
+  font-family: inherit;
+  font-size: inherit;
+  line-height: inherit;
+}
+
+::selection {
+  background: var(--color-primary);
+  color: var(--color-white);
 }

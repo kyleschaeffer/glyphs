@@ -2,47 +2,14 @@
   "name": "glyphs",
   "version": "0.1.0",
   "private": true,
+  "type": "module",
   "dependencies": {
-    "@babel/core": "^7.13.15",
-    "@parcel/packager-raw-url": "2.0.0-nightly.2264",
-    "@parcel/transformer-sass": "2.0.0-nightly.642",
-    "@parcel/transformer-webmanifest": "2.0.0-nightly.2264",
-    "@trivago/prettier-plugin-sort-imports": "^2.0.2",
-    "@types/node": "^12.20.7",
-    "@types/node-fetch": "^2.5.9",
-    "@typescript-eslint/eslint-plugin": "^4.20.0",
-    "@typescript-eslint/parser": "^4.20.0",
-    "chalk": "^4.1.0",
     "eslint": "^7.23.0",
-    "minireset.css": "^0.0.7",
-    "node-fetch": "^2.6.1",
-    "parcel": "^2.0.0-nightly.640",
-    "postcss": "^8.2.10",
     "prettier": "^2.2.1",
-    "sass": "^1.32.8",
-    "stylelint": "^13.12.0",
-    "stylelint-config-recommended-scss": "^4.2.0",
-    "stylelint-scss": "^3.19.0",
-    "ts-node": "^9.1.1",
-    "typescript": "^4.2.3"
+    "serve": "^11.3.2"
   },
   "scripts": {
-    "start": "parcel src/index.html",
-    "build": "parcel build src/index.html",
-    "scrape": "ts-node -s src/bin/scrape.ts"
-  },
-  "browserslist": {
-    "production": [
-      "last 3 and_chr version",
-      "last 3 chrome version",
-      "last 3 ios_saf version",
-      "last 3 opera version",
-      "last 3 safari version"
-    ],
-    "development": [
-      "last 1 chrome version",
-      "last 1 firefox version",
-      "last 1 safari version"
-    ]
+    "start": "serve ./src",
+    "scrape": "node ./src/bin/scrape.js"
   }
 }
