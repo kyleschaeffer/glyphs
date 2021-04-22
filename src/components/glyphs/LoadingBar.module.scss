@@ -5,10 +5,10 @@
   width: 100%;
 
   &::-webkit-progress-bar {
-    background: hsl(var(--color-white) / 10%);
+    background: var(--color-mono-11);
   }
 
   &::-webkit-progress-value {
-    background: hsl(var(--color-primary));
+    background: var(--color-primary);
   }
 }

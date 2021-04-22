@@ -27,11 +27,14 @@ export const GlyphsController: React.FC = ({ children }) => {
   useEffect(() => {
     const fetchGlyphs = async () => {
       try {
-        const response = await axios.get<[string, Glyph][]>(`/unicode/${UNICODE_VERSION}.json`, {
-          onDownloadProgress: (e: ProgressEvent) => {
-            setProgress(e.loaded / UNICODE_DATA_LENGTH)
-          },
-        })
+        const response = await axios.get<[string, Glyph][]>(
+          `${process.env.PUBLIC_URL}/unicode/${UNICODE_VERSION}.json`,
+          {
+            onDownloadProgress: (e: ProgressEvent) => {
+              setProgress(e.loaded / UNICODE_DATA_LENGTH)
+            },
+          }
+        )
 
         setGlyphs(new Map(response.data))
       } catch (e) {
