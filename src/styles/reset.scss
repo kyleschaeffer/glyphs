@@ -1,7 +1,7 @@
 html,
 body {
-  background: hsl(var(--color-mono-1));
-  color: hsl(var(--color-mono-6));
+  background: var(--color-mono-12);
+  color: var(--color-mono-2);
   font-family: var(--font-family-body);
   font-size: var(--size-md);
   height: 100%;
@@ -15,9 +15,16 @@ body {
 }
 
 a {
-  color: hsl(var(--color-primary));
+  color: var(--color-primary);
   outline: none;
-  text-decoration: none;
+  text-decoration-color: transparent;
+  transition: text-decoration-color 0.15s ease;
+
+  &:active,
+  &:focus,
+  &:hover {
+    text-decoration-color: var(--color-primary);
+  }
 }
 
 button,
@@ -29,6 +36,6 @@ textarea {
 }
 
 ::selection {
-  background: hsl(var(--color-primary) / 95%);
-  color: hsl(var(--color-white));
+  background: var(--color-primary);
+  color: var(--color-white);
 }

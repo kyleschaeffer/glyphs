@@ -1,6 +1,7 @@
 {
+  "name": "Glyphs",
   "short_name": "Glyphs",
-  "name": "The handy glyph reference",
+  "description": "Glyphs provides a searchable reference to over 35,000 Unicode characters and symbols.",
   "icons": [
     {
       "src": "favicon.ico",
@@ -8,18 +9,19 @@
       "type": "image/x-icon"
     },
     {
-      "src": "logo192.png",
+      "src": "favicon192.png",
       "type": "image/png",
       "sizes": "192x192"
     },
     {
-      "src": "logo512.png",
+      "src": "favicon512.png",
       "type": "image/png",
       "sizes": "512x512"
     }
   ],
   "start_url": ".",
+  "display_override": ["minimal_ui"],
   "display": "standalone",
-  "theme_color": "#000000",
+  "theme_color": "#ec5f56",
   "background_color": "#ffffff"
 }
