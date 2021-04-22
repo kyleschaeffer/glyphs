@@ -1,4 +1,7 @@
-import * as config from '../scripts/config.js'
+'use strict'
+
+import * as config from '../config.js'
+import { GlyphsComponent } from './component.js'
 
 /**
  * @typedef Glyph
@@ -11,22 +14,8 @@ import * as config from '../scripts/config.js'
 
 customElements.define(
   'glyphs-app',
-  class extends HTMLElement {
-    constructor() {
-      super()
-
-      const templateId = `${this.tagName.toLowerCase()}-template`
-      const template = document.getElementById(templateId)
-      if (!template) {
-        throw new Error(`Template not found: #${templateId}`)
-      }
-
-      this.attachShadow({ mode: 'open' }).appendChild(template.content.cloneNode(true))
-
-      this.init()
-    }
-
-    init() {
+  class extends GlyphsComponent {
+    onMount() {
       this.state = {
         /**
          * @type {Map<string, Glyph>} Unicode character data

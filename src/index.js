@@ -1,4 +1,4 @@
-import './components/app.js'
+import './scripts/components/app.js'
 
 /**
  * @typedef Glyph
