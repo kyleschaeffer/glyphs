@@ -1,62 +1,31 @@
-import axios from 'axios'
-import React, { useEffect, useMemo, useState } from 'react'
+import React, { useReducer } from 'react'
 
-import { UNICODE_DATA_LENGTH, UNICODE_VERSION } from '../../config/unicode'
-import { Glyph } from '../../types/glyphs'
+import { GlyphsAction } from '../../store/actions'
+import { GlyphsState, reducer } from '../../store/reducers'
+import { useGlyphsData } from '../hooks/useGlyphsData'
 
-export type GlyphsState = {
-  glyphs: Map<string, Glyph>
-  loading: boolean
-  progress: number
-  error: string | null
-}
-
-export const GlyphsContext = React.createContext<GlyphsState>({
+const initialState: GlyphsState = {
+  error: null,
+  glyph: null,
   glyphs: new Map(),
   loading: true,
-  progress: 0,
-  error: null,
-})
+  query: '',
+}
+
+export const GlyphsContext = React.createContext<[GlyphsState, React.Dispatch<GlyphsAction>]>([initialState, () => {}])
 
 export const GlyphsController: React.FC = ({ children }) => {
-  const [glyphs, setGlyphs] = useState<Map<string, Glyph>>(new Map())
-  const [loading, setLoading] = useState(true)
-  const [progress, setProgress] = useState(0)
-  const [error, setError] = useState<string | null>(null)
+  const store = useReducer(reducer, initialState)
 
-  useEffect(() => {
-    const fetchGlyphs = async () => {
-      try {
-        const response = await axios.get<[string, Glyph][]>(
-          `${process.env.PUBLIC_URL}/unicode/${UNICODE_VERSION}.json`,
-          {
-            onDownloadProgress: (e: ProgressEvent) => {
-              setProgress(e.loaded / UNICODE_DATA_LENGTH)
-            },
-          }
-        )
-
-        setGlyphs(new Map(response.data))
-      } catch (e) {
-        setError(e)
-      } finally {
-        setLoading(false)
-        setProgress(1)
-      }
-    }
-
-    fetchGlyphs()
-  }, [])
-
-  const state = useMemo<GlyphsState>(
-    () => ({
-      glyphs,
-      loading,
-      progress,
-      error,
-    }),
-    [glyphs, loading, progress, error]
+  return (
+    <GlyphsContext.Provider value={store}>
+      <GlyphsLoader>{children}</GlyphsLoader>
+    </GlyphsContext.Provider>
   )
+}
 
-  return <GlyphsContext.Provider value={state}>{children}</GlyphsContext.Provider>
+const GlyphsLoader: React.FC = ({ children }) => {
+  useGlyphsData()
+
+  return <>{children}</>
 }

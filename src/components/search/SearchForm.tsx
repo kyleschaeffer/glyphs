@@ -1,16 +1,16 @@
-import React from 'react'
-import { useContext } from 'react'
+import React, { useContext } from 'react'
 
-import { SearchContext } from '../controllers/SearchController'
+import { setQuery } from '../../store/actions'
+import { GlyphsContext } from '../controllers/GlyphsController'
 
 export const SearchForm: React.FC = () => {
-  const { query, setQuery } = useContext(SearchContext)
+  const [{ query }, dispatch] = useContext(GlyphsContext)
 
   return (
     <input
       type="search"
       value={query}
-      onChange={(e) => setQuery(e.currentTarget.value)}
+      onChange={(e) => dispatch(setQuery(e.currentTarget.value))}
       autoComplete="none"
       autoFocus
     />
