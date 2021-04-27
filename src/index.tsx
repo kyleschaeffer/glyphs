@@ -1,9 +1,12 @@
+import { enableMapSet } from 'immer'
 import React from 'react'
 import ReactDOM from 'react-dom'
 
 import { App } from './components/App'
 import { PUBLIC_URL } from './config/url'
 import './styles/app.scss'
+
+enableMapSet()
 
 ReactDOM.render(
   <React.StrictMode>
