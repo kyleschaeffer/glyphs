@@ -10,7 +10,7 @@ export const App: React.FC = () => (
   <GlyphsController>
     <BrowserRouter>
       <Switch>
-        <Route path="/:query/:glyph" component={GlyphView} />
+        <Route path="/:query/:glyph/:tab?" component={GlyphView} />
         <Route path="/:query" component={ResultsView} />
         <Route path="/" component={SearchView} />
       </Switch>

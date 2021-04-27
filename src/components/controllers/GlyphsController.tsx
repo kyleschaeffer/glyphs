@@ -1,16 +1,8 @@
 import React, { useReducer } from 'react'
 
 import { GlyphsAction } from '../../store/actions'
-import { GlyphsState, reducer } from '../../store/reducers'
+import { GlyphsState, initialState, reducer } from '../../store/reducers'
 import { useGlyphsData } from '../hooks/useGlyphsData'
-
-const initialState: GlyphsState = {
-  error: null,
-  glyph: null,
-  glyphs: new Map(),
-  loading: true,
-  query: '',
-}
 
 export const GlyphsContext = React.createContext<[GlyphsState, React.Dispatch<GlyphsAction>]>([initialState, () => {}])
 
@@ -19,13 +11,13 @@ export const GlyphsController: React.FC = ({ children }) => {
 
   return (
     <GlyphsContext.Provider value={store}>
-      <GlyphsLoader>{children}</GlyphsLoader>
+      <GlyphsLoader />
+      {children}
     </GlyphsContext.Provider>
   )
 }
 
-const GlyphsLoader: React.FC = ({ children }) => {
+const GlyphsLoader: React.FC = () => {
   useGlyphsData()
-
-  return <>{children}</>
+  return null
 }

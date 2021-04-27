@@ -1,18 +1,22 @@
-import React, { useContext } from 'react'
+import React, { useCallback, useState } from 'react'
 
 import { setQuery } from '../../store/actions'
-import { GlyphsContext } from '../controllers/GlyphsController'
+import { useDebouncedCallback } from '../hooks/useDebouncedCallback'
+import { useDispatch } from '../hooks/useDispatch'
+import { useSelector } from '../hooks/useSelector'
+
+const QUERY_DEBOUNCE_MS = 300
 
 export const SearchForm: React.FC = () => {
-  const [{ query }, dispatch] = useContext(GlyphsContext)
+  const dispatch = useDispatch()
+  const query = useSelector((state) => state.query)
 
-  return (
-    <input
-      type="search"
-      value={query}
-      onChange={(e) => dispatch(setQuery(e.currentTarget.value))}
-      autoComplete="none"
-      autoFocus
-    />
-  )
+  const [value, setValue] = useState(query)
+  const queryResult = useDebouncedCallback((newValue: string) => dispatch(setQuery(newValue)), QUERY_DEBOUNCE_MS, [])
+  const onInput = useCallback(({ target: { value: newValue } }: React.ChangeEvent<HTMLInputElement>) => {
+    setValue(newValue)
+    queryResult(newValue)
+  }, [])
+
+  return <input type="search" value={value} onChange={onInput} autoComplete="none" autoFocus />
 }

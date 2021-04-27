@@ -1,12 +1,12 @@
-import { useContext, useEffect } from 'react'
+import { useEffect } from 'react'
 
 import { UNICODE_VERSION } from '../../config/unicode'
 import { setError, setGlyphs, setLoading } from '../../store/actions'
 import { Glyph } from '../../types/glyphs'
-import { GlyphsContext } from '../controllers/GlyphsController'
+import { useDispatch } from './useDispatch'
 
 export const useGlyphsData = () => {
-  const [, dispatch] = useContext(GlyphsContext)
+  const dispatch = useDispatch()
 
   useEffect(() => {
     const fetchGlyphs = async () => {
