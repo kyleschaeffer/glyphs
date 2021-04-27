@@ -84,7 +84,13 @@ const scrape = async () => {
         u: unicode.replace(/U\+/g, ''),
         h: hexes,
         n: name.replace(/&amp;/gi, '&').replace(/⊛ /gi, ''),
-        k: name !== keywords.replace(/ \| /g, ',') ? keywords.replace(/ \| /g, ',').replace(/&amp;/gi, '&') : undefined,
+        k:
+          name !== keywords.replace(/ \| /g, ',')
+            ? keywords
+                .replace(/ \| /g, ',')
+                .replace(/&amp;/gi, '&')
+                .replace(/<.*?>(.*?)<\/.*?>/gi, '$1')
+            : undefined,
       },
     ])
 
