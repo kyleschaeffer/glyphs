@@ -2,6 +2,7 @@ export class GlyphsComponent extends HTMLElement {
   constructor(initialState = {}) {
     super()
     this.state = initialState
+    this.templateElements = new Map()
 
     this._bindTemplate()
     this.onMount()
@@ -14,6 +15,49 @@ export class GlyphsComponent extends HTMLElement {
 
   style() {
     return ''
+  }
+
+  onMount() {}
+
+  onUpdate() {}
+
+  setState(prop, value) {
+    this.state = { ...this.state, [prop]: value }
+    this.render()
+  }
+
+  render() {
+    for (const el of this.templateElements.get('if')) {
+      const prop = el.getAttribute('-if')
+      if (prop && this.state[prop]) el.style.display = 'block'
+      else el.style.display = 'none'
+    }
+
+    for (const el of this.templateElements.get('ifnot')) {
+      const prop = el.getAttribute('-ifnot')
+      if (prop && !this.state[prop]) el.style.display = 'block'
+      else el.style.display = 'none'
+    }
+
+    for (const el of this.templateElements.get('value')) {
+      const prop = el.getAttribute('-value')
+      if (prop && this.state[prop] !== undefined) el.value = this.state[prop]
+    }
+
+    for (const el of this.templateElements.get('bind')) {
+      const prop = el.getAttribute('-bind')
+      if (!prop) continue
+      const value = this.state[prop]
+      if (value === null || value === undefined) {
+        el.innerHTML = ''
+      } else if (typeof value === 'object') {
+        el.innerHTML = JSON.stringify(value)
+      } else {
+        el.innerHTML = value.toString()
+      }
+    }
+
+    this.onUpdate()
   }
 
   _bindTemplate() {
@@ -32,26 +76,16 @@ export class GlyphsComponent extends HTMLElement {
 
     this.attachShadow({ mode: 'open' }).appendChild(template.content.cloneNode(true))
     this.shadowRoot.adoptedStyleSheets = document.adoptedStyleSheets
-  }
 
-  onMount() {}
+    this.templateElements.set('if', this.shadowRoot.querySelectorAll('[-if]') || [])
+    this.templateElements.set('ifnot', this.shadowRoot.querySelectorAll('[-ifnot]') || [])
+    this.templateElements.set('bind', this.shadowRoot.querySelectorAll('[-bind]') || [])
+    this.templateElements.set('value', this.shadowRoot.querySelectorAll('[-value]') || [])
 
-  setState(prop, value) {
-    this.state = { ...this.state, [prop]: value }
-    this.render()
-  }
-
-  render() {
-    for (const el of this.shadowRoot.querySelectorAll('[-if]')) {
-      const prop = el.getAttribute('-if')
-      if (prop && this.state[prop]) el.style.display = 'block'
-      else el.style.display = 'none'
-    }
-
-    for (const el of this.shadowRoot.querySelectorAll('[-ifnot]')) {
-      const prop = el.getAttribute('-ifnot')
-      if (prop && !this.state[prop]) el.style.display = 'block'
-      else el.style.display = 'none'
-    }
+    this.templateElements.get('value').forEach((el) => {
+      const prop = el.getAttribute('-value')
+      if (!prop) return
+      el.oninput = (e) => this.setState(prop, e.target.value)
+    })
   }
 }

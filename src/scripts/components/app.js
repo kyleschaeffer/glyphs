@@ -19,6 +19,7 @@ customElements.define(
       super({
         glyphs: new Map(),
         loading: false,
+        query: '',
       })
     }
 
@@ -28,6 +29,9 @@ customElements.define(
           <h1>Glyphs</h1>
           <div class="loading" -if="loading">Loading&hellip;</div>
           <div class="content" -ifnot="loading">
+            <input class="search" type="search" -value="query" />
+            <textarea -value="query"></textarea>
+            <div><b>Query:</b> <span -bind="query"></span></div>
             <slot name="content"></slot>
           </div>
         </div>
