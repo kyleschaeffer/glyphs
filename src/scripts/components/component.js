@@ -74,14 +74,15 @@ export class GlyphsComponent extends HTMLElement {
     for (const el of this.#templateElements.get('bind')) {
       const prop = el.getAttribute('-bind')
       if (!prop) continue
-      const value = this.state[prop]
-      if (value === null || value === undefined) {
-        el.innerHTML = ''
-      } else if (typeof value === 'object') {
-        el.innerHTML = JSON.stringify(value)
-      } else {
-        el.innerHTML = value.toString()
-      }
+      el.innerHTML = this.#getSerializedPropValue(prop)
+    }
+
+    for (const el of this.#templateElements.get('bind-attr')) {
+      const attr = el.getAttribute('-bind-attr')
+      if (!attr) continue
+      const prop = el.getAttribute('-bind-attr-value')
+      if (!prop) continue
+      el.setAttribute(attr, this.#getSerializedPropValue(prop))
     }
 
     this.onUpdate()
@@ -114,11 +115,23 @@ export class GlyphsComponent extends HTMLElement {
     this.#templateElements.set('ifnot', this.shadowRoot.querySelectorAll('[-ifnot]') || [])
     this.#templateElements.set('bind', this.shadowRoot.querySelectorAll('[-bind]') || [])
     this.#templateElements.set('value', this.shadowRoot.querySelectorAll('[-value]') || [])
+    this.#templateElements.set('bind-attr', this.shadowRoot.querySelectorAll('[-bind-attr]') || [])
 
     this.#templateElements.get('value').forEach((el) => {
       const prop = el.getAttribute('-value')
       if (!prop) return
       el.oninput = (e) => this.setState(prop, e.target.value)
     })
+  }
+
+  #getSerializedPropValue(prop) {
+    const value = this.state[prop]
+    if (value === null || value === undefined) {
+      return ''
+    } else if (typeof value === 'object') {
+      return JSON.stringify(value)
+    } else {
+      return value.toString()
+    }
   }
 }

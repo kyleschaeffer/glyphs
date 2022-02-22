@@ -19,9 +19,7 @@ class App extends GlyphsComponent {
       <div class="loading" -if="loading">Loading&hellip;</div>
       <div class="content" -ifnot="loading">
         <input class="search" type="search" -value="query" />
-        <textarea -value="query"></textarea>
-        <div><b>Query:</b> <span -bind="query"></span></div>
-        <slot name="content"></slot>
+        <div>Searching <b -bind="glyphsCount"></b> glyphs in <a -bind-attr="href" -bind-attr-value="unicodeLinkUrl" target="_blank" rel="nofollow">Unicode <span -bind="unicodeVersion"></span></a></div>
       </div>
     </div>
   `
@@ -40,14 +38,17 @@ class App extends GlyphsComponent {
     glyphs: new Map(),
 
     /**
+     * Glyph count
+     */
+    glyphsCount: '',
+
+    /**
      * Glyph loading state
-     * @type {boolean}
      */
     loading: false,
 
     /**
      * Search query text
-     * @type {string}
      */
     query: '',
 
@@ -62,6 +63,16 @@ class App extends GlyphsComponent {
      * @type {?string}
      */
     select: null,
+
+    /**
+     * Unicode link URL
+     */
+    unicodeLinkUrl: `https://www.unicode.org/versions/Unicode${UNICODE_VERSION}/`,
+
+    /**
+     * Unicode version
+     */
+    unicodeVersion: UNICODE_VERSION,
   }
 
   onMount() {
@@ -78,7 +89,8 @@ class App extends GlyphsComponent {
   async loadGlyphData() {
     this.setState('loading', true)
     const data = await fetch(`../glyphs/${UNICODE_VERSION}.json`).then((res) => res.json())
-    this.state.glyphs = new Map(data)
+    this.setState('glyphs', new Map(data))
+    this.setState('glyphsCount', this.state.glyphs.size.toLocaleString())
     this.setState('loading', false)
     console.log(this.state)
   }
@@ -93,7 +105,7 @@ class App extends GlyphsComponent {
 
   debouncedUpdateHash() {
     window.clearTimeout(this.updateHashTimer)
-    this.updateHashTimer = window.setTimeout(() => this.updateHash(), 250)
+    this.updateHashTimer = window.setTimeout(() => this.updateHash(), 500)
   }
 
   onHashChange() {
