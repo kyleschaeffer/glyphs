@@ -114,18 +114,9 @@ class App extends GlyphsComponent {
     this.setState('loading', false)
     this.search = new Search()
     this.state.glyphs.forEach((glyph, key) =>
-      this.search.add(
-        key,
-        glyph.u,
-        ...glyph.n.split(' '),
-        ...(glyph.e?.split(' ') ?? []),
-        ...(glyph.k
-          ?.split(',')
-          .map((k) => k.split(' '))
-          .flat() ?? [])
-      )
+      this.search.add(key, ...[glyph.u, glyph.n, glyph.e, glyph.k].filter((s) => s))
     )
-    console.log(this.state.glyphs.get(this.search.search('quot')[0]))
+    console.log(this.search, this.state.glyphs.get(this.search.search('quot')[0]))
   }
 
   updateHash() {
