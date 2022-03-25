@@ -1,6 +1,7 @@
 'use strict'
 
 import { UNICODE_VERSION } from '../config.js'
+import { Search } from '../search.js'
 import { GlyphsComponent } from './component.js'
 
 /**
@@ -19,12 +20,31 @@ class App extends GlyphsComponent {
       <div class="loading" -if="loading">Loading&hellip;</div>
       <div class="content" -ifnot="loading">
         <input class="search" type="search" -value="query" />
+        <div>Enter a character or keywords to search</div>
         <div>Searching <b -bind="glyphsCount"></b> glyphs in <a -bind-attr="href" -bind-attr-value="unicodeLinkUrl" target="_blank" rel="nofollow">Unicode <span -bind="unicodeVersion"></span></a></div>
       </div>
     </div>
   `
 
   style = `
+    .app {
+      text-align: center;
+    }
+
+    .search {
+      border: 1px solid rgb(0 0 0 / 10%);
+      border-radius: 1.75em;
+      font-size: 18px;
+      height: 3.5em;
+      padding: 0 1.5em;
+      width: 60vw;
+    }
+
+    .search:focus {
+      border-color: var(--color-primary);
+      outline: 0;
+    }
+
     h1 {
       margin-block: 0;
     }
@@ -92,7 +112,20 @@ class App extends GlyphsComponent {
     this.setState('glyphs', new Map(data))
     this.setState('glyphsCount', this.state.glyphs.size.toLocaleString())
     this.setState('loading', false)
-    console.log(this.state)
+    this.search = new Search()
+    this.state.glyphs.forEach((glyph, key) =>
+      this.search.add(
+        key,
+        glyph.u,
+        ...glyph.n.split(' '),
+        ...(glyph.e?.split(' ') ?? []),
+        ...(glyph.k
+          ?.split(',')
+          .map((k) => k.split(' '))
+          .flat() ?? [])
+      )
+    )
+    console.log(this.state.glyphs.get(this.search.search('quot')[0]))
   }
 
   updateHash() {
