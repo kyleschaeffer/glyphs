@@ -1,11 +1,10 @@
 import { Component } from 'solid-js'
-import { charToDecimal } from '../core/convert'
+import { search } from '../store'
 
 export const Search: Component = () => {
   return (
     <div>
-      <input type="search" />
-      🍕 = {charToDecimal('🍕')}
+      <input type="search" value={search.state.query} onChange={(e) => search.setQuery(e.currentTarget.value)} />
     </div>
   )
 }
