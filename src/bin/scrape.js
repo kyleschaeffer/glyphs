@@ -88,12 +88,14 @@ const scrape = async () => {
       const entities = [...new Set([...(existingGlyph.e?.split(' ') ?? []), ...(e?.split(' ') ?? [])])].join(' ')
       glyphs.set(c, {
         c,
-        u: [...new Set([...existingGlyph.u.split(' '), ...u.split(' ')])].join(' '),
-        h: [...new Set([...existingGlyph.h.split(' '), ...h.split(' ')])].join(' '),
+        u: existingGlyph.u,
+        h: existingGlyph.h,
         n: [...new Set([...existingGlyph.n.split(','), n])].join(','),
         k: keywords.length ? keywords : undefined,
         e: entities.length ? entities : undefined,
       })
+      if (existingGlyph.u !== u) console.warn(`Unicode diff for character "${c}": "${existingGlyph.u}" vs. "${u}"`)
+      if (existingGlyph.h !== h) console.warn(`Hexadecimal diff for character "${c}": "${existingGlyph.h}" vs. "${h}"`)
     }
   }
 
