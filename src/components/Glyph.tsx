@@ -8,11 +8,17 @@ export const Glyph: Component = () => {
   return (
     <article>
       <button onClick={() => search.setSelected(null)}>❌</button>
-      <h1>{glyph.n}</h1>
-      <h2>{glyph.c}</h2>
+      <h1
+        title={glyph.k ? `${glyph.n.split(',')[0]}: ${glyph.k.split(',').join(', ')}` : undefined}
+        style={{ 'text-transform': 'uppercase' }}
+      >
+        {glyph.n.split(',')[0]}
+      </h1>
+      <h2 style={{ 'font-size': '128px', 'line-height': '1', margin: '0' }}>{glyph.c}</h2>
 
       <h3>HTML:</h3>
       <pre>&lt;span&gt;{glyph.c}&lt;/span&gt;</pre>
+      <pre>&lt;span&gt;&amp;#{parseInt(glyph.u, 16).toString()};&lt;/span&gt;</pre>
       {glyph.e?.split(' ').map((e) => (
         <pre>&lt;span&gt;&amp;{e};&lt;/span&gt;</pre>
       ))}
@@ -31,6 +37,8 @@ export const Glyph: Component = () => {
           .join('')}
         ";
       </pre>
+      {glyph.u.split(' ').length === 1 && <pre>let s = String.fromCharCode({parseInt(glyph.u, 16).toString()});</pre>}
+      {glyph.h.split(' ').length === 1 && <pre>let s = String.fromCharCode(0x{glyph.h});</pre>}
 
       <h3>Decimal:</h3>
       <pre>

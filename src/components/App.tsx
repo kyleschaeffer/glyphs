@@ -6,10 +6,10 @@ import { Search } from './Search'
 
 export const App: Component = () => {
   return (
-    <>
+    <div style={{ 'font-family': 'system-ui' }}>
       <GlyphsLoader />
       {!search.state.selected && <Search />}
       {search.state.selected && <Glyph />}
-    </>
+    </div>
   )
 }

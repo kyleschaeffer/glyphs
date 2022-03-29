@@ -43,6 +43,11 @@ export const setLoading = (loading: boolean) => setState('loading', loading)
 export const setResults = (results: Glyph[]) => setState('results', results)
 export const setSelected = (selected: Glyph | null) => setState('selected', selected)
 
+export const selectRandom = () => {
+  const glyphDocs = (state.index as any)._docs as Glyph[]
+  setSelected(glyphDocs[Math.floor(Math.random() * glyphDocs.length)])
+}
+
 export const indexGlyphs = (glyphs: Glyph[]) =>
   setState('index', new Fuse(glyphs, { keys: SEARCH_KEYS, threshold: SEARCH_THRESHOLD }))
 

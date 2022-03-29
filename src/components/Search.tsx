@@ -14,12 +14,17 @@ export const Search: Component = () => {
         <div>
           {glyphs.state.loading && <div>Loading&hellip;</div>}
           {!glyphs.state.loading && (
-            <div>
-              Searching <b>{glyphs.state.count}</b> glyphs in{' '}
-              <a href={`https://www.unicode.org/versions/Unicode${UNICODE_VERSION}/`} target="_blank" rel="nofollow">
-                Unicode {UNICODE_VERSION_SHORT}
-              </a>
-            </div>
+            <>
+              <div>
+                Searching <b>{glyphs.state.count}</b> glyphs in{' '}
+                <a href={`https://www.unicode.org/versions/Unicode${UNICODE_VERSION}/`} target="_blank" rel="nofollow">
+                  Unicode {UNICODE_VERSION_SHORT}
+                </a>
+              </div>
+              <div>
+                <button onClick={() => search.selectRandom()}>🎲</button>
+              </div>
+            </>
           )}
         </div>
       )}
