@@ -3,6 +3,16 @@ import fs from 'fs'
 import https from 'https'
 import { decimalToStr, hexStrToHexes, strToHexes } from '../core/convert.js'
 
+/**
+ * @typedef Glyph
+ * @prop {string} c Glyph character
+ * @prop {string} u Unicode value
+ * @prop {string} h Space-separated hexadecimal values
+ * @prop {string} n Glyph name
+ * @prop {string} [k] Comma-separated glyph keyword phrases
+ * @prop {string} [e] Space-separated HTML entity names
+ */
+
 dotenv.config()
 
 const UNICODE_VERSION = process.env.UNICODE_VERSION ?? ''
@@ -54,7 +64,7 @@ const getUrl = async (url) => {
 }
 
 const scrape = async () => {
-  /** @type {[char: string, glyph: Glyph][]} */
+  /** @type {Glyph[]} */
   const glyphs = []
 
   /** @type {Map<number, string>} */
@@ -96,16 +106,14 @@ const scrape = async () => {
     const decimal = parseInt(unicode, 16)
     const char = decimalToStr(decimal)
 
-    glyphs.push([
-      char,
-      {
-        u: unicode,
-        h: hexStrToHexes(unicode).join(' '),
-        n: (name || keywords).replace(/&amp;/gi, '&').replace(/⊛ /gi, ''),
-        k: name && keywords && name !== keywords ? keywords.replace(/&amp;/gi, '&') : undefined,
-        e: entities.get(decimal),
-      },
-    ])
+    glyphs.push({
+      c: char,
+      u: unicode,
+      h: hexStrToHexes(unicode).join(' '),
+      n: (name || keywords).replace(/&amp;/gi, '&').replace(/⊛ /gi, ''),
+      k: name && keywords && name !== keywords ? keywords.replace(/&amp;/gi, '&') : undefined,
+      e: entities.get(decimal),
+    })
   }
 
   // Create Emoji glyphs
@@ -114,15 +122,13 @@ const scrape = async () => {
     const [, unicode, char, name, keywords] = emojiMatch
     const hexes = strToHexes(char).join(' ')
 
-    glyphs.push([
-      char,
-      {
-        u: unicode.replace(/U\+/g, ''),
-        h: hexes,
-        n: name.replace(/&amp;/gi, '&').replace(/⊛ /gi, ''),
-        k: name !== keywords.replace(/ \| /g, ',') ? keywords.replace(/ \| /g, ',').replace(/&amp;/gi, '&') : undefined,
-      },
-    ])
+    glyphs.push({
+      c: char,
+      u: unicode.replace(/U\+/g, ''),
+      h: hexes,
+      n: name.replace(/&amp;/gi, '&').replace(/⊛ /gi, ''),
+      k: name !== keywords.replace(/ \| /g, ',') ? keywords.replace(/ \| /g, ',').replace(/&amp;/gi, '&') : undefined,
+    })
 
     emojiMatch = EMOJI_DATA_SEARCH.exec(emojiData)
   }
@@ -134,14 +140,12 @@ const scrape = async () => {
     const hexes = strToHexes(char).join(' ')
 
     // Create glyph
-    glyphs.push([
-      char,
-      {
-        u: unicode.replace(/U\+/g, ''),
-        h: hexes,
-        n: name.replace(/&amp;/gi, '&').replace(/⊛ /gi, ''),
-      },
-    ])
+    glyphs.push({
+      c: char,
+      u: unicode.replace(/U\+/g, ''),
+      h: hexes,
+      n: name.replace(/&amp;/gi, '&').replace(/⊛ /gi, ''),
+    })
 
     emojiToneMatch = EMOJI_TONE_DATA_SEARCH.exec(emojiToneData)
   }

@@ -1,12 +1,12 @@
 import { Accessor, createMemo } from 'solid-js'
 import { createStore } from 'solid-js/store'
 import { UNICODE_VERSION } from '../config'
-import { Glyph, GlyphsData } from './types'
+import { Glyph } from './types'
 
 export type GlyphsState = {
   count: string
   error: string | null
-  glyphs: Map<string, Glyph>
+  glyphs: Glyph[]
   loading: boolean
 }
 
@@ -16,14 +16,14 @@ const [state, setState] = createStore<GlyphsState>({
     return count()
   },
   error: null,
-  glyphs: new Map(),
+  glyphs: [],
   loading: true,
 })
-count = createMemo(() => state.glyphs.size.toLocaleString())
+count = createMemo(() => state.glyphs.length.toLocaleString())
 
 export { state }
-export const setError = (error: string) => setState({ error, glyphs: new Map() })
-export const setGlyphs = (data: GlyphsData) => setState({ error: null, glyphs: new Map(data) })
+export const setError = (error: string) => setState({ error, glyphs: [] })
+export const setGlyphs = (glyphs: Glyph[]) => setState({ error: null, glyphs })
 export const setLoading = (loading: boolean) => setState('loading', loading)
 
 export const loadGlyphs = async () => {
@@ -31,8 +31,8 @@ export const loadGlyphs = async () => {
   try {
     const response = await fetch(`/glyphs/${UNICODE_VERSION}.json`)
     if (!response.ok) throw new Error(response.statusText)
-    const data: GlyphsData = await response.json()
-    setGlyphs(data)
+    const glyphs: Glyph[] = await response.json()
+    setGlyphs(glyphs)
   } catch (e) {
     setError(e instanceof Error ? e.message : 'Something went wrong')
   } finally {

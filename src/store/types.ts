@@ -1,5 +1,10 @@
 export type Glyph = {
   /**
+   * Glyph character
+   */
+  c: string
+
+  /**
    * Unicode value
    */
   u: string
@@ -24,5 +29,3 @@ export type Glyph = {
    */
   e?: string
 }
-
-export type GlyphsData = [char: string, glyph: Glyph][]

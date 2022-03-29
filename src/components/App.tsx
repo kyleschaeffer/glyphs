@@ -1,5 +1,5 @@
 import type { Component } from 'solid-js'
-import { UNICODE_VERSION } from '../config'
+import { UNICODE_VERSION, UNICODE_VERSION_SHORT } from '../config'
 import { glyphs } from '../store'
 import { GlyphsLoader } from './GlyphsLoader'
 import { Search } from './Search'
@@ -14,7 +14,7 @@ export const App: Component = () => {
         <div>
           Searching <b>{glyphs.state.count}</b> glyphs in{' '}
           <a href={`https://www.unicode.org/versions/Unicode${UNICODE_VERSION}/`} target="_blank" rel="nofollow">
-            Unicode {UNICODE_VERSION}
+            Unicode {UNICODE_VERSION_SHORT}
           </a>
         </div>
       )}
