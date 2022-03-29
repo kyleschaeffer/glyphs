@@ -137,8 +137,8 @@ const scrape = async () => {
       char,
       unicode,
       hexStrToHexes(unicode).join(' '),
-      (name || keywords).replace(/&amp;/gi, '&').replace(/⊛ /gi, ''),
-      name && keywords && name !== keywords ? keywords.replace(/&amp;/gi, '&') : undefined,
+      (name || keywords).replace(/&amp;/gi, '&').replace(/⊛ /gi, '').toLowerCase(),
+      name && keywords && name !== keywords ? keywords.replace(/&amp;/gi, '&').toLowerCase() : undefined,
       entities.get(decimal)
     )
   }
@@ -153,8 +153,10 @@ const scrape = async () => {
       char,
       unicode.replace(/U\+/g, ''),
       hexes,
-      name.replace(/&amp;/gi, '&').replace(/⊛ /gi, ''),
-      name !== keywords.replace(/ \| /g, ',') ? keywords.replace(/ \| /g, ',').replace(/&amp;/gi, '&') : undefined
+      name.replace(/&amp;/gi, '&').replace(/⊛ /gi, '').toLowerCase(),
+      name !== keywords.replace(/ \| /g, ',')
+        ? keywords.replace(/ \| /g, ',').replace(/&amp;/gi, '&').toLowerCase()
+        : undefined
     )
 
     emojiMatch = EMOJI_DATA_SEARCH.exec(emojiData)
@@ -167,7 +169,7 @@ const scrape = async () => {
     const hexes = strToHexes(char).join(' ')
 
     // Create glyph
-    addGlyph(char, unicode.replace(/U\+/g, ''), hexes, name.replace(/&amp;/gi, '&').replace(/⊛ /gi, ''))
+    addGlyph(char, unicode.replace(/U\+/g, ''), hexes, name.replace(/&amp;/gi, '&').replace(/⊛ /gi, '').toLowerCase())
 
     emojiToneMatch = EMOJI_TONE_DATA_SEARCH.exec(emojiToneData)
   }
