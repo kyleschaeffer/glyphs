@@ -5,27 +5,27 @@ export type Glyph = {
   c: string
 
   /**
-   * Unicode value
+   * Space-separated Unicode values
    */
   u: string
 
   /**
-   * Hexadecimal values (separated by spaces)
+   * Space-separated hexadecimal values
    */
   h: string
 
   /**
-   * Glyph name
+   * Comma-separated glyph names
    */
   n: string
 
   /**
-   * Keyword phrases (separated by commas)
+   * Comma-separated keyword phrases
    */
   k?: string
 
   /**
-   * HTML entity names (separated by spaces)
+   * Space-separated HTML entity names
    */
   e?: string
 }

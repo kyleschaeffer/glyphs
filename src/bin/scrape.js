@@ -6,9 +6,9 @@ import { decimalToStr, hexStrToHexes, strToHexes } from '../core/convert.js'
 /**
  * @typedef Glyph
  * @prop {string} c Glyph character
- * @prop {string} u Unicode value
+ * @prop {string} u Space-separated Unicode values
  * @prop {string} h Space-separated hexadecimal values
- * @prop {string} n Glyph name
+ * @prop {string} n Comma-separated glyph names
  * @prop {string} [k] Comma-separated glyph keyword phrases
  * @prop {string} [e] Space-separated HTML entity names
  */
@@ -64,11 +64,38 @@ const getUrl = async (url) => {
 }
 
 const scrape = async () => {
-  /** @type {Glyph[]} */
-  const glyphs = []
+  /** @type {Map<string, Glyph>} */
+  const glyphs = new Map()
 
   /** @type {Map<number, string>} */
   const entities = new Map()
+
+  /**
+   * Add or merge new glyph data
+   * @param {string} c Glyph character
+   * @param {string} u Space-separated Unicode values
+   * @param {string} h Space-separated hexadecimal values
+   * @param {string} n Comma-separated glyph names
+   * @param {string} [k] Comma-separated glyph keyword phrases
+   * @param {string} [e] Space-separated HTML entity names
+   */
+  const addGlyph = (c, u, h, n, k, e) => {
+    const existingGlyph = glyphs.get(c)
+    if (!existingGlyph) {
+      glyphs.set(c, { c, u, h, n, k, e })
+    } else {
+      const keywords = [...new Set([...(existingGlyph.k?.split(',') ?? []), ...(k?.split(',') ?? [])])].join(',')
+      const entities = [...new Set([...(existingGlyph.e?.split(' ') ?? []), ...(e?.split(' ') ?? [])])].join(' ')
+      glyphs.set(c, {
+        c,
+        u: [...new Set([...existingGlyph.u.split(' '), ...u.split(' ')])].join(' '),
+        h: [...new Set([...existingGlyph.h.split(' '), ...h.split(' ')])].join(' '),
+        n: [...new Set([...existingGlyph.n.split(','), n])].join(','),
+        k: keywords.length ? keywords : undefined,
+        e: entities.length ? entities : undefined,
+      })
+    }
+  }
 
   // Get unicode data (semi-colon separated w/ 14 columns)
   console.log(`GET ${UNICODE_DATA_URL}`)
@@ -106,14 +133,14 @@ const scrape = async () => {
     const decimal = parseInt(unicode, 16)
     const char = decimalToStr(decimal)
 
-    glyphs.push({
-      c: char,
-      u: unicode,
-      h: hexStrToHexes(unicode).join(' '),
-      n: (name || keywords).replace(/&amp;/gi, '&').replace(/⊛ /gi, ''),
-      k: name && keywords && name !== keywords ? keywords.replace(/&amp;/gi, '&') : undefined,
-      e: entities.get(decimal),
-    })
+    addGlyph(
+      char,
+      unicode,
+      hexStrToHexes(unicode).join(' '),
+      (name || keywords).replace(/&amp;/gi, '&').replace(/⊛ /gi, ''),
+      name && keywords && name !== keywords ? keywords.replace(/&amp;/gi, '&') : undefined,
+      entities.get(decimal)
+    )
   }
 
   // Create Emoji glyphs
@@ -122,13 +149,13 @@ const scrape = async () => {
     const [, unicode, char, name, keywords] = emojiMatch
     const hexes = strToHexes(char).join(' ')
 
-    glyphs.push({
-      c: char,
-      u: unicode.replace(/U\+/g, ''),
-      h: hexes,
-      n: name.replace(/&amp;/gi, '&').replace(/⊛ /gi, ''),
-      k: name !== keywords.replace(/ \| /g, ',') ? keywords.replace(/ \| /g, ',').replace(/&amp;/gi, '&') : undefined,
-    })
+    addGlyph(
+      char,
+      unicode.replace(/U\+/g, ''),
+      hexes,
+      name.replace(/&amp;/gi, '&').replace(/⊛ /gi, ''),
+      name !== keywords.replace(/ \| /g, ',') ? keywords.replace(/ \| /g, ',').replace(/&amp;/gi, '&') : undefined
+    )
 
     emojiMatch = EMOJI_DATA_SEARCH.exec(emojiData)
   }
@@ -140,19 +167,14 @@ const scrape = async () => {
     const hexes = strToHexes(char).join(' ')
 
     // Create glyph
-    glyphs.push({
-      c: char,
-      u: unicode.replace(/U\+/g, ''),
-      h: hexes,
-      n: name.replace(/&amp;/gi, '&').replace(/⊛ /gi, ''),
-    })
+    addGlyph(char, unicode.replace(/U\+/g, ''), hexes, name.replace(/&amp;/gi, '&').replace(/⊛ /gi, ''))
 
     emojiToneMatch = EMOJI_TONE_DATA_SEARCH.exec(emojiToneData)
   }
 
   // Write to file
-  console.log(`Writing ${Object.keys(glyphs).length} glyphs to file...`)
-  fs.writeFileSync(`public/glyphs/${UNICODE_VERSION}.json`, JSON.stringify(glyphs), { flag: 'w' })
+  console.log(`Writing ${glyphs.size} glyphs to file...`)
+  fs.writeFileSync(`public/glyphs/${UNICODE_VERSION}.json`, JSON.stringify([...glyphs.values()]), { flag: 'w' })
 }
 
 scrape()
