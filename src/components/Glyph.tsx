@@ -28,53 +28,83 @@ export const Glyph: Component = () => {
       {description && <h3>{description}</h3>}
 
       <h4>JavaScript:</h4>
-      <pre>let s = '{escapeQuotes(glyph.c)}';</pre>
-      <pre>let s = '{hexesToUnicodeEscapeSequence(glyph.h)}';</pre>
-      <pre>let s = String.fromCharCode({hexesToJs(glyph.h)});</pre>
+      <pre>
+        '<b>{escapeQuotes(glyph.c)}</b>'
+      </pre>
+      <pre>
+        '<b>{hexesToUnicodeEscapeSequence(glyph.h)}</b>'
+      </pre>
+      <pre>
+        String.fromCharCode(<b>{hexesToJs(glyph.h)}</b>)
+      </pre>
 
       <h4>HTML:</h4>
-      <pre>&lt;span&gt;{glyph.c}&lt;/span&gt;</pre>
+      <pre>
+        &lt;b&gt;<b>{glyph.c}</b>&lt;/b&gt;
+      </pre>
       {!complexGlyph && (
         <>
-          <pre>&lt;span&gt;&amp;{decimalToHtml(glyph.d)};&lt;/span&gt;</pre>
-          <pre>&lt;span&gt;&amp;{hexToHtml(glyph.u)};&lt;/span&gt;</pre>
+          <pre>
+            &lt;b&gt;&amp;<b>{decimalToHtml(glyph.d)}</b>;&lt;/b&gt;
+          </pre>
+          <pre>
+            &lt;b&gt;&amp;<b>{hexToHtml(glyph.u)}</b>;&lt;/b&gt;
+          </pre>
           {glyph.e?.split(' ').map((e) => (
-            <pre>&lt;span&gt;&amp;{e};&lt;/span&gt;</pre>
+            <pre>
+              &lt;b&gt;<b>&amp;{e};</b>&lt;/b&gt;
+            </pre>
           ))}
         </>
       )}
 
       <h4>CSS:</h4>
-      <pre>content: '{glyph.c}';</pre>
-      {!complexGlyph && <pre>content: '{hexToCss(glyph.u)}';</pre>}
-
-      <h4>Unicode:</h4>
-      {!complexGlyph && (
-        <>
-          <pre>U+{glyph.u}</pre>
-          <pre>
-            <b>UTF-32:</b> {hexToJs(glyph.u.padStart(8, '0'))}
-          </pre>
-        </>
-      )}
       <pre>
-        <b>UTF-16:</b> {hexesToJs(glyph.h, ' ')}
+        content: '<b>{glyph.c}</b>';
       </pre>
       {!complexGlyph && (
         <pre>
-          <b>Decimal:</b> {glyph.d}
+          content: '<b>{hexToCss(glyph.u)}</b>';
         </pre>
       )}
-      {glyph.g && (
-        <pre>
-          <b>Category:</b> {glyph.g}
-        </pre>
-      )}
-      {glyph.v && (
-        <pre>
-          <b>Version:</b> {glyph.v}
-        </pre>
-      )}
+
+      <h4>Unicode:</h4>
+      <dl>
+        {!complexGlyph && (
+          <>
+            <dt>Reference</dt>
+            <dd>
+              <code>U+{glyph.u}</code>
+            </dd>
+            <dt>Decimal</dt>
+            <dd>
+              <code>{glyph.d}</code>
+            </dd>
+            <dt>UTF-32</dt>
+            <dd>
+              <code>{hexToJs(glyph.u.padStart(8, '0'))}</code>
+            </dd>
+          </>
+        )}
+        <dt>UTF-16</dt>
+        <dd>
+          <code>{hexesToJs(glyph.h, ' ')}</code>
+        </dd>
+        {glyph.g && (
+          <>
+            <dt>Block</dt>
+            <dd>{glyph.g}</dd>
+          </>
+        )}
+        {glyph.v && (
+          <>
+            <dt>Version</dt>
+            <dd>
+              <code>{glyph.v}</code>
+            </dd>
+          </>
+        )}
+      </dl>
     </article>
   )
 }
