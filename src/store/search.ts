@@ -6,6 +6,7 @@ export type SearchState = {
   empty: boolean
   idle: boolean
   index: Fuse<Glyph>
+  indicies: Map<string, number>
   loading: boolean
   query: string
   results: Glyph[]
@@ -34,6 +35,7 @@ const [state, setState] = createStore<SearchState>({
     return !this.query.length && !this.loading
   },
   index: new Fuse([]),
+  indicies: new Map(),
   loading: false,
   query: '',
   results: [],
@@ -45,17 +47,24 @@ export const setLoading = (loading: boolean) => setState('loading', loading)
 export const setResults = (results: Glyph[]) => setState('results', results)
 export const setSelected = (selected: Glyph | null) => setState('selected', selected)
 
+export const getGlyphByIndex = (index: number) => ((state.index as any)._docs as Glyph[])[index]
+
 export const selectRandom = () => {
   const glyphDocs = (state.index as any)._docs as Glyph[]
   setSelected(glyphDocs[Math.floor(Math.random() * glyphDocs.length)])
 }
 
-export const indexGlyphs = (glyphs: Glyph[]) =>
+export const indexGlyphs = (glyphs: Glyph[]) => {
   setState('index', new Fuse(glyphs, { keys: SEARCH_KEYS, threshold: SEARCH_THRESHOLD }))
+  setState('indicies', new Map(glyphs.map((glyph, i) => [glyph.c, i])))
+}
 
 export const searchByQuery = (query: string) => {
-  const results = query.length ? state.index.search(query, { limit: SEARCH_MAX_RESULTS }) : []
-  setResults(results.map((result) => result.item))
+  let results: Glyph[] = []
+  const exact = state.indicies.get(query)
+  if (exact !== undefined) results = [getGlyphByIndex(exact)]
+  else if (query.length) results = state.index.search(query, { limit: SEARCH_MAX_RESULTS }).map((result) => result.item)
+  setResults(results)
   setLoading(false)
 }
 
