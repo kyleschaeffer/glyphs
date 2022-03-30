@@ -25,6 +25,14 @@ export const hexToDecimal = (hex) => parseInt(hex, 16)
 export const decimalToHex = (decimal, size = 4) => decimal.toString(16).toUpperCase().padStart(size, '0')
 
 /**
+ * Trim leading zeroes from a hexadecimal value
+ *
+ * @param   {string} hex Hexadecimal value
+ * @returns {string}
+ */
+export const trimHex = (hex) => hex.replace(/^0*/, '')
+
+/**
  * Convert an HTML entity name to an HTML entity
  *
  * @param   {string} entity Entity name
@@ -38,7 +46,7 @@ export const entityToHtml = (entity) => `&${entity};`
  * @param   {string} decimal Decimal value
  * @returns {string}
  */
-export const decimalToHtml = (decimal) => `&#${decimal};`
+export const decimalToHtml = (decimal) => `#${decimal}`
 
 /**
  * Convert a hexadecimal value to an HTML entity; note that HTML requires UTF-32 encoded values
@@ -46,15 +54,15 @@ export const decimalToHtml = (decimal) => `&#${decimal};`
  * @param   {string} hex Hexadecimal value
  * @returns {string}
  */
-export const hexToHtml = (hex) => `&#x${hex};`
+export const hexToHtml = (hex) => `#x${trimHex(hex)}`
 
 /**
- * Convert a hexadecimal value to CSS notation; note that CSS requires UTF-16 encoded values
+ * Convert a hexadecimal value to CSS notation; note that CSS requires UTF-32 encoded values without leading zeroes
  *
  * @param   {string} hex Hexadecimal value to convert
  * @returns {string}
  */
-export const hexToCss = (hex) => `\\${hex}`
+export const hexToCss = (hex) => `\\${trimHex(hex)}`
 
 /**
  * Convert a hexadecimal value to a JavaScript notation; note that JavaScript requires UTF-16 encoded values
@@ -65,12 +73,29 @@ export const hexToCss = (hex) => `\\${hex}`
 export const hexToJs = (hex) => `0x${hex}`
 
 /**
+ * Convert UTF-16 hexadecimal encodings (space-separated) to comma-separated JavaScript hexadecimal notation
+ *
+ * @param   {string} hexes  UTF-16 hexadecimal encodings (space-separated)
+ * @param   {string} [join] Join string (default: `", "`)
+ * @returns {string}
+ */
+export const hexesToJs = (hexes, join = ', ') => hexes.split(' ').map(hexToJs).join(join)
+
+/**
  * Convert a hexadecimal value to a Unicode escape sequence; note that JavaScript requires UTF-16 encoded values
  *
  * @param   {string} hex Hexadecimal value
  * @returns {string}
  */
 export const hexToUnicodeEscapeSequence = (hex) => `\\u${hex}`
+
+/**
+ * Convert UTF-16 hexadecimal encodings (space-separated) to a Unicode escape sequence
+ *
+ * @param   {string} hexes UTF-16 hexadecimal encodings (space-separated)
+ * @returns {string}
+ */
+export const hexesToUnicodeEscapeSequence = (hexes) => hexes.split(' ').map(hexToUnicodeEscapeSequence).join('')
 
 /**
  * Sanitize a string by escaping single quotes
@@ -117,3 +142,31 @@ export const utf16ToString = (hexes) => String.fromCharCode(...hexes.map((hex) =
  * @returns {string}
  */
 export const decimalToString = (decimal) => utf16ToString(decimalToUtf16(decimal))
+
+/**
+ * Format a glyph name
+ *
+ * @param   {string} names Glyph name(s); comma-separated
+ * @returns {string}
+ */
+export const glyphName = (names) => names.split(',')[0]
+
+/**
+ * Format a glyph description without repeating phrases
+ *
+ * @param   {string} names      Glyph name(s); comma-separated
+ * @param   {string} [keywords] Keyword phrases; comma-separated
+ * @returns {string | undefined}
+ */
+export const glyphDescription = (names, keywords) => {
+  const name = glyphName(names)
+  const descriptions = new Set([
+    name,
+    ...(keywords ?? '')
+      .split(',')
+      .map((k) => k.trim())
+      .filter((k) => k.length),
+  ])
+  descriptions.delete(name)
+  return descriptions.size ? [...descriptions].join(', ') : undefined
+}

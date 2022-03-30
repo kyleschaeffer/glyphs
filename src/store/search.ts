@@ -17,6 +17,7 @@ const SEARCH_MAX_RESULTS = 200
 const SEARCH_THRESHOLD = 0.3
 const SEARCH_KEYS = [
   { name: 'c', weight: 10 },
+  { name: 'd', weight: 0.1 },
   { name: 'u', weight: 0.1 },
   { name: 'h', weight: 0.1 },
   { name: 'n', weight: 1.75 },
