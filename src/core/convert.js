@@ -54,7 +54,7 @@ export const decimalToHtml = (decimal) => `#${decimal}`
  * @param   {string} hex Hexadecimal value
  * @returns {string}
  */
-export const hexToHtml = (hex) => `#x${trimHex(hex)}`
+export const hexToHtml = (hex) => `#x${hex}`
 
 /**
  * Convert a hexadecimal value to CSS notation; note that CSS requires UTF-32 encoded values without leading zeroes
@@ -120,6 +120,14 @@ export const decimalToUtf16 = (decimal) => {
 }
 
 /**
+ * Convert a string to one or more UTF-16 hexadecimal encodings
+ *
+ * @param   {string}   str String
+ * @returns {string[]}
+ */
+export const stringToUtf16 = (str) => stringToDecimals(str).map(decimalToUtf16).flat()
+
+/**
  * Convert a decimal value to a UTF-32 hexadecimal encoding
  *
  * @param   {number} decimal Decimal value
@@ -159,14 +167,14 @@ export const glyphName = (names) => names.split(',')[0]
  * @returns {string | undefined}
  */
 export const glyphDescription = (names, keywords) => {
-  const name = glyphName(names)
+  const glyphNames = names.split(',')
   const descriptions = new Set([
-    name,
+    ...glyphNames,
     ...(keywords ?? '')
       .split(',')
       .map((k) => k.trim())
       .filter((k) => k.length),
   ])
-  descriptions.delete(name)
+  descriptions.delete(glyphNames[0])
   return descriptions.size ? [...descriptions].join(', ') : undefined
 }

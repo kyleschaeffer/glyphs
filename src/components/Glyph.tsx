@@ -9,7 +9,6 @@ import {
   hexToCss,
   hexToHtml,
   hexToJs,
-  trimHex,
 } from '../core/convert'
 import { search } from '../store'
 
@@ -19,6 +18,7 @@ export const Glyph: Component = () => {
 
   const name = glyphName(glyph.n)
   const description = glyphDescription(glyph.n, glyph.k)
+  const complexGlyph = glyph.c.length > 2
 
   return (
     <article>
@@ -34,27 +34,42 @@ export const Glyph: Component = () => {
 
       <h4>HTML:</h4>
       <pre>&lt;span&gt;{glyph.c}&lt;/span&gt;</pre>
-      <pre>&lt;span&gt;&amp;{decimalToHtml(glyph.d)};&lt;/span&gt;</pre>
-      <pre>&lt;span&gt;&amp;{hexToHtml(glyph.u)};&lt;/span&gt;</pre>
-      {glyph.e?.split(' ').map((e) => (
-        <pre>&lt;span&gt;&amp;{e};&lt;/span&gt;</pre>
-      ))}
+      {!complexGlyph && (
+        <>
+          <pre>&lt;span&gt;&amp;{decimalToHtml(glyph.d)};&lt;/span&gt;</pre>
+          <pre>&lt;span&gt;&amp;{hexToHtml(glyph.u)};&lt;/span&gt;</pre>
+          {glyph.e?.split(' ').map((e) => (
+            <pre>&lt;span&gt;&amp;{e};&lt;/span&gt;</pre>
+          ))}
+        </>
+      )}
 
       <h4>CSS:</h4>
       <pre>content: '{glyph.c}';</pre>
-      <pre>content: '{hexToCss(glyph.u)}';</pre>
+      {!complexGlyph && <pre>content: '{hexToCss(glyph.u)}';</pre>}
 
       <h4>Unicode:</h4>
-      <pre>U+{trimHex(glyph.u)}</pre>
-      <pre>
-        <b>UTF-32:</b> {hexToJs(glyph.u)}
-      </pre>
+      {!complexGlyph && (
+        <>
+          <pre>U+{glyph.u}</pre>
+          <pre>
+            <b>UTF-32:</b> {hexToJs(glyph.u.padStart(8, '0'))}
+          </pre>
+        </>
+      )}
       <pre>
         <b>UTF-16:</b> {hexesToJs(glyph.h, ' ')}
       </pre>
-      <pre>
-        <b>Decimal:</b> {glyph.d}
-      </pre>
+      {!complexGlyph && (
+        <pre>
+          <b>Decimal:</b> {glyph.d}
+        </pre>
+      )}
+      {glyph.g && (
+        <pre>
+          <b>Category:</b> {glyph.g}
+        </pre>
+      )}
       {glyph.v && (
         <pre>
           <b>Version:</b> {glyph.v}

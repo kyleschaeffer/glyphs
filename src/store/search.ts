@@ -20,8 +20,9 @@ const SEARCH_KEYS = [
   { name: 'd', weight: 0.1 },
   { name: 'u', weight: 0.1 },
   { name: 'h', weight: 0.1 },
-  { name: 'n', weight: 1.75 },
-  { name: 'k', weight: 1 },
+  { name: 'n', weight: 2 },
+  { name: 'g', weight: 1.25 },
+  { name: 'k', weight: 1.75 },
   { name: 'e', weight: 0.5 },
 ]
 

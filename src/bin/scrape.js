@@ -1,7 +1,7 @@
 import dotenv from 'dotenv'
 import fs from 'fs'
 import https from 'https'
-import { decimalToHex, decimalToString, decimalToUtf16, hexToDecimal } from '../core/convert.js'
+import { decimalToHex, decimalToString, decimalToUtf16, hexToDecimal, stringToUtf16 } from '../core/convert.js'
 
 /**
  * @typedef Glyph
@@ -10,6 +10,7 @@ import { decimalToHex, decimalToString, decimalToUtf16, hexToDecimal } from '../
  * @prop {string} u   UTF-32 hexadecimal encoding
  * @prop {string} h   UTF-16 hexadecimal encoding(s); space-separated
  * @prop {string} n   Glyph name(s); comma-separated
+ * @prop {string} [g] Glyph category name(s); comma-separated
  * @prop {string} [k] Keyword phrases; comma-separated
  * @prop {string} [e] HTML entity names; space-separated
  * @prop {string} [v] Unicode version
@@ -38,6 +39,10 @@ const EMOJI_DATA_SEARCH =
 const EMOJI_TONE_DATA_URL = `https://www.unicode.org/emoji/charts-${UNICODE_VERSION_SHORT}/full-emoji-modifiers.html`
 const EMOJI_TONE_DATA_SEARCH =
   /<tr><td class='rchars'>\d+<\/td>\n?<td class='code'><a.*?>(.*?)<\/a><\/td>\n?<td class='chars'>(.*?)<\/td>\n?.*?\n.*?\n.*?\n.*?\n.*?\n.*?\n.*?\n.*?\n.*?\n.*?\n.*?\n<td class='name'>(.*?)<\/td>/gi
+
+// CSV; 2 columns; [0]=hex32Start; [1]=hex32End; [2]=block
+const UNICODE_BLOCK_DATA_URL = `https://www.unicode.org/Public/${UNICODE_VERSION}/ucd/Blocks.txt`
+const UNICODE_BLOCK_DATA_SEARCH = /(.*?)(?:\.\.(.*))?;\s(.*?)\n/gim
 
 // CSV; 2 columns; [0]=hex32Start; [1]?=hex32End; [2]=version; [3]?=count; [4]=description
 const UNICODE_VERSION_DATA_URL = `https://www.unicode.org/Public/${UNICODE_VERSION}/ucd/DerivedAge.txt`
@@ -78,6 +83,9 @@ const scrape = async () => {
   const entities = new Map()
 
   /** @type {Map<number, string>} */
+  const blocks = new Map()
+
+  /** @type {Map<number, string>} */
   const versions = new Map()
 
   /**
@@ -87,7 +95,19 @@ const scrape = async () => {
   const addGlyph = (glyph) => {
     const existingGlyph = glyphs.get(glyph.c)
     if (!existingGlyph) {
-      glyphs.set(glyph.c, glyph)
+      const glyphNames = [...new Set([...glyph.n.split(',')])].join(',')
+      const glyphGroups = [...new Set([...(glyph.g?.split(',') ?? [])])].join(',')
+      const glyphKeywords = [...new Set([...(glyph.k?.split(',') ?? [])])]
+        .filter((k) => !glyphNames.split(',').includes(k))
+        .join(',')
+      const glyphEntities = [...new Set([...(glyph.e?.split(' ') ?? [])])].join(' ')
+      glyphs.set(glyph.c, {
+        ...glyph,
+        n: glyphNames,
+        g: glyphGroups.length ? glyphGroups : undefined,
+        k: glyphKeywords.length ? glyphKeywords : undefined,
+        e: glyphEntities.length ? glyphEntities : undefined,
+      })
     } else {
       if (existingGlyph.u !== glyph.u)
         console.warn(`Unicode diff for character "${glyph.c}": "${existingGlyph.u}" vs. "${glyph.u}"`)
@@ -95,16 +115,20 @@ const scrape = async () => {
         console.warn(`Hexadecimal diff for character "${glyph.c}": "${existingGlyph.h}" vs. "${glyph.h}"`)
       if (existingGlyph.v !== glyph.v)
         console.warn(`Version diff for character "${glyph.c}": "${existingGlyph.v}" vs. "${glyph.v}"`)
-      const glyphNames = [...new Set([...existingGlyph.n.split(','), glyph.n])].join(',')
-      const glyphKeywords = [...new Set([...(existingGlyph.k?.split(',') ?? []), ...(glyph.k?.split(',') ?? [])])].join(
+      const glyphNames = [...new Set([...existingGlyph.n.split(','), ...glyph.n.split(',')])].join(',')
+      const glyphGroups = [...new Set([...(existingGlyph.g?.split(',') ?? []), ...(glyph.g?.split(',') ?? [])])].join(
         ','
       )
+      const glyphKeywords = [...new Set([...(existingGlyph.k?.split(',') ?? []), ...(glyph.k?.split(',') ?? [])])]
+        .filter((k) => !glyphNames.split(',').includes(k))
+        .join(',')
       const glyphEntities = [...new Set([...(existingGlyph.e?.split(' ') ?? []), ...(glyph.e?.split(' ') ?? [])])].join(
         ' '
       )
       glyphs.set(glyph.c, {
         ...existingGlyph,
         n: glyphNames,
+        g: glyphGroups.length ? glyphGroups : undefined,
         k: glyphKeywords.length ? glyphKeywords : undefined,
         e: glyphEntities.length ? glyphEntities : undefined,
       })
@@ -127,6 +151,10 @@ const scrape = async () => {
   console.log(`GET ${EMOJI_TONE_DATA_URL}`)
   const emojiToneData = await fetch(EMOJI_TONE_DATA_URL)
 
+  // Get Unicode block data
+  console.log(`GET ${UNICODE_BLOCK_DATA_URL}`)
+  const unicodeBlockData = await fetch(UNICODE_BLOCK_DATA_URL)
+
   // Get Unicode version data
   console.log(`GET ${UNICODE_VERSION_DATA_URL}`)
   const unicodeVersionData = await fetch(UNICODE_VERSION_DATA_URL)
@@ -138,6 +166,18 @@ const scrape = async () => {
     const decimal = hexToDecimal(hex32)
     entities.set(decimal, entityNames.replace(/&amp;/g, '&').replace(/&/g, '').replace(/;/g, ''))
     entityMatch = HTML_ENTITY_DATA_SEARCH.exec(entityData)
+  }
+
+  // Save Unicode blocks
+  let blockMatch = UNICODE_BLOCK_DATA_SEARCH.exec(unicodeBlockData)
+  while (blockMatch) {
+    const [, hex32Start, hex32End, block] = blockMatch
+    const startDecimal = hexToDecimal(hex32Start)
+    const endDecimal = hexToDecimal(hex32End)
+    for (let decimal = startDecimal; decimal <= endDecimal; decimal++) {
+      blocks.set(decimal, block)
+    }
+    blockMatch = UNICODE_BLOCK_DATA_SEARCH.exec(unicodeBlockData)
   }
 
   // Save Unicode versions
@@ -163,7 +203,7 @@ const scrape = async () => {
     addGlyph({
       c: char,
       d: decimal.toString(),
-      u: decimalToHex(decimal, 8),
+      u: decimalToHex(decimal),
       h: decimalToUtf16(decimal).join(' '),
       n: (name || keywords)
         .replace(/&amp;/gi, '&')
@@ -171,6 +211,7 @@ const scrape = async () => {
         .replace(/^</, '')
         .replace(/>$/, '')
         .toLowerCase(),
+      g: blocks.get(decimal),
       k: name && keywords && name !== keywords ? keywords.replace(/&amp;/gi, '&').toLowerCase() : undefined,
       e: entities.get(decimal),
       v: versions.get(decimal),
@@ -185,9 +226,10 @@ const scrape = async () => {
     addGlyph({
       c: char,
       d: decimal.toString(),
-      u: decimalToHex(decimal, 8),
-      h: decimalToUtf16(decimal).join(' '),
+      u: decimalToHex(decimal),
+      h: stringToUtf16(char).join(' '),
       n: name.replace(/&amp;/gi, '&').replace(/⊛ /gi, '').toLowerCase(),
+      g: blocks.get(decimal),
       k:
         name !== keywords.replace(/ \| /g, ',')
           ? keywords
@@ -210,9 +252,10 @@ const scrape = async () => {
     addGlyph({
       c: char,
       d: decimal.toString(),
-      u: decimalToHex(decimal, 8),
-      h: decimalToUtf16(decimal).join(' '),
+      u: decimalToHex(decimal),
+      h: stringToUtf16(char).join(' '),
       n: name.replace(/&amp;/gi, '&').replace(/⊛ /gi, '').toLowerCase(),
+      g: blocks.get(decimal),
       v: versions.get(decimal),
     })
     emojiToneMatch = EMOJI_TONE_DATA_SEARCH.exec(emojiToneData)

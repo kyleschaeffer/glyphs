@@ -25,6 +25,11 @@ export type Glyph = {
   n: string
 
   /**
+   * Glyph category name(s); comma-separated
+   */
+  g?: string
+
+  /**
    * Keyword phrases; comma-separated
    */
   k?: string

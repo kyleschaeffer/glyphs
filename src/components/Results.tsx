@@ -11,7 +11,7 @@ export const Results: Component = () => {
       )}
       {search.state.results.map((glyph) => (
         <li>
-          <button onClick={() => search.setSelected(glyph)}>
+          <button onClick={() => search.setSelected(glyph)} style={{ 'font-family': 'inherit' }}>
             <h3>{glyph.c}</h3>
           </button>
         </li>
