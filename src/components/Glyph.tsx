@@ -38,7 +38,14 @@ export const Glyph: Component = () => {
         ";
       </pre>
       {glyph.u.split(' ').length === 1 && <pre>let s = String.fromCharCode({parseInt(glyph.u, 16).toString()});</pre>}
-      {glyph.h.split(' ').length === 1 && <pre>let s = String.fromCharCode(0x{glyph.h});</pre>}
+      <pre>
+        let s = String.fromCharCode(
+        {glyph.h
+          .split(' ')
+          .map((h) => `0x${h}`)
+          .join(', ')}
+        );
+      </pre>
 
       <h3>Decimal:</h3>
       <pre>

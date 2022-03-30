@@ -1,16 +1,18 @@
 import dotenv from 'dotenv'
 import fs from 'fs'
 import https from 'https'
-import { decimalToStr, hexStrToHexes, strToHexes } from '../core/convert.js'
+import { decimalToHex, decimalToString, decimalToUtf16, hexToDecimal } from '../core/convert.js'
 
 /**
  * @typedef Glyph
- * @prop {string} c Glyph character
- * @prop {string} u Space-separated Unicode values
- * @prop {string} h Space-separated hexadecimal values
- * @prop {string} n Comma-separated glyph names
- * @prop {string} [k] Comma-separated glyph keyword phrases
- * @prop {string} [e] Space-separated HTML entity names
+ * @prop {string} c   Glyph character
+ * @prop {string} d   UTF-32 decimal value
+ * @prop {string} u   UTF-32 hexadecimal encoding
+ * @prop {string} h   UTF-16 hexadecimal encoding(s); space-separated
+ * @prop {string} n   Glyph name(s); comma-separated
+ * @prop {string} [k] Keyword phrases; comma-separated
+ * @prop {string} [e] HTML entity names; space-separated
+ * @prop {string} [v] Unicode version
  */
 
 dotenv.config()
@@ -19,22 +21,27 @@ const UNICODE_VERSION = process.env.UNICODE_VERSION ?? ''
 const UNICODE_VERSION_SHORT = process.env.UNICODE_VERSION_SHORT ?? ''
 if (!UNICODE_VERSION || !UNICODE_VERSION_SHORT) throw new Error('Unicode version not defined')
 
-// CSV; 14 columns; [0]=hex; [1]=name; [10]?=keywords
+// CSV; 14 columns; [0]=hex32; [1]=name; [10]?=keywords
 const UNICODE_DATA_URL = `https://www.unicode.org/Public/${UNICODE_VERSION}/ucd/UnicodeData.txt`
 
-// [1]=hex; [2]=name; [3]=entities
+// [1]=hex32; [2]=name; [3]=entities
 const HTML_ENTITY_DATA_URL = 'https://dev.w3.org/html5/html-author/charref'
 const HTML_ENTITY_DATA_SEARCH = /<tr title="U\+(.*?) (.*?)".*?<td class="named"><code>(.*?)<\/code>/gi
 
-// [1]=unicode; [2]=character; [3]=name; [4]?=keywords
+// [1]=hex32; [2]=character; [3]=name; [4]?=keywords
 const EMOJI_DATA_URL = `https://www.unicode.org/emoji/charts-${UNICODE_VERSION_SHORT}/emoji-list.html`
 const EMOJI_DATA_SEARCH =
   /<tr><td class='rchars'>\d+<\/td>\n?<td class='code'><a.*?>(.*?)<\/a><\/td>\n?<td class='andr'><a.*?><img alt='(.*?)'.*?<\/td>\n?<td class='name'>(.*?)<\/td>\n?<td class='name'>(.*?)<\/td>/gi
 
-// [1]=hex; [2]=character; [3]=name
+// [1]=hex32; [2]=character; [3]=name
+// TODO: categories and groups
 const EMOJI_TONE_DATA_URL = `https://www.unicode.org/emoji/charts-${UNICODE_VERSION_SHORT}/full-emoji-modifiers.html`
 const EMOJI_TONE_DATA_SEARCH =
   /<tr><td class='rchars'>\d+<\/td>\n?<td class='code'><a.*?>(.*?)<\/a><\/td>\n?<td class='chars'>(.*?)<\/td>\n?.*?\n.*?\n.*?\n.*?\n.*?\n.*?\n.*?\n.*?\n.*?\n.*?\n.*?\n<td class='name'>(.*?)<\/td>/gi
+
+// CSV; 2 columns; [0]=hex32Start; [1]?=hex32End; [2]=version; [3]?=count; [4]=description
+const UNICODE_VERSION_DATA_URL = `https://www.unicode.org/Public/${UNICODE_VERSION}/ucd/DerivedAge.txt`
+const UNICODE_VERSION_DATA_SEARCH = /(.*?)(?:\.\.(.*))?\s+;\s([\d.]+)\s#\s+(?:\[(\d+)\])?(.*?)\n/gim
 
 /**
  * Perform a GET request to the given URL and return the response as text
@@ -42,7 +49,7 @@ const EMOJI_TONE_DATA_SEARCH =
  * @param   {string}          url Fetch URL
  * @returns {Promise<string>}
  */
-const getUrl = async (url) => {
+const fetch = async (url) => {
   return new Promise((resolve, reject) => {
     const { hostname, pathname } = new URL(url)
     const req = https.request(
@@ -70,59 +77,79 @@ const scrape = async () => {
   /** @type {Map<number, string>} */
   const entities = new Map()
 
+  /** @type {Map<number, string>} */
+  const versions = new Map()
+
   /**
    * Add or merge new glyph data
-   * @param {string} c Glyph character
-   * @param {string} u Space-separated Unicode values
-   * @param {string} h Space-separated hexadecimal values
-   * @param {string} n Comma-separated glyph names
-   * @param {string} [k] Comma-separated glyph keyword phrases
-   * @param {string} [e] Space-separated HTML entity names
+   * @param {Glyph} glyph Glyph
    */
-  const addGlyph = (c, u, h, n, k, e) => {
-    const existingGlyph = glyphs.get(c)
+  const addGlyph = (glyph) => {
+    const existingGlyph = glyphs.get(glyph.c)
     if (!existingGlyph) {
-      glyphs.set(c, { c, u, h, n, k, e })
+      glyphs.set(glyph.c, glyph)
     } else {
-      const keywords = [...new Set([...(existingGlyph.k?.split(',') ?? []), ...(k?.split(',') ?? [])])].join(',')
-      const entities = [...new Set([...(existingGlyph.e?.split(' ') ?? []), ...(e?.split(' ') ?? [])])].join(' ')
-      glyphs.set(c, {
-        c,
-        u: existingGlyph.u,
-        h: existingGlyph.h,
-        n: [...new Set([...existingGlyph.n.split(','), n])].join(','),
-        k: keywords.length ? keywords : undefined,
-        e: entities.length ? entities : undefined,
+      if (existingGlyph.u !== glyph.u)
+        console.warn(`Unicode diff for character "${glyph.c}": "${existingGlyph.u}" vs. "${glyph.u}"`)
+      if (existingGlyph.h !== glyph.h)
+        console.warn(`Hexadecimal diff for character "${glyph.c}": "${existingGlyph.h}" vs. "${glyph.h}"`)
+      if (existingGlyph.v !== glyph.v)
+        console.warn(`Version diff for character "${glyph.c}": "${existingGlyph.v}" vs. "${glyph.v}"`)
+      const glyphNames = [...new Set([...existingGlyph.n.split(','), glyph.n])].join(',')
+      const glyphKeywords = [...new Set([...(existingGlyph.k?.split(',') ?? []), ...(glyph.k?.split(',') ?? [])])].join(
+        ','
+      )
+      const glyphEntities = [...new Set([...(existingGlyph.e?.split(' ') ?? []), ...(glyph.e?.split(' ') ?? [])])].join(
+        ' '
+      )
+      glyphs.set(glyph.c, {
+        ...existingGlyph,
+        n: glyphNames,
+        k: glyphKeywords.length ? glyphKeywords : undefined,
+        e: glyphEntities.length ? glyphEntities : undefined,
       })
-      if (existingGlyph.u !== u) console.warn(`Unicode diff for character "${c}": "${existingGlyph.u}" vs. "${u}"`)
-      if (existingGlyph.h !== h) console.warn(`Hexadecimal diff for character "${c}": "${existingGlyph.h}" vs. "${h}"`)
     }
   }
 
-  // Get unicode data (semi-colon separated w/ 14 columns)
+  // Get Unicode data
   console.log(`GET ${UNICODE_DATA_URL}`)
-  const unicodeData = await getUrl(UNICODE_DATA_URL)
+  const unicodeData = await fetch(UNICODE_DATA_URL)
 
   // Get HTML entity data
   console.log(`GET ${HTML_ENTITY_DATA_URL}`)
-  const entityData = await getUrl(HTML_ENTITY_DATA_URL)
+  const entityData = await fetch(HTML_ENTITY_DATA_URL)
 
   // Get Emoji list
   console.log(`GET ${EMOJI_DATA_URL}`)
-  const emojiData = await getUrl(EMOJI_DATA_URL)
+  const emojiData = await fetch(EMOJI_DATA_URL)
 
   // Get Emoji tones
   console.log(`GET ${EMOJI_TONE_DATA_URL}`)
-  const emojiToneData = await getUrl(EMOJI_TONE_DATA_URL)
+  const emojiToneData = await fetch(EMOJI_TONE_DATA_URL)
+
+  // Get Unicode version data
+  console.log(`GET ${UNICODE_VERSION_DATA_URL}`)
+  const unicodeVersionData = await fetch(UNICODE_VERSION_DATA_URL)
 
   // Save HTML entities
   let entityMatch = HTML_ENTITY_DATA_SEARCH.exec(entityData)
   while (entityMatch) {
-    entities.set(
-      parseInt(entityMatch[1], 16),
-      entityMatch[3].replace(/&amp;/g, '&').replace(/&/g, '').replace(/;/g, '')
-    )
+    const [, hex32, , entityNames] = entityMatch
+    const decimal = hexToDecimal(hex32)
+    entities.set(decimal, entityNames.replace(/&amp;/g, '&').replace(/&/g, '').replace(/;/g, ''))
     entityMatch = HTML_ENTITY_DATA_SEARCH.exec(entityData)
+  }
+
+  // Save Unicode versions
+  let versionMatch = UNICODE_VERSION_DATA_SEARCH.exec(unicodeVersionData)
+  while (versionMatch) {
+    const [, hex32Start, hex32End, version] = versionMatch
+    const startDecimal = hexToDecimal(hex32Start)
+    const endDecimal = hex32End ? hexToDecimal(hex32End) : startDecimal
+    for (let decimal = startDecimal; decimal <= endDecimal; decimal++) {
+      versions.set(decimal, version)
+    }
+    versionMatch = UNICODE_VERSION_DATA_SEARCH.exec(unicodeVersionData)
   }
 
   // Create unicode glyphs
@@ -130,49 +157,64 @@ const scrape = async () => {
   for (const row of rows) {
     const cols = row.split(';')
     if (cols.length < 14 || cols[1] === '<control>') continue
-
-    const [unicode, name, , , , , , , , , keywords] = cols
-    const decimal = parseInt(unicode, 16)
-    const char = decimalToStr(decimal)
-
-    addGlyph(
-      char,
-      unicode,
-      hexStrToHexes(unicode).join(' '),
-      (name || keywords).replace(/&amp;/gi, '&').replace(/⊛ /gi, '').toLowerCase(),
-      name && keywords && name !== keywords ? keywords.replace(/&amp;/gi, '&').toLowerCase() : undefined,
-      entities.get(decimal)
-    )
+    const [hex32, name, , , , , , , , , keywords] = cols
+    const decimal = hexToDecimal(hex32)
+    const char = decimalToString(decimal)
+    addGlyph({
+      c: char,
+      d: decimal.toString(),
+      u: decimalToHex(decimal, 8),
+      h: decimalToUtf16(decimal).join(' '),
+      n: (name || keywords)
+        .replace(/&amp;/gi, '&')
+        .replace(/⊛ /gi, '')
+        .replace(/^</, '')
+        .replace(/>$/, '')
+        .toLowerCase(),
+      k: name && keywords && name !== keywords ? keywords.replace(/&amp;/gi, '&').toLowerCase() : undefined,
+      e: entities.get(decimal),
+      v: versions.get(decimal),
+    })
   }
 
   // Create Emoji glyphs
   let emojiMatch = EMOJI_DATA_SEARCH.exec(emojiData)
   while (emojiMatch) {
-    const [, unicode, char, name, keywords] = emojiMatch
-    const hexes = strToHexes(char).join(' ')
-
-    addGlyph(
-      char,
-      unicode.replace(/U\+/g, ''),
-      hexes,
-      name.replace(/&amp;/gi, '&').replace(/⊛ /gi, '').toLowerCase(),
-      name !== keywords.replace(/ \| /g, ',')
-        ? keywords.replace(/ \| /g, ',').replace(/&amp;/gi, '&').toLowerCase()
-        : undefined
-    )
-
+    const [, hex32, char, name, keywords] = emojiMatch
+    const decimal = hexToDecimal(hex32.replace(/U\+/g, ''))
+    addGlyph({
+      c: char,
+      d: decimal.toString(),
+      u: decimalToHex(decimal, 8),
+      h: decimalToUtf16(decimal).join(' '),
+      n: name.replace(/&amp;/gi, '&').replace(/⊛ /gi, '').toLowerCase(),
+      k:
+        name !== keywords.replace(/ \| /g, ',')
+          ? keywords
+              .replace(/ \| /g, ',')
+              .replace(/&amp;/gi, '&')
+              .replace(/<span class='keye'>/gi, '')
+              .replace(/<\/span>/gi, '')
+              .toLowerCase()
+          : undefined,
+      v: versions.get(decimal),
+    })
     emojiMatch = EMOJI_DATA_SEARCH.exec(emojiData)
   }
 
   // Create Emoji tone glyphs
   let emojiToneMatch = EMOJI_TONE_DATA_SEARCH.exec(emojiToneData)
   while (emojiToneMatch) {
-    const [, unicode, char, name] = emojiToneMatch
-    const hexes = strToHexes(char).join(' ')
-
-    // Create glyph
-    addGlyph(char, unicode.replace(/U\+/g, ''), hexes, name.replace(/&amp;/gi, '&').replace(/⊛ /gi, '').toLowerCase())
-
+    const [, hex32, char, name] = emojiToneMatch
+    const decimal = hexToDecimal(hex32.replace(/U\+/g, ''))
+    addGlyph({
+      c: char,
+      d: decimal.toString(),
+      u: decimalToHex(decimal, 8),
+      h: decimalToUtf16(decimal).join(' '),
+      n: name.replace(/&amp;/gi, '&').replace(/⊛ /gi, '').toLowerCase(),
+      v: versions.get(decimal),
+    })
     emojiToneMatch = EMOJI_TONE_DATA_SEARCH.exec(emojiToneData)
   }
 
