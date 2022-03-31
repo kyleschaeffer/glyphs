@@ -11,6 +11,9 @@ import {
   hexToJs,
 } from '../core/convert'
 import { search } from '../store'
+import { Linkify } from './Linkify'
+
+const HTML_RESERVED_CHARACTERS = ['&', '<', '>', '"']
 
 export const Glyph: Component = () => {
   const glyph = search.state.selected
@@ -27,12 +30,7 @@ export const Glyph: Component = () => {
       <h2 style={{ 'font-size': '128px', 'line-height': '1', margin: '0' }}>{glyph.c}</h2>
       {description && (
         <h3>
-          {description.split(', ').map((term, i) => (
-            <>
-              {i > 0 ? ', ' : ''}
-              <a href={`#q=${encodeURIComponent(term)}`}>{term}</a>
-            </>
-          ))}
+          <Linkify phrase={description} />
         </h3>
       )}
 
@@ -48,22 +46,24 @@ export const Glyph: Component = () => {
       </pre>
 
       <h4>HTML:</h4>
-      <pre>
-        &lt;b&gt;<b>{glyph.c}</b>&lt;/b&gt;
-      </pre>
+      {!HTML_RESERVED_CHARACTERS.includes(glyph.c) && (
+        <pre>
+          &lt;b&gt;<b>{glyph.c}</b>&lt;/b&gt;
+        </pre>
+      )}
       {!complexGlyph && (
         <>
+          {glyph.e?.split(' ').map((e) => (
+            <pre>
+              &lt;b&gt;<b>&amp;{e};</b>&lt;/b&gt;
+            </pre>
+          ))}
           <pre>
             &lt;b&gt;&amp;<b>{decimalToHtml(glyph.d)}</b>;&lt;/b&gt;
           </pre>
           <pre>
             &lt;b&gt;&amp;<b>{hexToHtml(glyph.u)}</b>;&lt;/b&gt;
           </pre>
-          {glyph.e?.split(' ').map((e) => (
-            <pre>
-              &lt;b&gt;<b>&amp;{e};</b>&lt;/b&gt;
-            </pre>
-          ))}
         </>
       )}
 
@@ -103,7 +103,7 @@ export const Glyph: Component = () => {
           <>
             <dt>Block</dt>
             <dd>
-              <a href={`#q=${encodeURIComponent(glyph.g)}`}>{glyph.g}</a>
+              <Linkify phrase={glyph.g} />
             </dd>
           </>
         )}
