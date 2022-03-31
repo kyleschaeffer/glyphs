@@ -32,7 +32,7 @@ const SEARCH_DEBOUNCE_MS = 250
 const SEARCH_MAX_RESULTS = 200
 const SEARCH_THRESHOLD = 0.3
 const SEARCH_KEYS = [
-  { name: 'c', weight: 10 },
+  { name: 'c', weight: 2 },
   { name: 'd', weight: 0.1 },
   { name: 'u', weight: 0.1 },
   { name: 'h', weight: 0.1 },

@@ -26,7 +26,9 @@ export const Glyph: Component = () => {
   return (
     <article>
       <button onClick={() => search.setSelected(null)}>&#x2573;</button>
-      <h1 style={{ 'text-transform': 'uppercase' }}>{name}</h1>
+      <h1 style={{ 'text-transform': 'uppercase' }}>
+        <Linkify phrase={name} />
+      </h1>
       <h2 style={{ 'font-size': '128px', 'line-height': '1', margin: '0' }}>{glyph.c}</h2>
       {description && (
         <h3>
