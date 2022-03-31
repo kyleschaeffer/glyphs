@@ -1,5 +1,6 @@
 import Fuse from 'fuse.js'
 import { createStore } from 'solid-js/store'
+import { glyphName } from '../core/convert'
 import { Glyph } from './types'
 
 export enum GlyphTab {
@@ -100,6 +101,12 @@ export const setQuery = (query: string, updateHash: boolean = true) => {
   searchTimer = setTimeout(() => searchByQuery(query), SEARCH_DEBOUNCE_MS)
 }
 
+export const getHistoryTitle = (): string => {
+  if (state.selected) return `${state.selected.c} ${glyphName(state.selected.n)} — Glyphs`
+  else if (state.query.length) return `${state.query} — Glyphs`
+  else return 'Glyphs'
+}
+
 export const encodeHistoryState = (): string => {
   const states: [key: string, value?: string][] = [
     ['q', state.query.length ? state.query : undefined],
@@ -136,6 +143,7 @@ export const hydrateHash = (hash: string) => {
   const index = historyState.c ? state.indicies.get(historyState.c) : undefined
   setSelected(index !== undefined ? getGlyphByIndex(index) : null, false)
   setTab(historyState.t ?? GlyphTab.JAVASCRIPT, false)
+  document.title = getHistoryTitle()
 }
 
 let hashTimer: number
@@ -146,6 +154,8 @@ export const setHash = () => {
     if (window.location.hash === newHash || (window.location.hash.length === 0 && newHash.length === 1)) return
     const url = new URL(window.location.href)
     url.hash = newHash.length === 1 ? '' : newHash
-    window.history.pushState({}, document.title, url)
+    const title = getHistoryTitle()
+    window.history.pushState({}, title, url)
+    document.title = getHistoryTitle()
   }, HASH_DEBOUNCE_MS)
 }
