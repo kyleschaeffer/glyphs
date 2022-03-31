@@ -22,10 +22,19 @@ export const Glyph: Component = () => {
 
   return (
     <article>
-      <button onClick={() => search.setSelected(null)}>❌</button>
+      <button onClick={() => search.setSelected(null)}>&#x2573;</button>
       <h1 style={{ 'text-transform': 'uppercase' }}>{name}</h1>
       <h2 style={{ 'font-size': '128px', 'line-height': '1', margin: '0' }}>{glyph.c}</h2>
-      {description && <h3>{description}</h3>}
+      {description && (
+        <h3>
+          {description.split(', ').map((term, i) => (
+            <>
+              {i > 0 ? ', ' : ''}
+              <a href={`#q=${encodeURIComponent(term)}`}>{term}</a>
+            </>
+          ))}
+        </h3>
+      )}
 
       <h4>JavaScript:</h4>
       <pre>
@@ -93,7 +102,9 @@ export const Glyph: Component = () => {
         {glyph.g && (
           <>
             <dt>Block</dt>
-            <dd>{glyph.g}</dd>
+            <dd>
+              <a href={`#q=${encodeURIComponent(glyph.g)}`}>{glyph.g}</a>
+            </dd>
           </>
         )}
         {glyph.v && (
