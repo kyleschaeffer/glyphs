@@ -1,4 +1,4 @@
-import { Component } from 'solid-js'
+import { Component, For } from 'solid-js'
 import {
   decimalToHtml,
   escapeQuotes,
@@ -11,6 +11,7 @@ import {
   hexToJs,
 } from '../core/convert'
 import { search } from '../store'
+import { CopyButton } from './CopyButton'
 import { Linkify } from './Linkify'
 
 const HTML_RESERVED_CHARACTERS = ['&', '<', '>', '"']
@@ -31,7 +32,11 @@ export const Glyph: Component = () => {
       <h1>
         <Linkify phrase={name} />
       </h1>
-      <h2>{glyph.c}</h2>
+      <h2>
+        <CopyButton copyText={glyph.c} promptMessage="Copy glyph">
+          {glyph.c}
+        </CopyButton>
+      </h2>
       {description && (
         <h3>
           <Linkify phrase={description} />
@@ -57,11 +62,13 @@ export const Glyph: Component = () => {
       )}
       {!complexGlyph && (
         <>
-          {glyph.e?.split(' ').map((e) => (
-            <pre>
-              &lt;b&gt;<b>&amp;{e};</b>&lt;/b&gt;
-            </pre>
-          ))}
+          <For each={glyph.e?.split(' ')}>
+            {(e) => (
+              <pre>
+                &lt;b&gt;<b>&amp;{e};</b>&lt;/b&gt;
+              </pre>
+            )}
+          </For>
           <pre>
             &lt;b&gt;&amp;<b>{decimalToHtml(glyph.d)}</b>;&lt;/b&gt;
           </pre>

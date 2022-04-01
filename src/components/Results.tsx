@@ -1,4 +1,4 @@
-import { Component } from 'solid-js'
+import { Component, For } from 'solid-js'
 import { search } from '../store'
 
 export const Results: Component = () => {
@@ -9,13 +9,15 @@ export const Results: Component = () => {
           No results for <b>{search.state.query}</b>
         </li>
       )}
-      {search.state.results.map((glyph) => (
-        <li>
-          <button onClick={() => search.setSelected(glyph)}>
-            <h3>{glyph.c}</h3>
-          </button>
-        </li>
-      ))}
+      <For each={search.state.results}>
+        {(glyph) => (
+          <li>
+            <button onClick={() => search.setSelected(glyph)}>
+              <h3>{glyph.c}</h3>
+            </button>
+          </li>
+        )}
+      </For>
     </ul>
   )
 }
