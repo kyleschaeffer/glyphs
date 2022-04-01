@@ -13,7 +13,7 @@ export const CopyButton: Component<CopyButtonProps> = (props) => {
     children,
     copyText,
     errorMessage = 'Failed to copy',
-    promptMessage = 'Click to copy',
+    promptMessage = 'Copy value',
     successMessage = 'Copied',
     successTimeoutMs = 1500,
   } = props

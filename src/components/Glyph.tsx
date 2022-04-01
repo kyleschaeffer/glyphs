@@ -43,21 +43,28 @@ export const Glyph: Component = () => {
         </h3>
       )}
 
-      <h4>JavaScript:</h4>
+      <h4>JavaScript</h4>
       <pre>
-        '<b>{escapeQuotes(glyph.c)}</b>'
+        '<CopyButton copyText={escapeQuotes(glyph.c)}>{escapeQuotes(glyph.c)}</CopyButton>'
       </pre>
       <pre>
-        '<b>{hexesToUnicodeEscapeSequence(glyph.h)}</b>'
+        '
+        <CopyButton copyText={hexesToUnicodeEscapeSequence(glyph.h)}>
+          {hexesToUnicodeEscapeSequence(glyph.h)}
+        </CopyButton>
+        '
       </pre>
       <pre>
-        String.fromCharCode(<b>{hexesToJs(glyph.h)}</b>)
+        String.fromCharCode(
+        <CopyButton copyText={hexesToJs(glyph.h)}>{hexesToJs(glyph.h)}</CopyButton>)
       </pre>
 
-      <h4>HTML:</h4>
+      <h4>HTML</h4>
       {!HTML_RESERVED_CHARACTERS.includes(glyph.c) && (
         <pre>
-          &lt;b&gt;<b>{glyph.c}</b>&lt;/b&gt;
+          &lt;b&gt;
+          <CopyButton copyText={glyph.c}>{glyph.c}</CopyButton>
+          &lt;/b&gt;
         </pre>
       )}
       {!complexGlyph && (
@@ -65,54 +72,70 @@ export const Glyph: Component = () => {
           <For each={glyph.e?.split(' ')}>
             {(e) => (
               <pre>
-                &lt;b&gt;<b>&amp;{e};</b>&lt;/b&gt;
+                &lt;b&gt;
+                <CopyButton copyText={`&${e};`}>&amp;{e};</CopyButton>
+                &lt;/b&gt;
               </pre>
             )}
           </For>
           <pre>
-            &lt;b&gt;&amp;<b>{decimalToHtml(glyph.d)}</b>;&lt;/b&gt;
+            &lt;b&gt;
+            <CopyButton copyText={`&${decimalToHtml(glyph.d)};`}>&amp;{decimalToHtml(glyph.d)};</CopyButton>
+            &lt;/b&gt;
           </pre>
           <pre>
-            &lt;b&gt;&amp;<b>{hexToHtml(glyph.u)}</b>;&lt;/b&gt;
+            &lt;b&gt;
+            <CopyButton copyText={`&${hexToHtml(glyph.u)};`}>&amp;{hexToHtml(glyph.u)};</CopyButton>
+            &lt;/b&gt;
           </pre>
         </>
       )}
 
-      <h4>CSS:</h4>
+      <h4>CSS</h4>
       <pre>
-        content: '<b>{glyph.c}</b>';
+        content: '<CopyButton copyText={escapeQuotes(glyph.c)}>{escapeQuotes(glyph.c)}</CopyButton>';
       </pre>
       {!complexGlyph && (
         <pre>
-          content: '<b>{hexToCss(glyph.u)}</b>';
+          content: '<CopyButton copyText={hexToCss(glyph.u)}>{hexToCss(glyph.u)}</CopyButton>';
         </pre>
       )}
 
-      <h4>Unicode:</h4>
+      <h4>Unicode</h4>
       <dl>
         {!complexGlyph && (
           <>
-            <dt>Reference</dt>
+            <dt>Reference:</dt>
             <dd>
-              <code>U+{glyph.u}</code>
+              <code>
+                <CopyButton copyText={`U+${glyph.u}`}>U+{glyph.u}</CopyButton>
+              </code>
             </dd>
-            <dt>Decimal</dt>
+            <dt>Decimal:</dt>
             <dd>
-              <code>{glyph.d}</code>
+              <code>
+                <CopyButton copyText={glyph.d}>{glyph.d}</CopyButton>
+              </code>
             </dd>
-            <dt>UTF-32</dt>
+            <dt>UTF-32:</dt>
             <dd>
-              <code>{hexToJs(glyph.u.padStart(8, '0'))}</code>
+              <code>
+                <CopyButton copyText={hexToJs(glyph.u.padStart(8, '0'))}>
+                  {hexToJs(glyph.u.padStart(8, '0'))}
+                </CopyButton>
+              </code>
             </dd>
           </>
         )}
-        <dt>UTF-16</dt>
+        <dt>UTF-16:</dt>
         <dd>
-          <code>{hexesToJs(glyph.h, ' ')}</code>
+          <code>
+            <CopyButton copyText={hexesToJs(glyph.h, ' ')}>{hexesToJs(glyph.h, ' ')}</CopyButton>
+          </code>
         </dd>
         {glyph.g && (
           <>
-            <dt>Block</dt>
+            <dt>Block:</dt>
             <dd>
               <Linkify phrase={glyph.g} />
             </dd>
@@ -120,10 +143,8 @@ export const Glyph: Component = () => {
         )}
         {glyph.v && (
           <>
-            <dt>Version</dt>
-            <dd>
-              <code>{glyph.v}</code>
-            </dd>
+            <dt>Version:</dt>
+            <dd>{glyph.v}</dd>
           </>
         )}
       </dl>
