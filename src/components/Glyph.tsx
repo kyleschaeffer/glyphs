@@ -26,19 +26,19 @@ export const Glyph: Component = () => {
 
   return (
     <article>
-      <div>
-        <button onClick={() => search.setSelected(null)}>&#x2573;</button>
-      </div>
-      <h1>
+      <h1 class="title">
         <Linkify phrase={name} />
+        <button class="close" onClick={() => search.setSelected(null)}>
+          &cross;
+        </button>
       </h1>
-      <h2>
+      <h2 class="glyph-row">
         <CopyButton copyText={glyph.c} promptMessage="Copy glyph">
-          {glyph.c}
+          <span class="glyph">{glyph.c}</span>
         </CopyButton>
       </h2>
       {description && (
-        <h3>
+        <h3 class="keywords">
           <Linkify phrase={description} />
         </h3>
       )}

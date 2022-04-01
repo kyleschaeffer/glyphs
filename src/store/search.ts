@@ -83,13 +83,16 @@ export const indexGlyphs = (glyphs: Glyph[]) => {
   setState('indicies', new Map(glyphs.map((glyph, i) => [glyph.c, i])))
 }
 
+let currentQuery: string | null = null
 export const searchByQuery = (query: string) => {
+  if (query === currentQuery) return
   let results: Glyph[] = []
   const exact = state.indicies.get(query)
   if (exact !== undefined) results = [getGlyphByIndex(exact)]
   else if (query.length) results = state.index.search(query, { limit: SEARCH_MAX_RESULTS }).map((result) => result.item)
   setResults(results)
   setLoading(false)
+  currentQuery = query
 }
 
 let searchTimer: number

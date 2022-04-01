@@ -296,3 +296,48 @@ dl {
 dt {
   font-weight: 500;
 }
+
+.title {
+  font-size: 3rem;
+  margin-block-end: 2rem;
+  text-align: center;
+}
+
+.close {
+  color: var(--color-mono-5);
+  display: inline-block;
+  font-size: 1.5rem;
+  font-weight: 400;
+  margin-inline-start: 0.75rem;
+  vertical-align: middle;
+}
+
+.glyph-row {
+  margin-block-end: 2rem;
+  text-align: center;
+}
+
+.glyph {
+  border: 3px dashed var(--color-mono-7);
+  border-radius: 0.125em;
+  color: var(--color-black);
+  display: inline-block;
+  font-size: 128px;
+  font-weight: 400;
+  height: 1.35em;
+  line-height: 1.25em;
+  width: 1.35em;
+}
+
+.keywords {
+  color: var(--color-mono-3);
+  font-weight: 400;
+  font-size: 1.25rem;
+  margin-block-end: 2rem;
+  text-align: center;
+}
+
+.keywords a {
+  color: var(--color-mono-1);
+  font-weight: 500;
+}
