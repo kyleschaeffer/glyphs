@@ -341,3 +341,25 @@ dt {
   color: var(--color-mono-1);
   font-weight: 500;
 }
+
+.results {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  justify-content: center;
+}
+
+.result {
+  border: 1px solid var(--color-mono-7);
+  border-radius: 0.25em;
+  overflow: hidden;
+}
+
+.result-glyph {
+  color: var(--color-black);
+  display: inline-block;
+  font-size: 32px;
+  height: 1.35em;
+  line-height: 1.25em;
+  width: 1.35em;
+}

@@ -1,8 +1,10 @@
-import { Component, createResource } from 'solid-js'
+import { Component, onMount } from 'solid-js'
 import { glyphs } from '../store'
 
-export const GlyphsLoader: Component = () => {
-  createResource(glyphs.loadGlyphs)
+export const GlyphsProvider: Component = () => {
+  onMount(async () => {
+    await glyphs.loadGlyphs()
+  })
 
   return (
     <>

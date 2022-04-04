@@ -1,14 +1,7 @@
 import Fuse from 'fuse.js'
 import { createStore } from 'solid-js/store'
 import { glyphName } from '../core/convert'
-import { Glyph } from './types'
-
-export enum GlyphTab {
-  JAVASCRIPT = 'j',
-  HTML = 'h',
-  CSS = 'c',
-  UNICODE = 'u',
-}
+import type { Glyph } from './types'
 
 export type SearchState = {
   empty: boolean
@@ -19,13 +12,11 @@ export type SearchState = {
   query: string
   results: Glyph[]
   selected: Glyph | null
-  tab: GlyphTab
 }
 
 export type HistoryState = {
   q?: string
   c?: string
-  t?: GlyphTab
 }
 
 const HASH_DEBOUNCE_MS = 500
@@ -56,52 +47,48 @@ const [state, setState] = createStore<SearchState>({
   query: '',
   results: [],
   selected: null,
-  tab: GlyphTab.JAVASCRIPT,
 })
-
 export { state }
-export const setLoading = (loading: boolean) => setState('loading', loading)
-export const setResults = (results: Glyph[]) => setState('results', results)
+
+export const setLoading = (loading: boolean) => setState({ loading })
+
+export const setResults = (results: Glyph[]) => setState({ results })
+
 export const setSelected = (selected: Glyph | null, updateHash: boolean = true) => {
-  setState('selected', selected)
+  setState({ selected })
   if (updateHash) setHash()
-}
-export const setTab = (tab: GlyphTab, updateHash: boolean = true) => {
-  setState('tab', tab)
-  if (updateHash) setHash()
-}
-
-export const getGlyphByIndex = (index: number) => ((state.index as any)._docs as Glyph[])[index]
-
-export const selectRandom = () => {
-  const glyphDocs = (state.index as any)._docs as Glyph[]
-  setSelected(glyphDocs[Math.floor(Math.random() * glyphDocs.length)])
 }
 
 export const indexGlyphs = (glyphs: Glyph[]) => {
-  setState('index', new Fuse(glyphs, { keys: SEARCH_KEYS, threshold: SEARCH_THRESHOLD }))
-  setState('indicies', new Map(glyphs.map((glyph, i) => [glyph.c, i])))
+  setState({
+    index: new Fuse(glyphs, { keys: SEARCH_KEYS, threshold: SEARCH_THRESHOLD }),
+    indicies: new Map(glyphs.map((glyph, i) => [glyph.c, i])),
+  })
+  hydrateHash(document.location.hash)
 }
 
 let currentQuery: string | null = null
 export const searchByQuery = (query: string) => {
   if (query === currentQuery) return
+  currentQuery = query
   let results: Glyph[] = []
   const exact = state.indicies.get(query)
-  if (exact !== undefined) results = [getGlyphByIndex(exact)]
+  if (exact !== undefined) results = [((state.index as any)._docs as Glyph[])[exact]]
   else if (query.length) results = state.index.search(query, { limit: SEARCH_MAX_RESULTS }).map((result) => result.item)
-  setResults(results)
-  setLoading(false)
-  currentQuery = query
+  setState({ loading: false, results })
 }
 
 let searchTimer: number
 export const setQuery = (query: string, updateHash: boolean = true) => {
   clearTimeout(searchTimer)
-  setLoading(true)
-  setState('query', query)
+  setState({ loading: true, query })
   if (updateHash) setHash()
   searchTimer = setTimeout(() => searchByQuery(query), SEARCH_DEBOUNCE_MS)
+}
+
+export const selectRandom = () => {
+  const glyphDocs = (state.index as any)._docs as Glyph[]
+  setSelected(glyphDocs[Math.floor(Math.random() * glyphDocs.length)])
 }
 
 export const getHistoryTitle = (): string => {
@@ -114,7 +101,6 @@ export const encodeHistoryState = (): string => {
   const states: [key: string, value?: string][] = [
     ['q', state.query.length ? state.query : undefined],
     ['c', state.selected?.c],
-    ['t', state.selected !== null && state.tab !== GlyphTab.JAVASCRIPT ? state.tab : undefined],
   ]
     .filter(([, value]) => value !== undefined)
     .map(([key, value]) => [key!, encodeURIComponent(value!)])
@@ -130,8 +116,7 @@ export const decodeHistoryState = (hash: string): HistoryState => {
       !key.length ||
       value === undefined ||
       !['q', 'c', 't'].includes(key) ||
-      (key === 'c' && state.indicies.get(value) === undefined) ||
-      (key === 't' && !Object.values(GlyphTab).includes(value as GlyphTab))
+      (key === 'c' && state.indicies.get(value) === undefined)
     )
       continue
     historyState[key as 'q'] = value
@@ -144,8 +129,7 @@ export const hydrateHash = (hash: string) => {
   const historyState = decodeHistoryState(hash)
   setQuery(historyState.q ?? '', false)
   const index = historyState.c ? state.indicies.get(historyState.c) : undefined
-  setSelected(index !== undefined ? getGlyphByIndex(index) : null, false)
-  setTab(historyState.t ?? GlyphTab.JAVASCRIPT, false)
+  setSelected(index !== undefined ? ((state.index as any)._docs as Glyph[])[index] : null, false)
   document.title = getHistoryTitle()
 }
 

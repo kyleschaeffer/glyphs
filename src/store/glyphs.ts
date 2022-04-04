@@ -1,7 +1,7 @@
 import { createStore } from 'solid-js/store'
 import { UNICODE_VERSION } from '../config'
-import { hydrateHash, indexGlyphs } from './search'
-import { Glyph } from './types'
+import { search } from '../store'
+import type { Glyph } from './types'
 
 export type GlyphsState = {
   count: string
@@ -14,11 +14,13 @@ const [state, setState] = createStore<GlyphsState>({
   error: null,
   loading: true,
 })
-
 export { state }
+
 export const setCount = (count: number) => setState({ count: count.toLocaleString(), error: null })
+
 export const setError = (error: string) => setState({ count: '0', error })
-export const setLoading = (loading: boolean) => setState('loading', loading)
+
+export const setLoading = (loading: boolean) => setState({ loading })
 
 export const loadGlyphs = async () => {
   setLoading(true)
@@ -27,8 +29,7 @@ export const loadGlyphs = async () => {
     if (!response.ok) throw new Error(response.statusText)
     const glyphs: Glyph[] = await response.json()
     setCount(glyphs.length)
-    indexGlyphs(glyphs)
-    hydrateHash(window.location.hash)
+    search.indexGlyphs(glyphs)
   } catch (e) {
     setError(e instanceof Error ? e.message : 'Something went wrong')
   } finally {

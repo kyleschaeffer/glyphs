@@ -1,5 +1,5 @@
-import { Component } from 'solid-js'
-import { UNICODE_VERSION, UNICODE_VERSION_SHORT } from '../config'
+import type { Component } from 'solid-js'
+import { UNICODE_VERSION } from '../config'
 import { glyphs, search } from '../store'
 import { Results } from './Results'
 
@@ -38,11 +38,11 @@ export const Search: Component = () => {
                 <div>
                   Searching <b>{glyphs.state.count}</b> glyphs in{' '}
                   <a
-                    href={`https://www.unicode.org/versions/Unicode${UNICODE_VERSION}/`}
+                    href={`https://www.unicode.org/versions/Unicode${UNICODE_VERSION}.0/`}
                     target="_blank"
                     rel="nofollow"
                   >
-                    Unicode {UNICODE_VERSION_SHORT}
+                    Unicode {UNICODE_VERSION}
                   </a>
                 </div>
               </>

@@ -1,4 +1,4 @@
-import { Component, createSignal, JSX, Match, Switch } from 'solid-js'
+import { Component, createSignal, Match, Switch } from 'solid-js'
 
 export type CopyButtonProps = {
   copyText: string
