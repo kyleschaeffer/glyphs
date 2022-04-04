@@ -19,33 +19,32 @@ import { decimalToHex, decimalToString, decimalToUtf16, hexToDecimal, stringToUt
 dotenv.config()
 
 const UNICODE_VERSION = process.env.UNICODE_VERSION ?? ''
-const UNICODE_VERSION_SHORT = process.env.UNICODE_VERSION_SHORT ?? ''
-if (!UNICODE_VERSION || !UNICODE_VERSION_SHORT) throw new Error('Unicode version not defined')
+if (!UNICODE_VERSION) throw new Error('Unicode version not defined')
 
 // CSV; 14 columns; [0]=hex32; [1]=name; [10]?=keywords
-const UNICODE_DATA_URL = `https://www.unicode.org/Public/${UNICODE_VERSION}/ucd/UnicodeData.txt`
+const UNICODE_DATA_URL = `https://www.unicode.org/Public/${UNICODE_VERSION}.0/ucd/UnicodeData.txt`
 
 // [1]=hex32; [2]=name; [3]=entities
 const HTML_ENTITY_DATA_URL = 'https://dev.w3.org/html5/html-author/charref'
 const HTML_ENTITY_DATA_SEARCH = /<tr title="U\+(.*?) (.*?)".*?<td class="named"><code>(.*?)<\/code>/gi
 
 // [1]=hex32; [2]=character; [3]=name; [4]?=keywords
-const EMOJI_DATA_URL = `https://www.unicode.org/emoji/charts-${UNICODE_VERSION_SHORT}/emoji-list.html`
+const EMOJI_DATA_URL = `https://www.unicode.org/emoji/charts-${UNICODE_VERSION}/emoji-list.html`
 const EMOJI_DATA_SEARCH =
   /<tr><td class='rchars'>\d+<\/td>\n?<td class='code'><a.*?>(.*?)<\/a><\/td>\n?<td class='andr'><a.*?><img alt='(.*?)'.*?<\/td>\n?<td class='name'>(.*?)<\/td>\n?<td class='name'>(.*?)<\/td>/gi
 
 // [1]=hex32; [2]=character; [3]=name
 // TODO: categories and groups
-const EMOJI_TONE_DATA_URL = `https://www.unicode.org/emoji/charts-${UNICODE_VERSION_SHORT}/full-emoji-modifiers.html`
+const EMOJI_TONE_DATA_URL = `https://www.unicode.org/emoji/charts-${UNICODE_VERSION}/full-emoji-modifiers.html`
 const EMOJI_TONE_DATA_SEARCH =
   /<tr><td class='rchars'>\d+<\/td>\n?<td class='code'><a.*?>(.*?)<\/a><\/td>\n?<td class='chars'>(.*?)<\/td>\n?.*?\n.*?\n.*?\n.*?\n.*?\n.*?\n.*?\n.*?\n.*?\n.*?\n.*?\n<td class='name'>(.*?)<\/td>/gi
 
 // CSV; 2 columns; [0]=hex32Start; [1]=hex32End; [2]=block
-const UNICODE_BLOCK_DATA_URL = `https://www.unicode.org/Public/${UNICODE_VERSION}/ucd/Blocks.txt`
+const UNICODE_BLOCK_DATA_URL = `https://www.unicode.org/Public/${UNICODE_VERSION}.0/ucd/Blocks.txt`
 const UNICODE_BLOCK_DATA_SEARCH = /(.*?)(?:\.\.(.*))?;\s(.*?)\n/gim
 
 // CSV; 2 columns; [0]=hex32Start; [1]?=hex32End; [2]=version; [3]?=count; [4]=description
-const UNICODE_VERSION_DATA_URL = `https://www.unicode.org/Public/${UNICODE_VERSION}/ucd/DerivedAge.txt`
+const UNICODE_VERSION_DATA_URL = `https://www.unicode.org/Public/${UNICODE_VERSION}.0/ucd/DerivedAge.txt`
 const UNICODE_VERSION_DATA_SEARCH = /(.*?)(?:\.\.(.*))?\s+;\s([\d.]+)\s#\s+(?:\[(\d+)\])?(.*?)\n/gim
 
 /**

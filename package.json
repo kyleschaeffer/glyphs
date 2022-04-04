@@ -8,7 +8,7 @@
     "build": "tsc && vite build",
     "preview": "vite preview",
     "scrape": "node ./src/bin/scrape.js",
-    "scrape:all": "UNICODE_VERSION=14.0.0 UNICODE_VERSION_SHORT=14.0 node ./src/bin/scrape.js && UNICODE_VERSION=13.0.0 UNICODE_VERSION_SHORT=13.0 node ./src/bin/scrape.js && UNICODE_VERSION=12.0.0 UNICODE_VERSION_SHORT=12.0 node ./src/bin/scrape.js && UNICODE_VERSION=11.0.0 UNICODE_VERSION_SHORT=11.0 node ./src/bin/scrape.js && UNICODE_VERSION=10.0.0 UNICODE_VERSION_SHORT=10.0 node ./src/bin/scrape.js && UNICODE_VERSION=9.0.0 UNICODE_VERSION_SHORT=9.0 node ./src/bin/scrape.js && UNICODE_VERSION=8.0.0 UNICODE_VERSION_SHORT=8.0 node ./src/bin/scrape.js && UNICODE_VERSION=7.0.0 UNICODE_VERSION_SHORT=7.0 node ./src/bin/scrape.js && UNICODE_VERSION=6.0.0 UNICODE_VERSION_SHORT=6.0 node ./src/bin/scrape.js && UNICODE_VERSION=5.0.0 UNICODE_VERSION_SHORT=5.0 node ./src/bin/scrape.js"
+    "scrape:all": "UNICODE_VERSION=14.0 node ./src/bin/scrape.js && UNICODE_VERSION=13.0 node ./src/bin/scrape.js && UNICODE_VERSION=12.0 node ./src/bin/scrape.js && UNICODE_VERSION=11.0 node ./src/bin/scrape.js && UNICODE_VERSION=10.0 node ./src/bin/scrape.js && UNICODE_VERSION=9.0 node ./src/bin/scrape.js && UNICODE_VERSION=8.0 node ./src/bin/scrape.js && UNICODE_VERSION=7.0 node ./src/bin/scrape.js && UNICODE_VERSION=6.0 node ./src/bin/scrape.js && UNICODE_VERSION=5.0 node ./src/bin/scrape.js"
   },
   "devDependencies": {
     "dotenv": "^16.0.0",
