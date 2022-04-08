@@ -1,0 +1,29 @@
+{
+  "name": "glyphs",
+  "version": "2.0.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint",
+    "scrape": "node ./src/bin/scrape.js",
+    "scrape:all": "UNICODE_VERSION=14.0 node ./src/bin/scrape.js && UNICODE_VERSION=13.0 node ./src/bin/scrape.js && UNICODE_VERSION=12.0 node ./src/bin/scrape.js && UNICODE_VERSION=11.0 node ./src/bin/scrape.js && UNICODE_VERSION=10.0 node ./src/bin/scrape.js && UNICODE_VERSION=9.0 node ./src/bin/scrape.js && UNICODE_VERSION=8.0 node ./src/bin/scrape.js && UNICODE_VERSION=7.0 node ./src/bin/scrape.js && UNICODE_VERSION=6.0 node ./src/bin/scrape.js && UNICODE_VERSION=5.0 node ./src/bin/scrape.js"
+  },
+  "dependencies": {
+    "fuse.js": "^6.5.3",
+    "next": "12.1.4",
+    "react": "18.0.0",
+    "react-dom": "18.0.0"
+  },
+  "devDependencies": {
+    "@types/node": "17.0.23",
+    "@types/react": "17.0.43",
+    "@types/react-dom": "17.0.14",
+    "dotenv": "^16.0.0",
+    "eslint": "8.12.0",
+    "eslint-config-next": "12.1.4",
+    "prettier": "^2.6.2",
+    "typescript": "4.6.3"
+  }
+}
