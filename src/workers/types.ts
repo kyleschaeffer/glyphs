@@ -1,15 +1,18 @@
-import Fuse from 'fuse.js'
+import type Fuse from 'fuse.js'
 import type { Glyph } from '../store/types'
 
-type WorkerMessage<T extends string = string, P = {}> = {
+type Message<T extends string = string, P = {}> = {
   type: T
   payload: P
 }
 
-export type RequestGlyphMessage = WorkerMessage<'REQUEST_GLYPH', { char: string }>
-export type RequestQueryMessage = WorkerMessage<'REQUEST_QUERY', { query: string }>
-export type RequestMessage = RequestGlyphMessage | RequestQueryMessage
+export type SearchResult = Fuse.FuseResult<Glyph>
 
-export type RespondGlyphMessage = WorkerMessage<'RESPOND_GLYPH', { glyph: Glyph | null }>
-export type RespondQueryMessage = WorkerMessage<'RESPOND_QUERY', { results: Fuse.FuseResult<Glyph>[] }>
-export type RespondMessage = RespondGlyphMessage | RespondQueryMessage
+export type RequestGlyphMessage = Message<'REQUEST_GLYPH', { char: string }>
+export type RequestQueryMessage = Message<'REQUEST_QUERY', { query: string }>
+export type ClientMessage = RequestGlyphMessage | RequestQueryMessage
+
+export type GlyphResponseMessage = Message<'GLYPH_RESPONSE', { glyph: Glyph | null }>
+export type QueryResponseMessage = Message<'QUERY_RESPONSE', { results: SearchResult[] }>
+export type WorkerReadyMessage = Message<'WORKER_READY'>
+export type WorkerMessage = GlyphResponseMessage | QueryResponseMessage | WorkerReadyMessage

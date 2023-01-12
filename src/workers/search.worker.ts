@@ -1,7 +1,12 @@
 import Fuse from 'fuse.js'
 import type { Glyph } from '../store/types'
-import type { RequestMessage, RespondMessage } from './types'
+import type { ClientMessage, WorkerMessage, SearchResult } from './types'
 import z from 'zod'
+
+const post = (message: WorkerMessage) => self.postMessage(message)
+const postGlyphResponse = (glyph: Glyph | null) => post({ type: 'GLYPH_RESPONSE', payload: { glyph } })
+const postQueryResponse = (results: SearchResult[]) => post({ type: 'QUERY_RESPONSE', payload: { results } })
+const postWorkerReady = () => post({ type: 'WORKER_READY', payload: {} })
 
 class SearchController {
   loading = false
@@ -21,13 +26,25 @@ class SearchController {
       const glyphs = (await response.json()) as Glyph[]
 
       this.fuse = new Fuse(glyphs, {
-        keys: ['c', 'd', 'u', 'h', 'n', 'g', 'k', 'e'],
+        keys: [
+          { name: 'c', weight: 1 },
+          { name: 'd', weight: 0.1 },
+          { name: 'u', weight: 0.1 },
+          { name: 'h', weight: 0.1 },
+          { name: 'n', weight: 0.5 },
+          { name: 'g', weight: 0.1 },
+          { name: 'k', weight: 0.3 },
+          { name: 'e', weight: 0.2 },
+        ],
+        threshold: 0.4,
       })
 
       this.glyphs = new Map()
       for (const glyph of glyphs) {
         this.glyphs.set(glyph.c, glyph)
       }
+
+      postWorkerReady()
     } catch (e) {
       console.error(e)
     } finally {
@@ -39,26 +56,22 @@ class SearchController {
     return this.glyphs?.get(char) ?? null
   }
 
-  search(query: string): Fuse.FuseResult<Glyph>[] {
+  search(query: string): SearchResult[] {
     return this.fuse?.search(query) ?? []
   }
 }
 
 const Search = new SearchController()
 
-const post = (message: RespondMessage) => self.postMessage(message)
-const respondGlyph = (glyph: Glyph | null) => post({ type: 'RESPOND_GLYPH', payload: { glyph } })
-const respondQuery = (results: Fuse.FuseResult<Glyph>[]) => post({ type: 'RESPOND_QUERY', payload: { results } })
-
-self.onmessage = (event: MessageEvent<RequestMessage>) => {
+self.onmessage = (event: MessageEvent<ClientMessage>) => {
   switch (event?.data?.type) {
     case 'REQUEST_GLYPH':
-      respondGlyph(Search.get(event.data.payload.char))
+      postGlyphResponse(Search.get(event.data.payload.char))
       break
     case 'REQUEST_QUERY':
-      respondQuery(Search.search(event.data.payload.query))
+      postQueryResponse(Search.search(event.data.payload.query))
       break
     default:
-      console.warn('Unknown request message event:', event)
+      console.warn('Unknown client message event:', event)
   }
 }

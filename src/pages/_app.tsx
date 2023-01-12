@@ -22,6 +22,7 @@ const App = ({ Component, pageProps }: AppProps) => {
     const { requestGlyph, requestQuery } = registerSearchWorker({
       onGlyphResponse: (glyph) => console.log('Glyph:', glyph),
       onQueryResponse: (results) => console.log('Results:', results),
+      onWorkerReady: () => console.log('Worker ready!'),
     })
 
     requestGlyphRef.current = requestGlyph
@@ -38,7 +39,7 @@ const App = ({ Component, pageProps }: AppProps) => {
       </Head>
       <Component {...pageProps} />
       <button onClick={() => requestGlyphRef.current?.('🇺🇦')}>Get: 🇺🇦</button>
-      <button onClick={() => requestQueryRef.current?.('🇺🇦')}>Query: 🇺🇦</button>
+      <button onClick={() => requestQueryRef.current?.('food')}>Query: food</button>
     </>
   )
 }
