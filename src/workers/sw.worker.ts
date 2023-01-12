@@ -1,5 +1,5 @@
 const CACHE_VERSION = '1.0'
-const CACHED_RESOURCES = ['/', '/favicon.svg', '/glyphs/14.0.json']
+const CACHED_RESOURCES = ['/', '/favicon.svg', '/glyphs/15.0.json']
 
 const cacheAllRequests = async (requests: RequestInfo[]) => {
   const cache = await caches.open(CACHE_VERSION)

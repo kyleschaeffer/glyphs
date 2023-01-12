@@ -1,9 +1,10 @@
+import Fuse from 'fuse.js'
 import type { Glyph } from '../store/types'
 import type { RequestMessage, RespondMessage } from './types'
 
 export type SearchWorkerCallbacks = {
   onGlyphResponse?: (glyph: Glyph | null) => void
-  onQueryResponse?: (results: Glyph[]) => void
+  onQueryResponse?: (results: Fuse.FuseResult<Glyph>[]) => void
 }
 
 export const registerSearchWorker = ({ onGlyphResponse, onQueryResponse }: SearchWorkerCallbacks = {}) => {
@@ -24,7 +25,7 @@ export const registerSearchWorker = ({ onGlyphResponse, onQueryResponse }: Searc
 
   const post = (message: RequestMessage) => worker.postMessage(message)
   const requestGlyph = (char: string) => post({ type: 'REQUEST_GLYPH', payload: { char } })
-  const requestQuery = (query: string | null) => post({ type: 'REQUEST_QUERY', payload: { query } })
+  const requestQuery = (query: string) => post({ type: 'REQUEST_QUERY', payload: { query } })
 
   return { requestGlyph, requestQuery }
 }

@@ -7,6 +7,10 @@ import { registerServiceWorker } from '../workers/sw'
 
 const App = ({ Component, pageProps }: AppProps) => {
   const isMounted = useRef(false)
+
+  const requestGlyphRef = useRef<(char: string) => void>()
+  const requestQueryRef = useRef<(query: string) => void>()
+
   useEffect(() => {
     if (isMounted.current) {
       return
@@ -19,8 +23,9 @@ const App = ({ Component, pageProps }: AppProps) => {
       onGlyphResponse: (glyph) => console.log('Glyph:', glyph),
       onQueryResponse: (results) => console.log('Results:', results),
     })
-    requestGlyph('hi')
-    requestQuery('hi')
+
+    requestGlyphRef.current = requestGlyph
+    requestQueryRef.current = requestQuery
   }, [])
 
   return (
@@ -32,6 +37,8 @@ const App = ({ Component, pageProps }: AppProps) => {
         />
       </Head>
       <Component {...pageProps} />
+      <button onClick={() => requestGlyphRef.current?.('🇺🇦')}>Get: 🇺🇦</button>
+      <button onClick={() => requestQueryRef.current?.('🇺🇦')}>Query: 🇺🇦</button>
     </>
   )
 }
