@@ -1,6 +1,6 @@
 import { Head, Html, Main, NextScript } from 'next/document'
 
-const Document = () => {
+export default function Document() {
   return (
     <Html>
       <Head>
@@ -17,4 +17,3 @@ const Document = () => {
     </Html>
   )
 }
-export default Document
