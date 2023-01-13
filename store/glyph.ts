@@ -3,14 +3,17 @@ import { throwUnreachable } from '../core/error'
 import type { registerSearchWorker } from '../workers/search'
 import type { SearchResult } from '../workers/types'
 import type { AppStoreSlice } from './app'
-import { Glyph } from './types'
+import type { Glyph } from './types'
+
+const QUERY_DEBOUNCE_MS = 300
 
 export type GlyphStoreSlice = {
+  debouncing: boolean
   glyph: Glyph | null
   loading: boolean
   query: string
   ready: boolean
-  results: SearchResult[] | null
+  results: SearchResult[]
 
   register: (registration: ReturnType<typeof registerSearchWorker>) => void
   requestGlyph: (char: string) => void
@@ -18,20 +21,25 @@ export type GlyphStoreSlice = {
   setGlyph: (glyph: Glyph | null) => void
   setQuery: (query: string) => void
   setReady: () => void
-  setResults: (results: SearchResult[] | null) => void
+  setResults: (results: SearchResult[]) => void
 }
 
 let _postGlyphRequest: (char: string) => void = () => throwUnreachable('Search worker not registered')
 let _postQueryRequest: (query: string) => void = () => throwUnreachable('Search worker not registered')
+let _requestQueryTimer: ReturnType<typeof setTimeout>
 
 export const createGlyphStoreSlice: AppStoreSlice<GlyphStoreSlice> = (set, get, store) => ({
+  debouncing: false,
   glyph: null,
   loading: false,
   query: '',
-  ready: false,
-  results: null,
+  ready: true,
+  results: [],
 
   register({ requestGlyph, requestQuery }) {
+    set((draft) => {
+      draft.ready = false
+    })
     _postGlyphRequest = requestGlyph
     _postQueryRequest = requestQuery
   },
@@ -66,7 +74,16 @@ export const createGlyphStoreSlice: AppStoreSlice<GlyphStoreSlice> = (set, get, 
   setQuery(query) {
     set((draft) => {
       draft.query = query
+      draft.debouncing = true
     })
+
+    clearTimeout(_requestQueryTimer)
+    _requestQueryTimer = setTimeout(() => {
+      set((draft) => {
+        draft.debouncing = false
+      })
+      get().requestQuery(query)
+    }, QUERY_DEBOUNCE_MS)
   },
 
   setReady() {
@@ -76,7 +93,6 @@ export const createGlyphStoreSlice: AppStoreSlice<GlyphStoreSlice> = (set, get, 
   },
 
   setResults(results) {
-    console.log('results', results)
     set((draft) => {
       draft.loading = false
       draft.results = results as WritableDraft<SearchResult>[]

@@ -1,9 +1,8 @@
-import type { NextPage } from 'next'
 import Head from 'next/head'
 import Image from 'next/image'
 import { SearchForm } from '../components/SearchForm'
 
-const Home: NextPage = () => {
+export default function AppRoute() {
   return (
     <>
       <Head>
@@ -17,4 +16,3 @@ const Home: NextPage = () => {
     </>
   )
 }
-export default Home
