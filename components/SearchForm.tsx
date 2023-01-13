@@ -13,9 +13,9 @@ export function SearchForm() {
   )
 
   return (
-    <div>
-      <input type="search" value={query} onChange={handleQueryChange} />
-      {loading && <span>🌀</span>}
+    <div className="search">
+      <input className="input" type="search" value={query} onChange={handleQueryChange} />
+      {loading && <div className="loading">◌</div>}
     </div>
   )
 }

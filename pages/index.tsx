@@ -14,7 +14,7 @@ export default function AppRoute() {
       <Head>
         <title>Glyphs</title>
       </Head>
-      <h1>
+      <h1 className="head">
         <Image src="/favicon.svg" width={40} height={40} alt="Glyphs" />
         <span>Glyphs</span>
       </h1>

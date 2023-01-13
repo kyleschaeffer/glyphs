@@ -11,10 +11,14 @@ export function Glyph() {
   if (!glyph) return <div>Not found</div>
 
   return (
-    <div>
-      <button onClick={close}>╳</button>
-      <h1 className="char">{glyph.c}</h1>
-      <p>{glyph.n}</p>
+    <div className="glyph">
+      <button className="close" onClick={close}>
+        ╳
+      </button>
+      <h2 className="name">{glyph.n}</h2>
+      <h1 className="char">
+        <span className="char-inner">{glyph.c}</span>
+      </h1>
       {glyph.g && <p>{glyph.g}</p>}
       {glyph.k && <p>{glyph.k}</p>}
       <p>{glyph.d}</p>
