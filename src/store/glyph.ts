@@ -26,7 +26,7 @@ let _postQueryRequest: (query: string) => void = () => throwUnreachable('Search 
 
 export const createGlyphStoreSlice: AppStoreSlice<GlyphStoreSlice> = (set, get, store) => ({
   glyph: null,
-  loading: true,
+  loading: false,
   query: '',
   ready: false,
   results: null,
@@ -76,6 +76,7 @@ export const createGlyphStoreSlice: AppStoreSlice<GlyphStoreSlice> = (set, get, 
   },
 
   setResults(results) {
+    console.log('results', results)
     set((draft) => {
       draft.loading = false
       draft.results = results as WritableDraft<SearchResult>[]
