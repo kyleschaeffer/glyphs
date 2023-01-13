@@ -57,7 +57,7 @@ class SearchController {
   }
 
   search(query: string): SearchResult[] {
-    return this.fuse?.search(query) ?? []
+    return this.fuse?.search(query, { limit: 500 }) ?? []
   }
 }
 

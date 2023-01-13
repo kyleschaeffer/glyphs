@@ -1,8 +1,9 @@
 import { ChangeEvent, useCallback } from 'react'
 import { useAppStore } from '../store/app'
+import { useLoading } from './hooks/useLoading'
 
 export function SearchForm() {
-  const loading = useAppStore((store) => store.loading || !store.ready || store.debouncing)
+  const loading = useLoading()
   const query = useAppStore((store) => store.query)
   const setQuery = useAppStore((store) => store.setQuery)
 
