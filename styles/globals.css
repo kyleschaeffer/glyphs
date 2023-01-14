@@ -76,6 +76,22 @@ a {
   border-color: rgba(255, 255, 255, 0.25);
 }
 
+.clear {
+  position: absolute;
+  top: 0;
+  right: 0;
+  font-size: 1.5em;
+  height: 4rem;
+  background: transparent;
+  border: 0;
+  padding: 0;
+  color: #fff;
+  cursor: pointer;
+  width: 4rem;
+  line-height: 4rem;
+  text-align: center;
+}
+
 .loading {
   position: absolute;
   top: 0;
@@ -114,7 +130,6 @@ a {
 }
 
 .name {
-  text-transform: uppercase;
   text-align: center;
   margin-block: 1rem;
 }

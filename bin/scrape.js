@@ -24,9 +24,9 @@ if (!UNICODE_VERSION) throw new Error('Unicode version not defined')
 // CSV; 14 columns; [0]=hex32; [1]=name; [10]?=keywords
 const UNICODE_DATA_URL = `https://www.unicode.org/Public/${UNICODE_VERSION}.0/ucd/UnicodeData.txt`
 
-// [1]=hex32; [2]=name; [3]=entities
-const HTML_ENTITY_DATA_URL = 'https://dev.w3.org/html5/html-author/charref'
-const HTML_ENTITY_DATA_SEARCH = /<tr title="U\+(.*?) (.*?)".*?<td class="named"><code>(.*?)<\/code>/gi
+// [1]=entity; [2]=hex32A; [3]=hex32B
+const HTML_ENTITY_DATA_URL = 'https://html.spec.whatwg.org/multipage/named-characters.html'
+const HTML_ENTITY_DATA_SEARCH = /<code>(\w+);?<\/code>(?:.*?)<td> U\+([\d\w]+)(?: U\+([\d\w]+))?/gi
 
 // [1]=hex32; [2]=character; [3]=name; [4]?=keywords
 const EMOJI_DATA_URL = `https://www.unicode.org/emoji/charts-${UNICODE_VERSION}/emoji-list.html`
@@ -78,7 +78,7 @@ const scrape = async () => {
   /** @type {Map<string, Glyph>} */
   const glyphs = new Map()
 
-  /** @type {Map<number, string>} */
+  /** @type {Map<number, string[]>} */
   const entities = new Map()
 
   /** @type {Map<number, string>} */
@@ -161,9 +161,13 @@ const scrape = async () => {
   // Save HTML entities
   let entityMatch = HTML_ENTITY_DATA_SEARCH.exec(entityData)
   while (entityMatch) {
-    const [, hex32, , entityNames] = entityMatch
-    const decimal = hexToDecimal(hex32)
-    entities.set(decimal, entityNames.replace(/&amp;/g, '&').replace(/&/g, '').replace(/;/g, ''))
+    const [, entityName, hex32A, hex32B] = entityMatch
+    const hexes = [hex32A, hex32B].filter((hex) => hex !== undefined)
+    hexes.forEach((hex) => {
+      const decimal = hexToDecimal(hex)
+      const decimalEntities = entities.get(decimal) ?? []
+      if (!decimalEntities.includes(entityName)) entities.set(decimal, [...decimalEntities, entityName])
+    })
     entityMatch = HTML_ENTITY_DATA_SEARCH.exec(entityData)
   }
 
@@ -212,7 +216,7 @@ const scrape = async () => {
         .toLowerCase(),
       g: blocks.get(decimal),
       k: name && keywords && name !== keywords ? keywords.replace(/&amp;/gi, '&').toLowerCase() : undefined,
-      e: entities.get(decimal),
+      e: entities.get(decimal)?.sort().join(' '),
       v: versions.get(decimal),
     })
   }

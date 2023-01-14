@@ -12,9 +12,16 @@ export function SearchForm() {
     [setQuery]
   )
 
+  const clear = useCallback(() => setQuery(''), [setQuery])
+
   return (
     <div className="search">
-      <input className="input" type="search" value={query} onChange={handleQueryChange} />
+      <input className="input" type="text" value={query} onChange={handleQueryChange} />
+      {!loading && !!query && (
+        <button className="clear" onClick={clear}>
+          ╳
+        </button>
+      )}
       {loading && <div className="loading">◌</div>}
     </div>
   )
