@@ -1,4 +1,7 @@
+import Link from 'next/link'
 import { useCallback } from 'react'
+import { decimalToUtf16, decimalToUtf32 } from '../core/convert'
+import { cssEntities, decimalValues, escapedHex16, escapedHex32, htmlEntities } from '../core/glyph'
 import { useAppStore } from '../store/app'
 
 export function Glyph() {
@@ -19,12 +22,62 @@ export function Glyph() {
       <h1 className="char">
         <span className="char-inner">{glyph.c}</span>
       </h1>
-      {glyph.g && <p>{glyph.g}</p>}
-      {glyph.k && <p>{glyph.k}</p>}
-      <p>{glyph.d}</p>
-      <p>{glyph.u}</p>
-      {glyph.e && <p>{glyph.e}</p>}
-      {glyph.v && <p>Added in Unicode version {glyph.v}.0</p>}
+      <h3>HTML:</h3>
+      <ul>
+        {htmlEntities(glyph).map((e, i) => (
+          <li key={i}>
+            <code>{e}</code>
+          </li>
+        ))}
+      </ul>
+      <h3>CSS:</h3>
+      <ul>
+        {cssEntities(glyph).map((e, i) => (
+          <li key={i}>
+            <code>{e}</code>
+          </li>
+        ))}
+      </ul>
+      <h3>JavaScript:</h3>
+      <ul>
+        <li>
+          <code>{escapedHex32(glyph)}</code>
+        </li>
+        <li>
+          <code>{escapedHex16(glyph)}</code>
+        </li>
+      </ul>
+      <h3>UTF-32:</h3>
+      <ul>
+        <li>
+          <code>0x{decimalToUtf32(parseInt(glyph.d, 10))}</code>
+        </li>
+      </ul>
+      <h3>UTF-16:</h3>
+      <ul>
+        <li>
+          <code>0x{decimalToUtf16(parseInt(glyph.d, 10)).join(' 0x')}</code>
+        </li>
+      </ul>
+      <h3>Decimal:</h3>
+      <ul>
+        <li>
+          <code>{decimalValues(glyph).join(' ')}</code>
+        </li>
+      </ul>
+      <h3>About:</h3>
+      <ul>
+        {glyph.g && <li>Group: {glyph.g}</li>}
+        {glyph.k && <li>Keywords: {glyph.k.split(',').join(', ')}</li>}
+        {glyph.v && (
+          <li>
+            Unicode version:{' '}
+            <Link href={`https://www.unicode.org/versions/Unicode${glyph.v}.0/`} target="_blank">
+              {glyph.v}.0
+            </Link>
+          </li>
+        )}
+      </ul>
     </div>
   )
 }
