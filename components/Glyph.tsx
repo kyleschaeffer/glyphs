@@ -3,14 +3,16 @@ import { useCallback } from 'react'
 import { decimalToUtf16, decimalToUtf32 } from '../core/convert'
 import { cssEntities, decimalValues, escapedHex16, escapedHex32, htmlEntities } from '../core/glyph'
 import { useAppStore } from '../store/app'
+import { useLoading } from './hooks/useLoading'
 
 export function Glyph() {
   const glyph = useAppStore((store) => store.glyph)
+  const loading = useLoading()
 
-  const setGlyph = useAppStore((store) => store.setGlyph)
+  const setChar = useAppStore((store) => store.setChar)
+  const close = useCallback(() => setChar(null), [setChar])
 
-  const close = useCallback(() => setGlyph(null), [setGlyph])
-
+  if (loading) return <div>Loading&hellip;</div>
   if (!glyph) return <div>Not found</div>
 
   return (
@@ -73,7 +75,8 @@ export function Glyph() {
           <li>
             Unicode version:{' '}
             <Link href={`https://www.unicode.org/versions/Unicode${glyph.v}.0/`} target="_blank">
-              {glyph.v}.0
+              <span>{glyph.v}.0</span>
+              <span> ↗</span>
             </Link>
           </li>
         )}

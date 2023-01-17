@@ -28,9 +28,8 @@ type SearchResultProps = {
 export function SearchResult(props: SearchResultProps) {
   const { glyph } = props
 
-  const setGlyph = useAppStore((store) => store.setGlyph)
-
-  const select = useCallback(() => setGlyph(glyph), [glyph, setGlyph])
+  const setChar = useAppStore((store) => store.setChar)
+  const select = useCallback(() => setChar(glyph.c), [glyph, setChar])
 
   return (
     <button className="result" onClick={select}>

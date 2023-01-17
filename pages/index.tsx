@@ -6,7 +6,7 @@ import { SearchResults } from '../components/SearchResults'
 import { useAppStore } from '../store/app'
 
 export default function AppRoute() {
-  const hasGlyph = useAppStore((store) => !!store.glyph)
+  const hasGlyph = useAppStore((store) => !!store.char)
   const hasQuery = useAppStore((store) => store.query.length > 0)
 
   return (

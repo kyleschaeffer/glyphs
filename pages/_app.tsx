@@ -1,5 +1,6 @@
 import type { AppProps } from 'next/app'
 import Head from 'next/head'
+import { HashController } from '../components/controllers/HashController'
 import { WorkerController } from '../components/controllers/WorkerController'
 import '../styles/globals.css'
 
@@ -13,6 +14,7 @@ export default function App({ Component, pageProps }: AppProps) {
         />
       </Head>
       <WorkerController />
+      <HashController />
       <Component {...pageProps} />
     </>
   )
