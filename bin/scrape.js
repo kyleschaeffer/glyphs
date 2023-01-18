@@ -6,8 +6,8 @@ const { decimalToString, decimalToUtf16, decimalToUtf32, hexToDecimal, stringToU
 /**
  * @typedef Glyph
  * @prop {string}   c   Glyph character
- * @prop {number}   d   UTF-32 decimal value
- * @prop {string}   u   UTF-32 hexadecimal encoding
+ * @prop {number[]} d   UTF-32 decimal values
+ * @prop {string[]} u   UTF-32 hexadecimal encodings
  * @prop {string[]} h   UTF-16 hexadecimal encodings
  * @prop {string}   n   Glyph name
  * @prop {string}   [g] Glyph category name
@@ -234,8 +234,8 @@ async function scrape() {
     const [glyphName, glyphKeywords] = glyphWords(name, keywords?.split(/[,;|]/) ?? [])
     addGlyph({
       c: char,
-      d: decimal,
-      u: decimalToUtf32(decimal),
+      d: [decimal],
+      u: [decimalToUtf32(decimal)],
       h: decimalToUtf16(decimal),
       n: glyphName,
       g: blocks.get(decimal),
@@ -249,7 +249,7 @@ async function scrape() {
   let emojiMatch = EMOJI_DATA_SEARCH.exec(emojiData)
   while (emojiMatch) {
     const [, hex32, char, name, keywords] = emojiMatch
-    const decimal = hexToDecimal(hex32.replace(/U\+/g, ''))
+    const decimals = hex32.split(' ').map((h) => hexToDecimal(h.replace(/^U\+/, '')))
     const [glyphName, glyphKeywords] = glyphWords(
       name,
       keywords
@@ -259,13 +259,13 @@ async function scrape() {
     )
     addGlyph({
       c: char,
-      d: decimal,
-      u: decimalToUtf32(decimal),
+      d: decimals,
+      u: decimals.map(decimalToUtf32),
       h: stringToUtf16(char),
       n: glyphName,
-      g: blocks.get(decimal),
+      g: blocks.get(decimals[0]),
       k: glyphKeywords,
-      v: versions.get(decimal),
+      v: versions.get(decimals[0]),
     })
     emojiMatch = EMOJI_DATA_SEARCH.exec(emojiData)
   }
@@ -274,17 +274,17 @@ async function scrape() {
   let emojiToneMatch = EMOJI_TONE_DATA_SEARCH.exec(emojiToneData)
   while (emojiToneMatch) {
     const [, hex32, char, name] = emojiToneMatch
-    const decimal = hexToDecimal(hex32.replace(/U\+/g, ''))
+    const decimals = hex32.split(' ').map((h) => hexToDecimal(h.replace(/^U\+/, '')))
     const [glyphName, glyphKeywords] = glyphWords(name, [])
     addGlyph({
       c: char,
-      d: decimal,
-      u: decimalToUtf32(decimal),
+      d: decimals,
+      u: decimals.map(decimalToUtf32),
       h: stringToUtf16(char),
       n: glyphName,
-      g: blocks.get(decimal),
+      g: blocks.get(decimals[0]),
       k: glyphKeywords,
-      v: versions.get(decimal),
+      v: versions.get(decimals[0]),
     })
     emojiToneMatch = EMOJI_TONE_DATA_SEARCH.exec(emojiToneData)
   }
