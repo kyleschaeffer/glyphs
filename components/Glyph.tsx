@@ -1,7 +1,8 @@
 import Head from 'next/head'
 import Link from 'next/link'
 import { useCallback } from 'react'
-import { cssEntities, htmlEntities, unicodeEscapeSequence } from '../core/glyph'
+import { utf16ToUnicodeEscapeSequence } from '../core/convert'
+import { cssEntities, htmlEntities } from '../core/glyph'
 import { useAppStore } from '../store/app'
 import { useLoading } from './hooks/useLoading'
 
@@ -52,7 +53,7 @@ export function Glyph() {
             <code>{glyph.c}</code>
           </li>
           <li>
-            <code>{unicodeEscapeSequence(glyph)}</code>
+            <code>{utf16ToUnicodeEscapeSequence(glyph.h)}</code>
           </li>
         </ul>
         <h3>UTF-32:</h3>
