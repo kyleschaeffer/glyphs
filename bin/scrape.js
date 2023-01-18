@@ -240,7 +240,7 @@ const scrape = async () => {
     addGlyph({
       c: char,
       d: decimal,
-      u: decimalToHex(decimal),
+      u: decimalToHex(decimal, 8),
       h: decimalToUtf16(decimal),
       n: glyphName,
       g: blocks.get(decimal),
@@ -265,7 +265,7 @@ const scrape = async () => {
     addGlyph({
       c: char,
       d: decimal,
-      u: decimalToHex(decimal),
+      u: decimalToHex(decimal, 8),
       h: stringToUtf16(char),
       n: glyphName,
       g: blocks.get(decimal),
@@ -284,7 +284,7 @@ const scrape = async () => {
     addGlyph({
       c: char,
       d: decimal,
-      u: decimalToHex(decimal),
+      u: decimalToHex(decimal, 8),
       h: stringToUtf16(char),
       n: glyphName,
       g: blocks.get(decimal),
