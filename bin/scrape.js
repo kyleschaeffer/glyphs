@@ -94,7 +94,8 @@ function sentenceCase(str) {
  */
 function titleCase(str) {
   return str
-    .split(' ')
+    .split(/[\s-]/)
+    .filter((w) => w.length)
     .map((word, i) => {
       const lowerWord = word.toLowerCase()
       return i > 0 && LOWERCASE_TITLE_WORDS.has(lowerWord) ? lowerWord : sentenceCase(word)
