@@ -31,6 +31,15 @@ export function Glyph() {
         <h1 className="char">
           <span className="char-inner">{glyph.c}</span>
         </h1>
+        <h3>JavaScript:</h3>
+        <ul>
+          <li>
+            <code>{glyph.c}</code>
+          </li>
+          <li>
+            <code>{utf16ToUnicodeEscapeSequence(glyph.h)}</code>
+          </li>
+        </ul>
         <h3>HTML:</h3>
         <ul>
           {htmlEntities(glyph).map((e, i) => (
@@ -47,32 +56,29 @@ export function Glyph() {
             </li>
           ))}
         </ul>
-        <h3>JavaScript:</h3>
-        <ul>
-          <li>
-            <code>{glyph.c}</code>
-          </li>
-          <li>
-            <code>{utf16ToUnicodeEscapeSequence(glyph.h)}</code>
-          </li>
-        </ul>
         <h3>UTF-32:</h3>
         <ul>
-          <li>
-            <code>{glyph.u.map((u) => `0x${u}`).join(' ')}</code>
-          </li>
+          {glyph.u.map((u, i) => (
+            <li key={i}>
+              <code>U+{u}</code>
+            </li>
+          ))}
         </ul>
         <h3>UTF-16:</h3>
         <ul>
-          <li>
-            <code>{glyph.h.map((h) => `0x${h}`).join(' ')}</code>
-          </li>
+          {glyph.h.map((h, i) => (
+            <li key={i}>
+              <code>U+{h}</code>
+            </li>
+          ))}
         </ul>
         <h3>Decimal:</h3>
         <ul>
-          <li>
-            <code>{glyph.d.join(' ')}</code>
-          </li>
+          {glyph.d.map((d, i) => (
+            <li key={i}>
+              <code>{d}</code>
+            </li>
+          ))}
         </ul>
         <h3>About:</h3>
         <ul>

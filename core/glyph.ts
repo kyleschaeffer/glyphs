@@ -8,18 +8,12 @@ export function htmlEntities(glyph: Glyph): string[] {
 
   if (!HTML_SPECIAL_CHARS.has(glyph.c)) entities.push(glyph.c)
   if (glyph.e) glyph.e.forEach((e) => entities.push(entityToHtml(e)))
-  if (glyph.u.length === 1) {
-    entities.push(utf32ToHtml(glyph.u[0]))
-    entities.push(decimalToHtml(glyph.d[0]))
-  }
+  entities.push(glyph.u.map(utf32ToHtml).join(''))
+  entities.push(glyph.d.map(decimalToHtml).join(''))
 
   return entities
 }
 
 export function cssEntities(glyph: Glyph): string[] {
-  const entities = [escapeSingleQuotes(glyph.c)]
-
-  if (glyph.u.length === 1) entities.push(utf32ToCss(glyph.u[0]))
-
-  return entities
+  return [escapeSingleQuotes(glyph.c), glyph.u.map(utf32ToCss).join('')]
 }
