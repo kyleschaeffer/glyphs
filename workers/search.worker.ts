@@ -27,7 +27,7 @@ class SearchController {
 
       this.fuse = new Fuse(glyphs, {
         keys: [
-          { name: 'c', weight: 1 },
+          { name: 'c', weight: 1.0 },
           { name: 'd', weight: 0.1 },
           { name: 'u', weight: 0.1 },
           { name: 'h', weight: 0.1 },

@@ -1,8 +1,7 @@
 import Head from 'next/head'
 import Link from 'next/link'
 import { useCallback } from 'react'
-import { decimalToUtf16, decimalToUtf32 } from '../core/convert'
-import { cssEntities, decimalValues, escapedHex16, escapedHex32, htmlEntities } from '../core/glyph'
+import { cssEntities, htmlEntities, unicodeEscapeSequence } from '../core/glyph'
 import { useAppStore } from '../store/app'
 import { useLoading } from './hooks/useLoading'
 
@@ -50,34 +49,34 @@ export function Glyph() {
         <h3>JavaScript:</h3>
         <ul>
           <li>
-            <code>{escapedHex32(glyph)}</code>
+            <code>{glyph.c}</code>
           </li>
           <li>
-            <code>{escapedHex16(glyph)}</code>
+            <code>{unicodeEscapeSequence(glyph)}</code>
           </li>
         </ul>
         <h3>UTF-32:</h3>
         <ul>
           <li>
-            <code>0x{decimalToUtf32(parseInt(glyph.d, 10))}</code>
+            <code>0x{glyph.u}</code>
           </li>
         </ul>
         <h3>UTF-16:</h3>
         <ul>
           <li>
-            <code>0x{decimalToUtf16(parseInt(glyph.d, 10)).join(' 0x')}</code>
+            <code>{glyph.h.map((h) => `0x${h}`).join(' ')}</code>
           </li>
         </ul>
         <h3>Decimal:</h3>
         <ul>
           <li>
-            <code>{decimalValues(glyph).join(' ')}</code>
+            <code>{glyph.d}</code>
           </li>
         </ul>
         <h3>About:</h3>
         <ul>
           {glyph.g && <li>Group: {glyph.g}</li>}
-          {glyph.k && <li>Keywords: {glyph.k.split(',').join(', ')}</li>}
+          {glyph.k && <li>Keywords: {glyph.k.join(', ')}</li>}
           {glyph.v && (
             <li>
               Unicode version:{' '}
