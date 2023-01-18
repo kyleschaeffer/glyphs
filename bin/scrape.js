@@ -96,9 +96,15 @@ function titleCase(str) {
   return str
     .split(/[\s-]/)
     .filter((w) => w.length)
-    .map((word, i) => {
-      const lowerWord = word.toLowerCase()
-      return i > 0 && LOWERCASE_TITLE_WORDS.has(lowerWord) ? lowerWord : sentenceCase(word)
+    .map((_word) => {
+      return _word
+        .split('.')
+        .map((word, i) => {
+          if (!word.length) return word
+          const lowerWord = word.toLowerCase()
+          return i > 0 && LOWERCASE_TITLE_WORDS.has(lowerWord) ? lowerWord : sentenceCase(word)
+        })
+        .join('.')
     })
     .join(' ')
 }
@@ -122,6 +128,7 @@ function sanitizeWord(word) {
  */
 function glyphWords(name, keywords) {
   const [glyphName, ...additionalNames] = name
+    .replace('&amp;', '&')
     .split(/[,;|]/)
     .map(sanitizeWord)
     .filter((w) => w.length)
@@ -232,7 +239,7 @@ async function scrape() {
     const [hex32, name, , , , , , , , , keywords] = cols
     const decimal = hexToDecimal(hex32)
     const char = decimalToString(decimal)
-    const [glyphName, glyphKeywords] = glyphWords(name, keywords?.split(/[,;|]/) ?? [])
+    const [glyphName, glyphKeywords] = glyphWords(name, keywords?.replace('&amp;', '&').split(/[,;|]/) ?? [])
     addGlyph({
       c: char,
       d: [decimal],
@@ -256,6 +263,7 @@ async function scrape() {
       keywords
         .replace(/<span class='keye'>/gi, '')
         .replace(/<\/span>/gi, '')
+        .replace('&amp;', '&')
         .split(/[,;|]/)
     )
     addGlyph({
