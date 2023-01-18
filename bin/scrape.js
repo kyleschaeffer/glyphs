@@ -5,15 +5,15 @@ const { decimalToHex, decimalToString, decimalToUtf16, hexToDecimal, stringToUtf
 
 /**
  * @typedef Glyph
- * @prop {string} c   Glyph character
- * @prop {string} d   UTF-32 decimal value
- * @prop {string} u   UTF-32 hexadecimal encoding
- * @prop {string} h   UTF-16 hexadecimal encoding(s); space-separated
- * @prop {string} n   Glyph name(s); comma-separated
- * @prop {string} [g] Glyph category name(s); comma-separated
- * @prop {string} [k] Keyword phrases; comma-separated
- * @prop {string} [e] HTML entity names; space-separated
- * @prop {string} [v] Unicode version
+ * @prop {string}   c   Glyph character
+ * @prop {number}   d   UTF-32 decimal value
+ * @prop {string}   u   UTF-32 hexadecimal encoding
+ * @prop {string[]} h   UTF-16 hexadecimal encodings
+ * @prop {string}   n   Glyph name
+ * @prop {string[]} [g] Glyph category names
+ * @prop {string[]} [k] Keyword phrases
+ * @prop {string[]} [e] HTML entity names
+ * @prop {string}   [v] Unicode version
  */
 
 dotenv.config()
@@ -74,6 +74,34 @@ const fetch = async (url) => {
   })
 }
 
+const LOWERCASE_TITLE_WORDS = new Set(['an', 'and', 'at', 'but', 'by', 'for', 'from', 'in', 'of', 'the', 'to'])
+
+/**
+ * Capitalize the first letter in a string
+ *
+ * @param   {string} str String to modify
+ * @returns {string}
+ */
+function sentenceCase(str) {
+  return `${str[0].toUpperCase()}${str.toLowerCase().slice(1)}`
+}
+
+/**
+ * Transform a string to title case
+ *
+ * @param   {string} str String to modify
+ * @returns {string}
+ */
+function titleCase(str) {
+  return str
+    .split(' ')
+    .map((word, i) => {
+      const lowerWord = word.toLowerCase()
+      return i > 0 && LOWERCASE_TITLE_WORDS.has(lowerWord) ? lowerWord : sentenceCase(word)
+    })
+    .join(' ')
+}
+
 const scrape = async () => {
   /** @type {Map<string, Glyph>} */
   const glyphs = new Map()
@@ -88,47 +116,54 @@ const scrape = async () => {
   const versions = new Map()
 
   /**
+   * Sanitize a word string
+   * @param   {string} word Word string
+   * @returns {string}
+   */
+  const sanitizeWord = (word) =>
+    word.replace(/&amp;/gi, '&').replace(/⊛/gi, '').replace(/^</, '').replace(/>$/, '').trim().toLowerCase()
+
+  /**
+   * Get deduped glyph name and keywords
+   *
+   * @param {string} name     Glyph name; may include comma-separated additional names that will be merged into keywords
+   * @param {string} keywords Keywords, comma-separated
+   *
+   * @returns {[name: string, keywords: string[] | undefined]}
+   */
+  const glyphWords = (name, keywords) => {
+    const [glyphName, ...additionalNames] = name
+      .split(/[,;|]/)
+      .map(sanitizeWord)
+      .filter((w) => w.length)
+    const glyphKeywords = new Set([...additionalNames, ...keywords].map(sanitizeWord).filter((w) => w.length))
+    glyphKeywords.delete(glyphName)
+    return [titleCase(glyphName), glyphKeywords.size ? [...glyphKeywords] : undefined]
+  }
+
+  /**
    * Add or merge new glyph data
    * @param {Glyph} glyph Glyph
    */
   const addGlyph = (glyph) => {
     const existingGlyph = glyphs.get(glyph.c)
     if (!existingGlyph) {
-      const glyphNames = [...new Set([...glyph.n.split(',')])].join(',')
-      const glyphGroups = [...new Set([...(glyph.g?.split(',') ?? [])])].join(',')
-      const glyphKeywords = [...new Set([...(glyph.k?.split(',') ?? [])])]
-        .filter((k) => !glyphNames.split(',').includes(k))
-        .join(',')
-      const glyphEntities = [...new Set([...(glyph.e?.split(' ') ?? [])])].join(' ')
-      glyphs.set(glyph.c, {
-        ...glyph,
-        n: glyphNames,
-        g: glyphGroups.length ? glyphGroups : undefined,
-        k: glyphKeywords.length ? glyphKeywords : undefined,
-        e: glyphEntities.length ? glyphEntities : undefined,
-      })
+      glyphs.set(glyph.c, glyph)
     } else {
       if (existingGlyph.u !== glyph.u)
         console.warn(`Unicode diff for character "${glyph.c}": "${existingGlyph.u}" vs. "${glyph.u}"`)
-      if (existingGlyph.h !== glyph.h)
+      if (existingGlyph.h.join(',') !== glyph.h.join(','))
         console.warn(`Hexadecimal diff for character "${glyph.c}": "${existingGlyph.h}" vs. "${glyph.h}"`)
       if (existingGlyph.v !== glyph.v)
         console.warn(`Version diff for character "${glyph.c}": "${existingGlyph.v}" vs. "${glyph.v}"`)
-      const glyphNames = [...new Set([...existingGlyph.n.split(','), ...glyph.n.split(',')])].join(',')
-      const glyphGroups = [...new Set([...(existingGlyph.g?.split(',') ?? []), ...(glyph.g?.split(',') ?? [])])].join(
-        ','
-      )
-      const glyphKeywords = [...new Set([...(existingGlyph.k?.split(',') ?? []), ...(glyph.k?.split(',') ?? [])])]
-        .filter((k) => !glyphNames.split(',').includes(k))
-        .join(',')
-      const glyphEntities = [...new Set([...(existingGlyph.e?.split(' ') ?? []), ...(glyph.e?.split(' ') ?? [])])].join(
-        ' '
-      )
+
+      const [, glyphKeywords] = glyphWords(existingGlyph.n, [...(existingGlyph.k ?? []), ...(glyph.k ?? [])])
+      const glyphGroups = [...new Set([...(existingGlyph.g ?? []), ...(glyph.g ?? [])])]
+      const glyphEntities = [...new Set([...(existingGlyph.e ?? []), ...(glyph.e ?? [])])]
       glyphs.set(glyph.c, {
         ...existingGlyph,
-        n: glyphNames,
         g: glyphGroups.length ? glyphGroups : undefined,
-        k: glyphKeywords.length ? glyphKeywords : undefined,
+        k: glyphKeywords,
         e: glyphEntities.length ? glyphEntities : undefined,
       })
     }
@@ -203,20 +238,16 @@ const scrape = async () => {
     const [hex32, name, , , , , , , , , keywords] = cols
     const decimal = hexToDecimal(hex32)
     const char = decimalToString(decimal)
+    const [glyphName, glyphKeywords] = glyphWords(name, keywords.split(/[,;|]/))
     addGlyph({
       c: char,
-      d: decimal.toString(),
+      d: decimal,
       u: decimalToHex(decimal),
-      h: decimalToUtf16(decimal).join(' '),
-      n: (name || keywords)
-        .replace(/&amp;/gi, '&')
-        .replace(/⊛ /gi, '')
-        .replace(/^</, '')
-        .replace(/>$/, '')
-        .toLowerCase(),
-      g: blocks.get(decimal),
-      k: name && keywords && name !== keywords ? keywords.replace(/&amp;/gi, '&').toLowerCase() : undefined,
-      e: entities.get(decimal)?.sort().join(' '),
+      h: decimalToUtf16(decimal),
+      n: glyphName,
+      g: [blocks.get(decimal)],
+      k: glyphKeywords,
+      e: entities.get(decimal)?.sort(),
       v: versions.get(decimal),
     })
   }
@@ -226,22 +257,21 @@ const scrape = async () => {
   while (emojiMatch) {
     const [, hex32, char, name, keywords] = emojiMatch
     const decimal = hexToDecimal(hex32.replace(/U\+/g, ''))
+    const [glyphName, glyphKeywords] = glyphWords(
+      name,
+      keywords
+        .replace(/<span class='keye'>/gi, '')
+        .replace(/<\/span>/gi, '')
+        .split(/[,;|]/)
+    )
     addGlyph({
       c: char,
-      d: decimal.toString(),
+      d: decimal,
       u: decimalToHex(decimal),
-      h: stringToUtf16(char).join(' '),
-      n: name.replace(/&amp;/gi, '&').replace(/⊛ /gi, '').toLowerCase(),
-      g: blocks.get(decimal),
-      k:
-        name !== keywords.replace(/ \| /g, ',')
-          ? keywords
-              .replace(/ \| /g, ',')
-              .replace(/&amp;/gi, '&')
-              .replace(/<span class='keye'>/gi, '')
-              .replace(/<\/span>/gi, '')
-              .toLowerCase()
-          : undefined,
+      h: stringToUtf16(char),
+      n: glyphName,
+      g: [blocks.get(decimal)],
+      k: glyphKeywords,
       v: versions.get(decimal),
     })
     emojiMatch = EMOJI_DATA_SEARCH.exec(emojiData)
@@ -252,13 +282,15 @@ const scrape = async () => {
   while (emojiToneMatch) {
     const [, hex32, char, name] = emojiToneMatch
     const decimal = hexToDecimal(hex32.replace(/U\+/g, ''))
+    const [glyphName, glyphKeywords] = glyphWords(name, [])
     addGlyph({
       c: char,
-      d: decimal.toString(),
+      d: decimal,
       u: decimalToHex(decimal),
-      h: stringToUtf16(char).join(' '),
-      n: name.replace(/&amp;/gi, '&').replace(/⊛ /gi, '').toLowerCase(),
-      g: blocks.get(decimal),
+      h: stringToUtf16(char),
+      n: glyphName,
+      g: [blocks.get(decimal)],
+      k: glyphKeywords,
       v: versions.get(decimal),
     })
     emojiToneMatch = EMOJI_TONE_DATA_SEARCH.exec(emojiToneData)
