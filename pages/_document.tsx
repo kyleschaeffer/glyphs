@@ -6,7 +6,7 @@ export default function Document() {
       <Head>
         <meta name="application-name" content="Glyphs" />
         <meta name="description" content="Unicode Character and Symbol Reference" />
-        <meta name="theme-color" content="#ec5f56" />
+        <meta name="theme-color" content="#6e56cf" />
         <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
         <link rel="manifest" href="/app.webmanifest" />
       </Head>

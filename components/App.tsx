@@ -16,10 +16,6 @@ export function App() {
         <title>Glyphs — Unicode Character and Symbol Reference</title>
       </Head>
       <HashController />
-      <h1 className="head">
-        <Image src="/favicon.svg" width={40} height={40} alt="Glyphs" />
-        <span>Glyphs</span>
-      </h1>
       {hasGlyph ? (
         <Glyph />
       ) : (

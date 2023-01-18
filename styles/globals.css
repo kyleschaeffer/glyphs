@@ -1,106 +1,316 @@
-html,
-body {
-  background: #222;
-  color: #eee;
-  padding: 0;
-  margin: 0;
-  font-size: 15px;
-  font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans',
-    'Helvetica Neue', sans-serif;
+/* https://www.radix-ui.com/docs/colors/palette-composition/the-scales */
+
+:root {
+  /* Color: mono */
+  --mono1: hsl(246deg 6% 9%);
+  --mono2: hsl(240deg 5.1% 11.6%);
+  --mono3: hsl(241deg 5% 14.3%);
+  --mono4: hsl(242deg 4.9% 16.5%);
+  --mono5: hsl(243deg 4.9% 18.8%);
+  --mono6: hsl(244deg 4.9% 21.5%);
+  --mono7: hsl(245deg 4.9% 25.4%);
+  --mono8: hsl(247deg 4.8% 32.5%);
+  --mono9: hsl(252deg 4% 45.2%);
+  --mono10: hsl(247deg 3.4% 50.7%);
+  --mono11: hsl(253deg 4% 63.7%);
+  --mono12: hsl(256deg 6% 93.2%);
+
+  /* Color: accent */
+  --accent1: hsl(250deg 20% 10.2%);
+  --accent2: hsl(255deg 30.3% 12.9%);
+  --accent3: hsl(253deg 37% 18.4%);
+  --accent4: hsl(252deg 40.1% 22.5%);
+  --accent5: hsl(252deg 42.2% 26.2%);
+  --accent6: hsl(251deg 44.3% 31.1%);
+  --accent7: hsl(250deg 46.8% 38.9%);
+  --accent8: hsl(250deg 51.8% 51.2%);
+  --accent9: hsl(252deg 56% 57.5%);
+  --accent10: hsl(251deg 63.2% 63.2%);
+  --accent11: hsl(250deg 95% 76.8%);
+  --accent12: hsl(252deg 87% 96.4%);
+
+  /* Color: black */
+  --black1: hsl(0deg 0% 0% / 1.2%);
+  --black2: hsl(0deg 0% 0% / 2.7%);
+  --black3: hsl(0deg 0% 0% / 4.7%);
+  --black4: hsl(0deg 0% 0% / 7.1%);
+  --black5: hsl(0deg 0% 0% / 9%);
+  --black6: hsl(0deg 0% 0% / 11.4%);
+  --black7: hsl(0deg 0% 0% / 14.1%);
+  --black8: hsl(0deg 0% 0% / 22%);
+  --black9: hsl(0deg 0% 0% / 43.9%);
+  --black10: hsl(0deg 0% 0% / 47.8%);
+  --black11: hsl(0deg 0% 0% / 56.5%);
+  --black12: hsl(0deg 0% 0% / 91%);
+
+  /* Color: white */
+  --white1: hsl(0deg 0% 100% / 0%);
+  --white2: hsl(0deg 0% 100% / 1.3%);
+  --white3: hsl(0deg 0% 100% / 3.4%);
+  --white4: hsl(0deg 0% 100% / 5.6%);
+  --white5: hsl(0deg 0% 100% / 8.6%);
+  --white6: hsl(0deg 0% 100% / 12.4%);
+  --white7: hsl(0deg 0% 100% / 17.6%);
+  --white8: hsl(0deg 0% 100% / 24.9%);
+  --white9: hsl(0deg 0% 100% / 38.6%);
+  --white10: hsl(0deg 0% 100% / 44.6%);
+  --white11: hsl(0deg 0% 100% / 59.2%);
+  --white12: hsl(0deg 0% 100% / 92.3%);
+
+  /* Font: family */
+  --font-body: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell',
+    'Fira Sans', 'Droid Sans', 'Helvetica Neue', Arial, sans-serif;
+  --font-mono: ui-monospace, SFMono-Regular, SF Mono, Menlo, Consolas, Liberation Mono, monospace;
+
+  /* Font: size */
+  --font-size-xs: 12px;
+  --font-size-sm: 14px;
+  --font-size-md: 16px;
+  --font-size-lg: 20px;
+  --font-size-xl: 32px;
+
+  /* Line */
+  --line-compact: 1.2;
+  --line-normal: 1.4;
+  --line-relaxed: 1.6;
+
+  /* Radii */
+  --radius-0: 0;
+  --radius-1: 2px;
+  --radius-2: 3px;
+  --radius-3: 4px;
+  --radius-4: 8px;
+
+  /* Space */
+  --space-0: 0;
+  --space-1: 2px;
+  --space-2: 4px;
+  --space-3: 8px;
+  --space-4: 12px;
+  --space-5: 16px;
+  --space-6: 24px;
+  --space-7: 32px;
+  --space-8: 48px;
+  --space-9: 64px;
+
+  /* Layout */
+  --result-gap: var(--space-5);
+  --result-size: 4rem;
+  --result-cols: 8;
+  --app-width: calc(var(--result-size) * var(--result-cols) + var(--result-gap) * (var(--result-cols) + 1));
 }
 
-a {
-  color: inherit;
-}
-
-* {
+*,
+*::before,
+*::after {
   box-sizing: border-box;
 }
 
-.head {
-  margin-block: 1rem;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 0.5rem;
+* {
+  margin: 0;
+}
+
+html,
+body {
+  height: 100%;
+}
+
+body {
+  background: var(--mono1);
+  color: var(--mono11);
+  font-family: var(--font-body);
+  font-size: var(--font-size-md);
+  line-height: var(--line-normal);
+  -webkit-font-smoothing: antialiased;
+}
+
+a {
+  color: var(--mono12);
+}
+
+a:focus-visible {
+  border-radius: var(--radius-1);
+  outline: 2px solid var(--accent8);
+  outline-offset: 2px;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+button {
+  color: var(--mono12);
+  line-height: var(--line-compact);
+  overflow-wrap: break-word;
+}
+
+h1,
+h2 {
+  font-size: var(--font-size-xl);
+  font-weight: 800;
+}
+
+h3 {
+  font-size: var(--font-size-md);
+  font-weight: 700;
+}
+
+ul,
+ol {
+  padding-inline-start: 1.5em;
+}
+
+ul[role='list'],
+ol[role='list'] {
+  list-style: none;
+  padding-inline-start: 0;
+}
+
+button,
+input,
+select,
+textarea {
+  color: var(--mono12);
+  font: inherit;
+  outline: none;
+  padding: 0;
+}
+
+button {
+  color: var(--mono12);
+  cursor: pointer;
+}
+
+button:disabled {
+  cursor: auto;
+}
+
+button:focus-visible {
+  border-radius: var(--radius-1);
+  outline: 2px solid var(--accent8);
+  outline-offset: 2px;
+}
+
+select {
+  appearance: none;
+}
+
+textarea {
+  resize: none;
+}
+
+input:focus-visible,
+select:focus-visible,
+textarea:focus-visible {
+  outline: none;
+}
+
+hr {
+  border: 0;
+  border-inline-start: 1px solid var(--mono4);
+}
+
+pre,
+code {
+  font-family: var(--font-mono);
+  overflow-wrap: break-word;
+}
+
+::selection {
+  color: var(--white12);
+  background-color: var(--accent7);
+}
+
+::placeholder {
+  color: var(--mono9);
+}
+
+#__next {
+  height: 100%;
+  isolation: isolate;
 }
 
 .results {
   display: flex;
   flex-wrap: wrap;
+  gap: var(--result-gap);
+  justify-content: center;
   list-style: none;
-  gap: 0.625em;
-  padding: 0;
-  width: 50rem;
   margin-inline: auto;
-  margin-block-end: 2rem;
+  padding: var(--result-gap);
+  width: var(--app-width);
 }
 
 .result {
-  font-family: inherit;
-  background: rgba(255, 255, 255, 0.1);
-  color: #fff;
-  width: 5rem;
-  height: 5rem;
-  font-size: 2.5rem;
-  line-height: 5rem;
-  text-align: center;
-  border: 1px solid rgba(255, 255, 255, 0.2);
-  border-radius: 0.25em;
+  background: rgba(0, 0, 0, 0);
+  border: 0;
+  border-radius: var(--radius-2);
   cursor: pointer;
+  font-size: calc(var(--result-size) * 0.625);
+  height: var(--result-size);
+  line-height: var(--result-size);
+  overflow: hidden;
+  text-align: center;
+  white-space: pre;
+  width: var(--result-size);
+}
+
+.result:hover,
+.result:focus-visible {
+  background-color: var(--mono3);
 }
 
 .search {
-  width: 50em;
-  margin: auto;
-  display: flex;
-  gap: 1em;
+  margin-inline: auto;
+  padding: var(--result-gap) var(--result-gap) 0;
   position: relative;
-  margin-bottom: 0.6em;
+  width: var(--app-width);
 }
 
 .input {
+  background: var(--mono3);
+  border: 1px solid var(--mono6);
+  border-radius: calc(var(--result-size) / 2);
+  font-size: var(--font-size-lg);
+  height: var(--result-size);
+  padding: 0 calc(var(--result-size) / 2);
   width: 100%;
-  font-size: 20px;
-  height: 4rem;
-  padding: 1em;
-  border-radius: 0.25em;
-  border: 1px solid rgba(255, 255, 255, 0.15);
-  background: rgba(255, 255, 255, 0.05);
-  color: #fff;
 }
 
 .input:focus-visible {
-  outline: 0;
-  border-color: rgba(255, 255, 255, 0.25);
+  border-color: var(--mono8);
+}
+
+.input-addon {
+  height: var(--result-size);
+  line-height: var(--result-size);
+  position: absolute;
+  right: var(--result-gap);
+  text-align: center;
+  top: var(--result-gap);
+  width: var(--result-size);
 }
 
 .clear {
-  position: absolute;
-  top: 0;
-  right: 0;
-  font-size: 1.5em;
-  height: 4rem;
   background: transparent;
   border: 0;
-  padding: 0;
-  color: #fff;
-  cursor: pointer;
-  width: 4rem;
-  line-height: 4rem;
-  text-align: center;
+  color: var(--mono10);
+  font-size: 2rem;
+  font-weight: 200;
+}
+
+.clear:hover,
+.clear:focus-visible {
+  color: var(--mono12);
 }
 
 .loading {
-  position: absolute;
-  top: 0;
-  right: 0;
-  font-size: 1.5em;
-  height: 4rem;
-  width: 4rem;
-  line-height: 4rem;
-  animation: 4s spin linear infinite;
-  text-align: center;
+  animation: 2s spin linear infinite;
+  color: var(--accent11);
+  font-size: 3rem;
+  line-height: 1.17;
 }
 
 @keyframes spin {
@@ -110,44 +320,153 @@ a {
 }
 
 .glyph {
-  width: 50rem;
+  width: var(--app-width);
   margin-inline: auto;
-  position: relative;
+  padding-inline: var(--result-gap);
+}
+
+.head {
+  align-items: center;
+  display: grid;
+  grid-template-columns: var(--result-size) 1fr var(--result-size);
+}
+
+.name {
+  text-align: center;
+  grid-column: 2 / 3;
+  padding: var(--result-gap);
 }
 
 .close {
   background: transparent;
   border: 0;
-  color: #fff;
-  cursor: pointer;
-  font-size: 1rem;
-  line-height: 1rem;
-  padding: 1rem;
-  position: absolute;
-  right: 0;
-  top: 0;
+  color: var(--mono10);
+  font-size: 2em;
+  font-weight: 200;
+  height: var(--result-size);
+  line-height: var(--result-size);
+  text-align: center;
+  width: var(--result-size);
 }
 
-.name {
-  text-align: center;
-  margin-block: 1rem;
+.close:hover,
+.close:focus-visible {
+  color: var(--mono12);
 }
 
 .char {
-  border: 2px dashed rgba(255, 255, 255, 0.15);
-  border-radius: 5px;
+  border: 3px dashed var(--mono3);
+  border-radius: var(--radius-4);
   font-size: 128px;
   font-weight: 400;
   line-height: 1.2;
-  margin: auto;
+  margin-inline: auto;
+  max-width: 100%;
+  /* overflow: hidden; */
+  position: relative;
   text-align: center;
-  text-align: center;
-  width: 1.25em;
   white-space: pre;
-  -webkit-font-smoothing: antialiased;
+  width: min-content;
 }
 
 .char-inner {
   display: block;
   margin: 0 -100%;
+}
+
+.measure {
+  color: var(--mono8);
+  display: block;
+  font-size: 10px;
+  font-weight: 700;
+  position: absolute;
+  z-index: -1;
+}
+
+.measure::before,
+.measure::after {
+  content: '';
+  display: block;
+  position: absolute;
+  background: var(--mono4);
+}
+
+.measure-width {
+  left: 50%;
+  top: calc(100% + var(--space-3));
+  transform: translateX(-64px);
+  width: 128px;
+}
+
+.measure-width::before {
+  height: 1px;
+  left: 0;
+  width: 40%;
+  top: 50%;
+}
+
+.measure-width::after {
+  height: 1px;
+  left: 60%;
+  width: 40%;
+  top: 50%;
+}
+
+.measure-height {
+  height: 128px;
+  left: calc(100% + var(--space-3));
+  text-orientation: mixed;
+  top: 50%;
+  transform: translateY(-64px);
+  writing-mode: vertical-rl;
+}
+
+.measure-height::before {
+  height: 40%;
+  left: 50%;
+  top: 0;
+  width: 1px;
+}
+
+.measure-height::after {
+  height: 40%;
+  left: 50%;
+  top: 60%;
+  width: 1px;
+}
+
+.tick {
+  background: var(--mono4);
+  display: block;
+  position: absolute;
+}
+
+.measure-width .tick {
+  height: 0.6em;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 1px;
+}
+
+.measure-width .tick1 {
+  left: 0;
+}
+
+.measure-width .tick2 {
+  right: 0;
+}
+
+.measure-height .tick {
+  height: 1px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 0.6em;
+}
+
+.measure-height .tick1 {
+  top: 0;
+}
+
+.measure-height .tick2 {
+  bottom: 0;
 }

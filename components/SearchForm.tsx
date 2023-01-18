@@ -1,4 +1,4 @@
-import { ChangeEvent, useCallback } from 'react'
+import { ChangeEvent, useCallback, useEffect } from 'react'
 import { useAppStore } from '../store/app'
 import { useLoading } from './hooks/useLoading'
 
@@ -12,17 +12,31 @@ export function SearchForm() {
     [setQuery]
   )
 
+  useEffect(() => {
+    function handleKeyDown(e: KeyboardEvent) {
+      if (e.key === 'Escape') {
+        e.preventDefault()
+        setQuery('')
+      }
+    }
+
+    document.addEventListener('keydown', handleKeyDown)
+    return () => {
+      document.removeEventListener('keydown', handleKeyDown)
+    }
+  }, [setQuery])
+
   const clear = useCallback(() => setQuery(''), [setQuery])
 
   return (
     <div className="search">
       <input className="input" type="text" value={query} onChange={handleQueryChange} />
       {!loading && !!query && (
-        <button className="clear" onClick={clear}>
-          ╳
+        <button className="input-addon clear" onClick={clear}>
+          ✗
         </button>
       )}
-      {loading && <div className="loading">◌</div>}
+      {loading && <div className="input-addon loading">◌</div>}
     </div>
   )
 }

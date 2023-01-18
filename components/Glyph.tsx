@@ -1,6 +1,6 @@
 import Head from 'next/head'
 import Link from 'next/link'
-import { useCallback } from 'react'
+import { useCallback, useEffect } from 'react'
 import { utf16ToUnicodeEscapeSequence } from '../core/convert'
 import { cssEntities, htmlEntities } from '../core/glyph'
 import { useAppStore } from '../store/app'
@@ -13,6 +13,20 @@ export function Glyph() {
   const setChar = useAppStore((store) => store.setChar)
   const close = useCallback(() => setChar(null), [setChar])
 
+  useEffect(() => {
+    function handleKeyDown(e: KeyboardEvent) {
+      if (e.key === 'Escape') {
+        e.preventDefault()
+        close()
+      }
+    }
+
+    document.addEventListener('keydown', handleKeyDown)
+    return () => {
+      document.removeEventListener('keydown', handleKeyDown)
+    }
+  }, [close])
+
   if (loading) return <div>Loading&hellip;</div>
   if (!glyph) return <div>Not found</div>
 
@@ -20,19 +34,31 @@ export function Glyph() {
     <>
       <Head>
         <title>
-          {glyph.c} — {glyph.n} — Glyphs
+          {glyph.c} {glyph.n} — Glyphs
         </title>
       </Head>
       <div className="glyph">
-        <button className="close" onClick={close}>
-          ╳
-        </button>
-        <h2 className="name">{glyph.n}</h2>
+        <header className="head">
+          <h2 className="name">{glyph.n}</h2>
+          <button className="close" onClick={close}>
+            ✗
+          </button>
+        </header>
         <h1 className="char">
           <span className="char-inner">{glyph.c}</span>
+          <span className="measure measure-width">
+            <span className="tick tick1" />
+            1 em
+            <span className="tick tick2" />
+          </span>
+          <span className="measure measure-height">
+            <span className="tick tick1" />
+            1 em
+            <span className="tick tick2" />
+          </span>
         </h1>
         <h3>JavaScript:</h3>
-        <ul>
+        <ul role="list">
           <li>
             <code>{glyph.c}</code>
           </li>
@@ -41,7 +67,7 @@ export function Glyph() {
           </li>
         </ul>
         <h3>HTML:</h3>
-        <ul>
+        <ul role="list">
           {htmlEntities(glyph).map((e, i) => (
             <li key={i}>
               <code>{e}</code>
@@ -49,7 +75,7 @@ export function Glyph() {
           ))}
         </ul>
         <h3>CSS:</h3>
-        <ul>
+        <ul role="list">
           {cssEntities(glyph).map((e, i) => (
             <li key={i}>
               <code>{e}</code>
@@ -57,7 +83,7 @@ export function Glyph() {
           ))}
         </ul>
         <h3>UTF-32:</h3>
-        <ul>
+        <ul role="list">
           {glyph.u.map((u, i) => (
             <li key={i}>
               <code>U+{u}</code>
@@ -65,7 +91,7 @@ export function Glyph() {
           ))}
         </ul>
         <h3>UTF-16:</h3>
-        <ul>
+        <ul role="list">
           {glyph.h.map((h, i) => (
             <li key={i}>
               <code>U+{h}</code>
@@ -73,7 +99,7 @@ export function Glyph() {
           ))}
         </ul>
         <h3>Decimal:</h3>
-        <ul>
+        <ul role="list">
           {glyph.d.map((d, i) => (
             <li key={i}>
               <code>{d}</code>
@@ -81,7 +107,7 @@ export function Glyph() {
           ))}
         </ul>
         <h3>About:</h3>
-        <ul>
+        <ul role="list">
           {glyph.g && <li>Group: {glyph.g}</li>}
           {glyph.k && <li>Keywords: {glyph.k.join(', ')}</li>}
           {glyph.v && (
