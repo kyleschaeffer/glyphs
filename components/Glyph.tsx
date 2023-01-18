@@ -59,7 +59,7 @@ export function Glyph() {
         <h3>UTF-32:</h3>
         <ul>
           <li>
-            <code>0x{glyph.u}</code>
+            <code>{glyph.u.map((u) => `0x${u}`).join(' ')}</code>
           </li>
         </ul>
         <h3>UTF-16:</h3>
@@ -71,7 +71,7 @@ export function Glyph() {
         <h3>Decimal:</h3>
         <ul>
           <li>
-            <code>{glyph.d}</code>
+            <code>{glyph.d.join(' ')}</code>
           </li>
         </ul>
         <h3>About:</h3>

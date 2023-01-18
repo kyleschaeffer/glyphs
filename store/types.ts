@@ -5,14 +5,14 @@ export type Glyph = {
   c: string
 
   /**
-   * UTF-32 decimal value
+   * UTF-32 decimal values
    */
-  d: number
+  d: number[]
 
   /**
-   * UTF-32 hexadecimal encoding
+   * UTF-32 hexadecimal encodings
    */
-  u: string
+  u: string[]
 
   /**
    * UTF-16 hexadecimal encodings
