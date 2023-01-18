@@ -108,7 +108,7 @@ export function Glyph() {
         </ul>
         <h3>About:</h3>
         <ul role="list">
-          {glyph.g && <li>Group: {glyph.g}</li>}
+          {glyph.g && <li>Category: {glyph.g}</li>}
           {glyph.k && <li>Keywords: {glyph.k.join(', ')}</li>}
           {glyph.v && (
             <li>

@@ -10,6 +10,7 @@ const DEBOUNCE_REQUEST_MS = 300
 
 export type GlyphStoreSlice = {
   char: string | null
+  count: number
   debouncingChar: boolean
   debouncingQuery: boolean
   glyph: Glyph | null
@@ -28,7 +29,7 @@ export type GlyphStoreSlice = {
   setGlyph: (glyph: Glyph | null) => void
   setHash: () => void
   setQuery: (query: string) => void
-  setReady: () => void
+  setReady: (count: number) => void
   setResults: (results: SearchResult[]) => void
 }
 
@@ -39,6 +40,7 @@ let _requestQueryTimer: ReturnType<typeof setTimeout>
 
 export const createGlyphStoreSlice: AppStoreSlice<GlyphStoreSlice> = (set, get, store) => ({
   char: null,
+  count: 0,
   debouncingChar: false,
   debouncingQuery: false,
   glyph: null,
@@ -141,8 +143,9 @@ export const createGlyphStoreSlice: AppStoreSlice<GlyphStoreSlice> = (set, get, 
     }, DEBOUNCE_REQUEST_MS)
   },
 
-  setReady() {
+  setReady(count) {
     set((draft) => {
+      draft.count = count
       draft.ready = true
     })
   },

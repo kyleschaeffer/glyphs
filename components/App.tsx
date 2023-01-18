@@ -5,6 +5,7 @@ import { HashController } from './controllers/HashController'
 import { Glyph } from './Glyph'
 import { SearchForm } from './SearchForm'
 import { SearchResults } from './SearchResults'
+import { Summary } from './Summary'
 
 export function App() {
   const hasGlyph = useAppStore((store) => !!store.char)
@@ -21,7 +22,7 @@ export function App() {
       ) : (
         <>
           <SearchForm />
-          {hasQuery && <SearchResults />}
+          {hasQuery ? <SearchResults /> : <Summary />}
         </>
       )}
     </>

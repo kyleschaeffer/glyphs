@@ -6,7 +6,7 @@ import z from 'zod'
 const post = (message: WorkerMessage) => self.postMessage(message)
 const postGlyphResponse = (glyph: Glyph | null) => post({ type: 'GLYPH_RESPONSE', payload: { glyph } })
 const postQueryResponse = (results: SearchResult[]) => post({ type: 'QUERY_RESPONSE', payload: { results } })
-const postWorkerReady = () => post({ type: 'WORKER_READY', payload: {} })
+const postWorkerReady = (count: number) => post({ type: 'WORKER_READY', payload: { count } })
 
 class SearchController {
   loading = false
@@ -44,7 +44,7 @@ class SearchController {
         this.glyphs.set(glyph.c, glyph)
       }
 
-      postWorkerReady()
+      postWorkerReady(this.glyphs.size)
     } catch (e) {
       console.error(e)
     } finally {

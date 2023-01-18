@@ -4,7 +4,7 @@ import type { ClientMessage, WorkerMessage, SearchResult } from './types'
 export type SearchWorkerCallbacks = {
   onGlyphResponse?: (glyph: Glyph | null) => void
   onQueryResponse?: (results: SearchResult[]) => void
-  onWorkerReady?: () => void
+  onWorkerReady?: (count: number) => void
 }
 
 export const registerSearchWorker = ({
@@ -23,7 +23,7 @@ export const registerSearchWorker = ({
         onQueryResponse?.(event.data.payload.results)
         break
       case 'WORKER_READY':
-        onWorkerReady?.()
+        onWorkerReady?.(event.data.payload.count)
         break
       default:
         console.warn('Unknown worker message event:', event)

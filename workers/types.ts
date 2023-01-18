@@ -14,5 +14,5 @@ export type ClientMessage = RequestGlyphMessage | RequestQueryMessage
 
 export type GlyphResponseMessage = Message<'GLYPH_RESPONSE', { glyph: Glyph | null }>
 export type QueryResponseMessage = Message<'QUERY_RESPONSE', { results: SearchResult[] }>
-export type WorkerReadyMessage = Message<'WORKER_READY'>
+export type WorkerReadyMessage = Message<'WORKER_READY', { count: number }>
 export type WorkerMessage = GlyphResponseMessage | QueryResponseMessage | WorkerReadyMessage
