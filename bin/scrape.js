@@ -10,7 +10,7 @@ const { decimalToHex, decimalToString, decimalToUtf16, hexToDecimal, stringToUtf
  * @prop {string}   u   UTF-32 hexadecimal encoding
  * @prop {string[]} h   UTF-16 hexadecimal encodings
  * @prop {string}   n   Glyph name
- * @prop {string}   g   Glyph category name
+ * @prop {string}   [g] Glyph category name
  * @prop {string[]} [k] Keyword phrases
  * @prop {string[]} [e] HTML entity names
  * @prop {string}   [v] Unicode version

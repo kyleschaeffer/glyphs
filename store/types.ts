@@ -7,7 +7,7 @@ export type Glyph = {
   /**
    * UTF-32 decimal value
    */
-  d: string
+  d: number
 
   /**
    * UTF-32 hexadecimal encoding
@@ -15,29 +15,29 @@ export type Glyph = {
   u: string
 
   /**
-   * UTF-16 hexadecimal encoding(s); space-separated
+   * UTF-16 hexadecimal encodings
    */
-  h: string
+  h: string[]
 
   /**
-   * Glyph name(s); comma-separated
+   * Glyph name
    */
   n: string
 
   /**
-   * Glyph category name(s); comma-separated
+   * Glyph category name
    */
   g?: string
 
   /**
-   * Keyword phrases; comma-separated
+   * Keyword phrases
    */
-  k?: string
+  k?: string[]
 
   /**
-   * HTML entity names; space-separated
+   * HTML entity names
    */
-  e?: string
+  e?: string[]
 
   /**
    * Unicode version
