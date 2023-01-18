@@ -53,7 +53,7 @@ const UNICODE_VERSION_DATA_SEARCH = /(.*?)(?:\.\.(.*))?\s+;\s([\d.]+)\s#\s+(?:\[
  * @param   {string}          url Fetch URL
  * @returns {Promise<string>}
  */
-const fetch = async (url) => {
+async function fetch(url) {
   return new Promise((resolve, reject) => {
     const { hostname, pathname } = new URL(url)
     const req = https.request(
@@ -102,7 +102,34 @@ function titleCase(str) {
     .join(' ')
 }
 
-const scrape = async () => {
+/**
+ * Sanitize a word string
+ *
+ * @param   {string} word Word string
+ * @returns {string}
+ */
+function sanitizeWord(word) {
+  return word.replace(/&amp;/gi, '&').replace(/⊛/gi, '').replace(/^</, '').replace(/>$/, '').trim().toLowerCase()
+}
+
+/**
+ * Get deduped glyph name and keywords
+ *
+ * @param   {string}   name     Glyph name; additional names will be merged into keywords
+ * @param   {string[]} keywords Keywords, comma-, semicolon-, or pipe-separated
+ * @returns {[name: string, keywords: string[] | undefined]}
+ */
+function glyphWords(name, keywords) {
+  const [glyphName, ...additionalNames] = name
+    .split(/[,;|]/)
+    .map(sanitizeWord)
+    .filter((w) => w.length)
+  const glyphKeywords = new Set([...additionalNames, ...keywords].map(sanitizeWord).filter((w) => w.length))
+  glyphKeywords.delete(glyphName)
+  return [titleCase(glyphName), glyphKeywords.size ? [...glyphKeywords] : undefined]
+}
+
+async function scrape() {
   /** @type {Map<string, Glyph>} */
   const glyphs = new Map()
 
@@ -116,55 +143,23 @@ const scrape = async () => {
   const versions = new Map()
 
   /**
-   * Sanitize a word string
-   * @param   {string} word Word string
-   * @returns {string}
-   */
-  const sanitizeWord = (word) =>
-    word.replace(/&amp;/gi, '&').replace(/⊛/gi, '').replace(/^</, '').replace(/>$/, '').trim().toLowerCase()
-
-  /**
-   * Get deduped glyph name and keywords
-   *
-   * @param {string} name     Glyph name; may include comma-separated additional names that will be merged into keywords
-   * @param {string} keywords Keywords, comma-separated
-   *
-   * @returns {[name: string, keywords: string[] | undefined]}
-   */
-  const glyphWords = (name, keywords) => {
-    const [glyphName, ...additionalNames] = name
-      .split(/[,;|]/)
-      .map(sanitizeWord)
-      .filter((w) => w.length)
-    const glyphKeywords = new Set([...additionalNames, ...keywords].map(sanitizeWord).filter((w) => w.length))
-    glyphKeywords.delete(glyphName)
-    return [titleCase(glyphName), glyphKeywords.size ? [...glyphKeywords] : undefined]
-  }
-
-  /**
    * Add or merge new glyph data
    * @param {Glyph} glyph Glyph
    */
-  const addGlyph = (glyph) => {
+  function addGlyph(glyph) {
     const existingGlyph = glyphs.get(glyph.c)
     if (!existingGlyph) {
       glyphs.set(glyph.c, glyph)
-    } else {
-      if (existingGlyph.u !== glyph.u)
-        console.warn(`Unicode diff for character "${glyph.c}": "${existingGlyph.u}" vs. "${glyph.u}"`)
-      if (existingGlyph.g !== glyph.g)
-        console.warn(`Category group diff for character "${glyph.c}": "${existingGlyph.g}" vs. "${glyph.g}"`)
-      if (existingGlyph.v !== glyph.v)
-        console.warn(`Version diff for character "${glyph.c}": "${existingGlyph.v}" vs. "${glyph.v}"`)
-
-      const [, glyphKeywords] = glyphWords(existingGlyph.n, [...(existingGlyph.k ?? []), ...(glyph.k ?? [])])
-      const glyphEntities = [...new Set([...(existingGlyph.e ?? []), ...(glyph.e ?? [])])]
-      glyphs.set(glyph.c, {
-        ...existingGlyph,
-        k: glyphKeywords,
-        e: glyphEntities.length ? glyphEntities : undefined,
-      })
+      return
     }
+
+    const [, glyphKeywords] = glyphWords(existingGlyph.n, [glyph.n, ...(existingGlyph.k ?? []), ...(glyph.k ?? [])])
+    const glyphEntities = [...new Set([...(existingGlyph.e ?? []), ...(glyph.e ?? [])])]
+    glyphs.set(glyph.c, {
+      ...existingGlyph,
+      k: glyphKeywords,
+      e: glyphEntities.length ? glyphEntities : undefined,
+    })
   }
 
   // Get Unicode data
@@ -236,7 +231,7 @@ const scrape = async () => {
     const [hex32, name, , , , , , , , , keywords] = cols
     const decimal = hexToDecimal(hex32)
     const char = decimalToString(decimal)
-    const [glyphName, glyphKeywords] = glyphWords(name, keywords.split(/[,;|]/))
+    const [glyphName, glyphKeywords] = glyphWords(name, keywords?.split(/[,;|]/) ?? [])
     addGlyph({
       c: char,
       d: decimal,
@@ -266,7 +261,7 @@ const scrape = async () => {
       c: char,
       d: decimal,
       u: decimalToHex(decimal, 8),
-      h: stringToUtf16(char),
+      h: decimalToUtf16(decimal),
       n: glyphName,
       g: blocks.get(decimal),
       k: glyphKeywords,
@@ -285,7 +280,7 @@ const scrape = async () => {
       c: char,
       d: decimal,
       u: decimalToHex(decimal, 8),
-      h: stringToUtf16(char),
+      h: decimalToUtf16(decimal),
       n: glyphName,
       g: blocks.get(decimal),
       k: glyphKeywords,
