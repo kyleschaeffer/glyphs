@@ -10,7 +10,7 @@ const { decimalToHex, decimalToString, decimalToUtf16, hexToDecimal, stringToUtf
  * @prop {string}   u   UTF-32 hexadecimal encoding
  * @prop {string[]} h   UTF-16 hexadecimal encodings
  * @prop {string}   n   Glyph name
- * @prop {string[]} [g] Glyph category names
+ * @prop {string}   g   Glyph category name
  * @prop {string[]} [k] Keyword phrases
  * @prop {string[]} [e] HTML entity names
  * @prop {string}   [v] Unicode version
@@ -152,17 +152,15 @@ const scrape = async () => {
     } else {
       if (existingGlyph.u !== glyph.u)
         console.warn(`Unicode diff for character "${glyph.c}": "${existingGlyph.u}" vs. "${glyph.u}"`)
-      if (existingGlyph.h.join(',') !== glyph.h.join(','))
-        console.warn(`Hexadecimal diff for character "${glyph.c}": "${existingGlyph.h}" vs. "${glyph.h}"`)
+      if (existingGlyph.g !== glyph.g)
+        console.warn(`Category group diff for character "${glyph.c}": "${existingGlyph.g}" vs. "${glyph.g}"`)
       if (existingGlyph.v !== glyph.v)
         console.warn(`Version diff for character "${glyph.c}": "${existingGlyph.v}" vs. "${glyph.v}"`)
 
       const [, glyphKeywords] = glyphWords(existingGlyph.n, [...(existingGlyph.k ?? []), ...(glyph.k ?? [])])
-      const glyphGroups = [...new Set([...(existingGlyph.g ?? []), ...(glyph.g ?? [])])]
       const glyphEntities = [...new Set([...(existingGlyph.e ?? []), ...(glyph.e ?? [])])]
       glyphs.set(glyph.c, {
         ...existingGlyph,
-        g: glyphGroups.length ? glyphGroups : undefined,
         k: glyphKeywords,
         e: glyphEntities.length ? glyphEntities : undefined,
       })
@@ -245,7 +243,7 @@ const scrape = async () => {
       u: decimalToHex(decimal),
       h: decimalToUtf16(decimal),
       n: glyphName,
-      g: [blocks.get(decimal)],
+      g: blocks.get(decimal),
       k: glyphKeywords,
       e: entities.get(decimal)?.sort(),
       v: versions.get(decimal),
@@ -270,7 +268,7 @@ const scrape = async () => {
       u: decimalToHex(decimal),
       h: stringToUtf16(char),
       n: glyphName,
-      g: [blocks.get(decimal)],
+      g: blocks.get(decimal),
       k: glyphKeywords,
       v: versions.get(decimal),
     })
@@ -289,7 +287,7 @@ const scrape = async () => {
       u: decimalToHex(decimal),
       h: stringToUtf16(char),
       n: glyphName,
-      g: [blocks.get(decimal)],
+      g: blocks.get(decimal),
       k: glyphKeywords,
       v: versions.get(decimal),
     })
