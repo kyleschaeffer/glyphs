@@ -1,7 +1,7 @@
 const dotenv = require('dotenv')
 const fs = require('fs')
 const https = require('https')
-const { decimalToHex, decimalToString, decimalToUtf16, hexToDecimal, stringToUtf16 } = require('../core/convert.js')
+const { decimalToString, decimalToUtf16, decimalToUtf32, hexToDecimal, stringToUtf16 } = require('../core/convert.js')
 
 /**
  * @typedef Glyph
@@ -235,7 +235,7 @@ async function scrape() {
     addGlyph({
       c: char,
       d: decimal,
-      u: decimalToHex(decimal, 8),
+      u: decimalToUtf32(decimal),
       h: decimalToUtf16(decimal),
       n: glyphName,
       g: blocks.get(decimal),
@@ -260,8 +260,8 @@ async function scrape() {
     addGlyph({
       c: char,
       d: decimal,
-      u: decimalToHex(decimal, 8),
-      h: decimalToUtf16(decimal),
+      u: decimalToUtf32(decimal),
+      h: stringToUtf16(char),
       n: glyphName,
       g: blocks.get(decimal),
       k: glyphKeywords,
@@ -279,8 +279,8 @@ async function scrape() {
     addGlyph({
       c: char,
       d: decimal,
-      u: decimalToHex(decimal, 8),
-      h: decimalToUtf16(decimal),
+      u: decimalToUtf32(decimal),
+      h: stringToUtf16(char),
       n: glyphName,
       g: blocks.get(decimal),
       k: glyphKeywords,
