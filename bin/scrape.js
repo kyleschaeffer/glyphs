@@ -74,8 +74,6 @@ async function fetch(url) {
   })
 }
 
-const LOWERCASE_TITLE_WORDS = new Set(['an', 'and', 'at', 'but', 'by', 'for', 'from', 'in', 'of', 'the', 'to'])
-
 /**
  * Capitalize the first letter in a string
  *
@@ -83,7 +81,7 @@ const LOWERCASE_TITLE_WORDS = new Set(['an', 'and', 'at', 'but', 'by', 'for', 'f
  * @returns {string}
  */
 function sentenceCase(str) {
-  return `${str[0].toUpperCase()}${str.toLowerCase().slice(1)}`
+  return str.length ? `${str[0].toUpperCase()}${str.toLowerCase().slice(1)}` : str
 }
 
 /**
@@ -96,16 +94,7 @@ function titleCase(str) {
   return str
     .split(/[\s-]/)
     .filter((w) => w.length)
-    .map((_word) => {
-      return _word
-        .split('.')
-        .map((word, i) => {
-          if (!word.length) return word
-          const lowerWord = word.toLowerCase()
-          return i > 0 && LOWERCASE_TITLE_WORDS.has(lowerWord) ? lowerWord : sentenceCase(word)
-        })
-        .join('.')
-    })
+    .map((_word) => _word.split('.').map(sentenceCase).join('.'))
     .join(' ')
 }
 
