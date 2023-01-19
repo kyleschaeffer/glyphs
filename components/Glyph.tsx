@@ -4,6 +4,7 @@ import { useCallback, useEffect } from 'react'
 import { utf16ToUnicodeEscapeSequence } from '../core/convert'
 import { cssEntities, htmlEntities } from '../core/glyph'
 import { useAppStore } from '../store/app'
+import { CopyButton } from './CopyButton'
 import { useLoading } from './hooks/useLoading'
 
 export function Glyph() {
@@ -57,6 +58,7 @@ export function Glyph() {
             <span className="tick tick2" />
           </span>
         </h1>
+        <CopyButton text={glyph.c} copyLabel="Copy glyph" />
         <h3>JavaScript:</h3>
         <ul role="list">
           <li>

@@ -6,7 +6,7 @@ import type { SearchResult } from '../workers/types'
 import type { AppStoreSlice } from './app'
 import type { Glyph } from './types'
 
-const DEBOUNCE_REQUEST_MS = 300
+const DEBOUNCE_REQUEST_MS = 500
 
 export type GlyphStoreSlice = {
   char: string | null

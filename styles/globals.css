@@ -365,7 +365,6 @@ code {
   line-height: 1.2;
   margin-inline: auto;
   max-width: 100%;
-  /* overflow: hidden; */
   position: relative;
   text-align: center;
   white-space: pre;
@@ -479,4 +478,46 @@ code {
   font-size: var(--font-size-sm);
   margin-block-start: var(--result-gap);
   text-align: center;
+}
+
+.copy {
+  align-items: center;
+  background: transparent;
+  border: 0;
+  border-radius: var(--radius-2);
+  display: flex;
+  font-size: var(--font-size-sm);
+  gap: var(--space-3);
+  padding: 0.25em 0.75em;
+  text-align: center;
+}
+
+.copy:hover,
+.copy:focus-visible {
+  background-color: var(--mono3);
+}
+
+.copy-icon,
+.copied-icon {
+  font-size: 1.25rem;
+}
+
+.copy-icon {
+  color: var(--mono8);
+}
+
+.copied-icon {
+  color: var(--accent9);
+}
+
+.copied .copy-icon,
+.copied .copy-label {
+  visibility: hidden;
+}
+
+.copied-icon,
+.copied-label {
+  display: inline-block;
+  width: 0;
+  white-space: nowrap;
 }
