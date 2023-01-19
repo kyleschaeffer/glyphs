@@ -14,6 +14,7 @@ export type GlyphStoreSlice = {
   debouncingChar: boolean
   debouncingQuery: boolean
   glyph: Glyph | null
+  inspect: (Glyph | null)[]
   loadingGlyph: boolean
   loadingResults: boolean
   query: string
@@ -29,11 +30,13 @@ export type GlyphStoreSlice = {
   setGlyph: (glyph: Glyph | null) => void
   setHash: () => void
   setQuery: (query: string) => void
+  setInspect: (glyphs: (Glyph | null)[]) => void
   setReady: (count: number) => void
   setResults: (results: SearchResult[]) => void
 }
 
 let _postGlyphRequest: (char: string) => void = () => throwUnreachable('Search worker not registered')
+let _postInspectRequest: (query: string) => void = () => throwUnreachable('Search worker not registered')
 let _postQueryRequest: (query: string) => void = () => throwUnreachable('Search worker not registered')
 let _requestGlyphTimer: ReturnType<typeof setTimeout>
 let _requestQueryTimer: ReturnType<typeof setTimeout>
@@ -44,6 +47,7 @@ export const createGlyphStoreSlice: AppStoreSlice<GlyphStoreSlice> = (set, get, 
   debouncingChar: false,
   debouncingQuery: false,
   glyph: null,
+  inspect: [],
   loadingGlyph: false,
   loadingResults: false,
   query: '',
@@ -67,11 +71,12 @@ export const createGlyphStoreSlice: AppStoreSlice<GlyphStoreSlice> = (set, get, 
     if (char !== c) setChar(c, true)
   },
 
-  register({ requestGlyph, requestQuery }) {
+  register({ requestGlyph, requestInspect, requestQuery }) {
     set((draft) => {
       draft.ready = false
     })
     _postGlyphRequest = requestGlyph
+    _postInspectRequest = requestInspect
     _postQueryRequest = requestQuery
   },
 
@@ -93,6 +98,7 @@ export const createGlyphStoreSlice: AppStoreSlice<GlyphStoreSlice> = (set, get, 
       draft.loadingResults = true
     })
     _postQueryRequest(query)
+    _postInspectRequest(query)
   },
 
   setChar(char, debounce) {
@@ -120,6 +126,12 @@ export const createGlyphStoreSlice: AppStoreSlice<GlyphStoreSlice> = (set, get, 
       draft.glyph = glyph
     })
     get().setHash()
+  },
+
+  setInspect(glyphs) {
+    set((draft) => {
+      draft.inspect = glyphs
+    })
   },
 
   setHash() {

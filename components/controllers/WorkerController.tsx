@@ -6,6 +6,7 @@ import { registerServiceWorker } from '../../workers/sw'
 export function WorkerController() {
   const register = useAppStore((store) => store.register)
   const setGlyph = useAppStore((store) => store.setGlyph)
+  const setInspect = useAppStore((store) => store.setInspect)
   const setReady = useAppStore((store) => store.setReady)
   const setResults = useAppStore((store) => store.setResults)
 
@@ -16,14 +17,15 @@ export function WorkerController() {
 
     registerServiceWorker()
 
-    const { requestGlyph, requestQuery } = registerSearchWorker({
+    const { requestGlyph, requestInspect, requestQuery } = registerSearchWorker({
       onGlyphResponse: setGlyph,
+      onInspectResponse: setInspect,
       onQueryResponse: setResults,
       onWorkerReady: setReady,
     })
 
-    register({ requestGlyph, requestQuery })
-  }, [register, setGlyph, setReady, setResults])
+    register({ requestGlyph, requestInspect, requestQuery })
+  }, [register, setGlyph, setInspect, setReady, setResults])
 
   return null
 }

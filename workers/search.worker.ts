@@ -5,6 +5,7 @@ import z from 'zod'
 
 const post = (message: WorkerMessage) => self.postMessage(message)
 const postGlyphResponse = (glyph: Glyph | null) => post({ type: 'GLYPH_RESPONSE', payload: { glyph } })
+const postInspectResponse = (glyphs: (Glyph | null)[]) => post({ type: 'INSPECT_RESPONSE', payload: { glyphs } })
 const postQueryResponse = (results: SearchResult[]) => post({ type: 'QUERY_RESPONSE', payload: { results } })
 const postWorkerReady = (count: number) => post({ type: 'WORKER_READY', payload: { count } })
 
@@ -56,6 +57,10 @@ class SearchController {
     return this.glyphs?.get(char) ?? null
   }
 
+  inspect(query: string): (Glyph | null)[] {
+    return query.split('').map((c) => this.glyphs?.get(c) ?? null)
+  }
+
   search(query: string): SearchResult[] {
     return this.fuse?.search(query, { limit: 500 }) ?? []
   }
@@ -67,6 +72,9 @@ self.onmessage = (event: MessageEvent<ClientMessage>) => {
   switch (event?.data?.type) {
     case 'REQUEST_GLYPH':
       postGlyphResponse(Search.get(event.data.payload.char))
+      break
+    case 'REQUEST_INSPECT':
+      postInspectResponse(Search.inspect(event.data.payload.query))
       break
     case 'REQUEST_QUERY':
       postQueryResponse(Search.search(event.data.payload.query))

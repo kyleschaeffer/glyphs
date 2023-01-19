@@ -1,8 +1,8 @@
 import Head from 'next/head'
-import Image from 'next/image'
 import { useAppStore } from '../store/app'
 import { HashController } from './controllers/HashController'
 import { Glyph } from './Glyph'
+import { Inspector } from './Inspector'
 import { SearchForm } from './SearchForm'
 import { SearchResults } from './SearchResults'
 import { Summary } from './Summary'
@@ -22,6 +22,7 @@ export function App() {
       ) : (
         <>
           <SearchForm />
+          <Inspector />
           {hasQuery ? <SearchResults /> : <Summary />}
         </>
       )}
