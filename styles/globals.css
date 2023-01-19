@@ -480,7 +480,3 @@ code {
   margin-block-start: var(--result-gap);
   text-align: center;
 }
-
-.inspector {
-  list-style: none;
-}
