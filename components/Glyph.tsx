@@ -84,27 +84,15 @@ export function Glyph() {
         </ul>
         <h3>UTF-32:</h3>
         <ul role="list">
-          {glyph.u.map((u, i) => (
-            <li key={i}>
-              <code>U+{u}</code>
-            </li>
-          ))}
+          <li>
+            <code>{glyph.u.map((u) => `U+${u}`).join(' ')}</code>
+          </li>
         </ul>
         <h3>UTF-16:</h3>
         <ul role="list">
-          {glyph.h.map((h, i) => (
-            <li key={i}>
-              <code>U+{h}</code>
-            </li>
-          ))}
-        </ul>
-        <h3>Decimal:</h3>
-        <ul role="list">
-          {glyph.d.map((d, i) => (
-            <li key={i}>
-              <code>{d}</code>
-            </li>
-          ))}
+          <li>
+            <code>{glyph.h.map((h) => `U+${h}`).join(' ')}</code>
+          </li>
         </ul>
         <h3>About:</h3>
         <ul role="list">
