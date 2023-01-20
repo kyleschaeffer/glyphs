@@ -1,14 +1,10 @@
 import Head from 'next/head'
-import Image from 'next/image'
 import { useAppStore } from '../store/app'
-import { HashController } from './controllers/HashController'
-import { Glyph } from './Glyph'
 import { SearchForm } from './SearchForm'
 import { SearchResults } from './SearchResults'
 import { Summary } from './Summary'
 
-export function App() {
-  const hasGlyph = useAppStore((store) => !!store.char)
+export function Search() {
   const hasQuery = useAppStore((store) => store.query.length > 0)
 
   return (
@@ -16,15 +12,8 @@ export function App() {
       <Head>
         <title>Glyphs — Unicode Character and Symbol Reference</title>
       </Head>
-      <HashController />
-      {hasGlyph ? (
-        <Glyph />
-      ) : (
-        <>
-          <SearchForm />
-          {hasQuery ? <SearchResults /> : <Summary />}
-        </>
-      )}
+      <SearchForm />
+      {hasQuery ? <SearchResults /> : <Summary />}
     </>
   )
 }

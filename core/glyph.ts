@@ -3,6 +3,16 @@ import { decimalToHtml, entityToHtml, escapeSingleQuotes, utf32ToCss, utf32ToHtm
 
 const HTML_SPECIAL_CHARS = new Set(['"', "'", '&', '<', '>'])
 
+export function glyphRoute(char: string): string {
+  try {
+    const route = `/${encodeURIComponent(char)}`
+    return route
+  } catch (e) {
+    console.warn(e)
+    return '/error'
+  }
+}
+
 export function htmlEntities(glyph: Glyph): string[] {
   const entities = []
 

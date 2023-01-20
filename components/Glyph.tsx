@@ -1,5 +1,6 @@
 import Head from 'next/head'
 import Link from 'next/link'
+import { useRouter } from 'next/router'
 import { useCallback, useEffect } from 'react'
 import { utf16ToUnicodeEscapeSequence } from '../core/convert'
 import { cssEntities, htmlEntities } from '../core/glyph'
@@ -8,11 +9,11 @@ import { CopyButton } from './CopyButton'
 import { useLoading } from './hooks/useLoading'
 
 export function Glyph() {
+  const router = useRouter()
   const glyph = useAppStore((store) => store.glyph)
   const loading = useLoading()
 
-  const setChar = useAppStore((store) => store.setChar)
-  const close = useCallback(() => setChar(null), [setChar])
+  const close = useCallback(() => router.back(), [router])
 
   useEffect(() => {
     function handleKeyDown(e: KeyboardEvent) {

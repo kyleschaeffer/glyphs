@@ -1,5 +1,7 @@
 import Head from 'next/head'
+import { useRouter } from 'next/router'
 import { useCallback } from 'react'
+import { glyphRoute } from '../core/glyph'
 import { useAppStore } from '../store/app'
 import type { Glyph } from '../store/types'
 import { useLoading } from './hooks/useLoading'
@@ -35,8 +37,8 @@ type SearchResultProps = {
 export function SearchResult(props: SearchResultProps) {
   const { glyph } = props
 
-  const setChar = useAppStore((store) => store.setChar)
-  const select = useCallback(() => setChar(glyph.c), [glyph, setChar])
+  const router = useRouter()
+  const select = useCallback(() => router.push(glyphRoute(glyph.c)), [glyph, router])
 
   return (
     <button className="result" onClick={select}>
