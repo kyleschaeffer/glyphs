@@ -47,15 +47,17 @@ export function Glyph() {
         </header>
         <h1 className="char">
           <span className="char-inner">{glyph.c}</span>
-          <span className="measure measure-width">
-            <span className="tick tick1" />
-            1 em
-            <span className="tick tick2" />
-          </span>
-          <span className="measure measure-height">
-            <span className="tick tick1" />
-            1 em
-            <span className="tick tick2" />
+          <span className="char-measure">
+            <span className="measure measure-width">
+              <span className="tick tick1" />
+              <span className="measure-value"> em</span>
+              <span className="tick tick2" />
+            </span>
+            <span className="measure measure-height">
+              <span className="tick tick1" />
+              <span className="measure-height-value">1 em</span>
+              <span className="tick tick2" />
+            </span>
           </span>
         </h1>
         <CopyButton text={glyph.c} copyLabel="Copy glyph" />

@@ -391,47 +391,254 @@ code {
   margin: 0 -100%;
 }
 
+.char-measure {
+  container-name: measure;
+  container-type: inline-size;
+  height: 100%;
+  left: 0;
+  pointer-events: none;
+  position: absolute;
+  top: 0;
+  width: 100%;
+  z-index: -1;
+}
+
 .measure {
   color: var(--mono8);
   display: block;
   font-size: 10px;
   font-weight: 700;
   position: absolute;
-  z-index: -1;
 }
 
-.measure::before,
-.measure::after {
+.measure::before {
   content: '';
   display: block;
   position: absolute;
   background: var(--mono4);
 }
 
+.measure-value {
+  display: inline-block;
+  padding-block-start: 0.2em;
+}
+
+.measure-value::before {
+  content: '0.1';
+}
+
+.measure-height-value {
+  display: inline-block;
+  padding-block-end: 0.2em;
+}
+
 .measure-width {
   left: 50%;
-  top: calc(100% + var(--space-3));
-  transform: translateX(-64px);
-  width: 128px;
+  top: calc(100% + var(--space-4));
+  transform: translateX(-50%);
+  width: 12.8px;
+}
+
+@container (width >= 25.6px) {
+  .measure-width {
+    width: 25.6px;
+  }
+
+  .measure-value::before {
+    content: '0.2';
+  }
+}
+
+@container (width >= 38.4px) {
+  .measure-width {
+    width: 38.4px;
+  }
+
+  .measure-value::before {
+    content: '0.3';
+  }
+}
+
+@container (width >= 51.2px) {
+  .measure-width {
+    width: 51.2px;
+  }
+
+  .measure-value::before {
+    content: '0.4';
+  }
+}
+
+@container (width >= 64px) {
+  .measure-width {
+    width: 64px;
+  }
+
+  .measure-value::before {
+    content: '0.5';
+  }
+}
+
+@container (width >= 76.8px) {
+  .measure-width {
+    width: 76.8px;
+  }
+
+  .measure-value::before {
+    content: '0.6';
+  }
+}
+
+@container (width >= 89.6px) {
+  .measure-width {
+    width: 89.6px;
+  }
+
+  .measure-value::before {
+    content: '0.7';
+  }
+}
+
+@container (width >= 102.4px) {
+  .measure-width {
+    width: 102.4px;
+  }
+
+  .measure-value::before {
+    content: '0.8';
+  }
+}
+
+@container (width >= 115.2px) {
+  .measure-width {
+    width: 115.2px;
+  }
+
+  .measure-value::before {
+    content: '0.9';
+  }
+}
+
+@container (width >= 128px) {
+  .measure-width {
+    width: 128px;
+  }
+
+  .measure-value::before {
+    content: '1';
+  }
+}
+
+@container (width >= 140.8px) {
+  .measure-width {
+    width: 140.8px;
+  }
+
+  .measure-value::before {
+    content: '1.1';
+  }
+}
+
+@container (width >= 153.6px) {
+  .measure-width {
+    width: 153.6px;
+  }
+
+  .measure-value::before {
+    content: '1.2';
+  }
+}
+
+@container (width >= 166.4px) {
+  .measure-width {
+    width: 166.4px;
+  }
+
+  .measure-value::before {
+    content: '1.3';
+  }
+}
+
+@container (width >= 179.2px) {
+  .measure-width {
+    width: 179.2px;
+  }
+
+  .measure-value::before {
+    content: '1.4';
+  }
+}
+
+@container (width >= 192px) {
+  .measure-width {
+    width: 192px;
+  }
+
+  .measure-value::before {
+    content: '1.5';
+  }
+}
+
+@container (width >= 204.8px) {
+  .measure-width {
+    width: 204.8px;
+  }
+
+  .measure-value::before {
+    content: '1.6';
+  }
+}
+
+@container (width >= 217.6px) {
+  .measure-width {
+    width: 217.6px;
+  }
+
+  .measure-value::before {
+    content: '1.7';
+  }
+}
+
+@container (width >= 230.4px) {
+  .measure-width {
+    width: 230.4px;
+  }
+
+  .measure-value::before {
+    content: '1.8';
+  }
+}
+
+@container (width >= 243.2px) {
+  .measure-width {
+    width: 243.2px;
+  }
+
+  .measure-value::before {
+    content: '1.9';
+  }
+}
+
+@container (width >= 256px) {
+  .measure-width {
+    width: 256px;
+  }
+
+  .measure-value::before {
+    content: '2';
+  }
 }
 
 .measure-width::before {
   height: 1px;
   left: 0;
-  width: 40%;
-  top: 50%;
-}
-
-.measure-width::after {
-  height: 1px;
-  left: 60%;
-  width: 40%;
-  top: 50%;
+  width: 100%;
+  top: 0;
 }
 
 .measure-height {
   height: 128px;
-  left: calc(100% + var(--space-3));
+  left: calc(100% + var(--space-4));
   text-orientation: mixed;
   top: 50%;
   transform: translateY(-64px);
@@ -439,16 +646,9 @@ code {
 }
 
 .measure-height::before {
-  height: 40%;
-  left: 50%;
+  height: 100%;
+  left: 0;
   top: 0;
-  width: 1px;
-}
-
-.measure-height::after {
-  height: 40%;
-  left: 50%;
-  top: 60%;
   width: 1px;
 }
 
@@ -459,9 +659,8 @@ code {
 }
 
 .measure-width .tick {
-  height: 0.6em;
-  top: 50%;
-  transform: translateY(-50%);
+  bottom: 100%;
+  height: 0.4em;
   width: 1px;
 }
 
@@ -475,9 +674,8 @@ code {
 
 .measure-height .tick {
   height: 1px;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 0.6em;
+  right: 100%;
+  width: 0.4em;
 }
 
 .measure-height .tick1 {
