@@ -36,7 +36,7 @@ export function Glyph() {
     <>
       <Head>
         <title>
-          {glyph.c} {glyph.n} — Glyphs
+          {glyph.c} {glyph.n}
         </title>
       </Head>
       <div className="glyph">

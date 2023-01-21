@@ -1,7 +1,7 @@
 import type { AppProps } from 'next/app'
 import Head from 'next/head'
 import { WorkerController } from '../components/controllers/WorkerController'
-import '../styles/globals.css'
+import '../styles/globals.scss'
 
 export default function App({ Component, pageProps }: AppProps) {
   return (
