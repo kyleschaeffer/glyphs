@@ -267,7 +267,7 @@ async function scrape() {
       n: glyphName,
       g: blocks.get(decimals[0]),
       k: glyphKeywords,
-      v: versions.get(decimals[0]),
+      v: decimals.map((d) => parseFloat(versions.get(d))).sort((a, b) => b - a)[0],
     })
     emojiMatch = EMOJI_DATA_SEARCH.exec(emojiData)
   }
@@ -286,7 +286,7 @@ async function scrape() {
       n: glyphName,
       g: blocks.get(decimals[0]),
       k: glyphKeywords,
-      v: versions.get(decimals[0]),
+      v: decimals.map((d) => parseFloat(versions.get(d))).sort((a, b) => b - a)[0],
     })
     emojiToneMatch = EMOJI_TONE_DATA_SEARCH.exec(emojiToneData)
   }
