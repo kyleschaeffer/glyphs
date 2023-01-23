@@ -6,13 +6,11 @@ import { utf16ToUnicodeEscapeSequence } from '../core/convert'
 import { cssEntities, htmlEntities } from '../core/glyph'
 import { useAppStore } from '../store/app'
 import { CopyButton } from './CopyButton'
-import { useLoading } from './hooks/useLoading'
 
 export function Glyph() {
   const router = useRouter()
   const glyph = useAppStore((store) => store.glyph)
   const related = useAppStore((store) => store.related)
-  const loading = useLoading()
 
   const close = useCallback(() => router.push('/'), [router])
 
@@ -30,7 +28,6 @@ export function Glyph() {
     }
   }, [close])
 
-  if (loading) return <div>Loading&hellip;</div>
   if (!glyph) return <div>Not found</div>
 
   return (
