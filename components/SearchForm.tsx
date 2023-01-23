@@ -11,7 +11,10 @@ export function SearchForm() {
   const setQuery = useAppStore((store) => store.setQuery)
 
   const handleQueryChange = useCallback(
-    (e: ChangeEvent<HTMLInputElement>) => setQuery(e.currentTarget.value),
+    (e: ChangeEvent<HTMLInputElement>) => {
+      setQuery(e.currentTarget.value)
+      document.scrollingElement?.scrollTo(0, 0)
+    },
     [setQuery]
   )
 

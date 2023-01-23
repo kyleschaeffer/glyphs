@@ -13,8 +13,8 @@ export function SearchResults() {
   const loading = useLoading()
 
   useEffect(() => {
-    if (scrollPosition === null || !document.scrollingElement) return
-    document.scrollingElement.scrollTop = scrollPosition
+    if (scrollPosition === null) return
+    document.scrollingElement?.scrollTo(0, scrollPosition)
   }, [scrollPosition])
 
   if (!loading && !results.length) return <div>No results</div>
