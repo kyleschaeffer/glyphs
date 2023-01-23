@@ -16,6 +16,7 @@ export type GlyphStoreSlice = {
   loadingGlyph: boolean
   loadingResults: boolean
   query: string
+  scrollPosition: number | null
   ready: boolean
   related: (Glyph | null)[]
   results: SearchResult[]
@@ -26,6 +27,7 @@ export type GlyphStoreSlice = {
   setChar: (char: string | null, debounce?: boolean) => void
   setGlyph: (glyph: Glyph | null, related: (Glyph | null)[]) => void
   setQuery: (query: string) => void
+  setScrollPosition: (position: number | null) => void
   setReady: (count: number) => void
   setResults: (results: SearchResult[]) => void
 }
@@ -44,6 +46,7 @@ export const createGlyphStoreSlice: AppStoreSlice<GlyphStoreSlice> = (set, get, 
   loadingGlyph: false,
   loadingResults: false,
   query: '',
+  scrollPosition: null,
   ready: true,
   related: [],
   results: [],
@@ -107,6 +110,7 @@ export const createGlyphStoreSlice: AppStoreSlice<GlyphStoreSlice> = (set, get, 
     set((draft) => {
       draft.query = query
       draft.debouncingQuery = true
+      draft.scrollPosition = null
     })
 
     clearTimeout(_requestQueryTimer)
@@ -116,6 +120,12 @@ export const createGlyphStoreSlice: AppStoreSlice<GlyphStoreSlice> = (set, get, 
       })
       get().requestQuery(query)
     }, DEBOUNCE_REQUEST_MS)
+  },
+
+  setScrollPosition(position) {
+    set((draft) => {
+      draft.scrollPosition = position
+    })
   },
 
   setReady(count) {
