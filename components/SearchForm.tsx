@@ -28,7 +28,7 @@ export function SearchForm() {
   const routeTimer = useRef<ReturnType<typeof setTimeout>>()
   useEffect(() => {
     clearTimeout(routeTimer.current)
-    if (loading) return
+    if (loading || router.query.q === query) return
 
     routeTimer.current = setTimeout(() => {
       router.replace(!query ? '/' : `?q=${encodeURIComponent(query)}`)
