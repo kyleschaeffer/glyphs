@@ -47,6 +47,8 @@ const UNICODE_BLOCK_DATA_SEARCH = /(.*?)(?:\.\.(.*))?;\s(.*?)\n/gim
 const UNICODE_VERSION_DATA_URL = `https://www.unicode.org/Public/${UNICODE_VERSION}.0/ucd/DerivedAge.txt`
 const UNICODE_VERSION_DATA_SEARCH = /(.*?)(?:\.\.(.*))?\s+;\s([\d.]+)\s#\s+(?:\[(\d+)\])?(.*?)\n/gim
 
+const EXCLUDED_GROUPS = ['High Private Use Surrogates', 'High Surrogates', 'Low Surrogates']
+
 /**
  * Perform a GET request to the given URL and return the response as text
  *
@@ -144,6 +146,8 @@ async function scrape() {
    * @param {Glyph} glyph Glyph
    */
   function addGlyph(glyph) {
+    if (EXCLUDED_GROUPS.includes(glyph.g)) return
+
     const existingGlyph = glyphs.get(glyph.c)
     if (!existingGlyph) {
       glyphs.set(glyph.c, glyph)

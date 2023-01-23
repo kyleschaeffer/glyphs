@@ -51,7 +51,7 @@ export function SearchResult(props: SearchResultProps) {
   }, [glyph, setScrollPosition, router])
 
   return (
-    <button className="result" onClick={select}>
+    <button className="result" onClick={select} title={`${glyph.c} ${glyph.n}`}>
       {glyph.c}
     </button>
   )

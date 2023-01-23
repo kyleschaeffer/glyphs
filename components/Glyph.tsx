@@ -11,8 +11,9 @@ export function Glyph() {
   const router = useRouter()
   const glyph = useAppStore((store) => store.glyph)
   const related = useAppStore((store) => store.related)
+  const query = useAppStore((store) => store.query)
 
-  const close = useCallback(() => router.push('/'), [router])
+  const close = useCallback(() => router.push(query ? `/?q=${encodeURIComponent(query)}` : '/'), [query, router])
 
   useEffect(() => {
     function handleKeyDown(e: KeyboardEvent) {
