@@ -11,9 +11,10 @@ import { useLoading } from './hooks/useLoading'
 export function Glyph() {
   const router = useRouter()
   const glyph = useAppStore((store) => store.glyph)
+  const related = useAppStore((store) => store.related)
   const loading = useLoading()
 
-  const close = useCallback(() => router.back(), [router])
+  const close = useCallback(() => router.push('/'), [router])
 
   useEffect(() => {
     function handleKeyDown(e: KeyboardEvent) {
@@ -90,7 +91,10 @@ export function Glyph() {
         <h3>UTF-32:</h3>
         <ul role="list">
           <li>
-            <code>{glyph.u.map((u) => `U+${u}`).join(' ')}</code>
+            {glyph.u.map((u, i) => {
+              const g = related[i]
+              return <code key={i}>{g ? <Link href={`/${g.c}`}>{`U+${u}`}</Link> : `U+${u}`} </code>
+            })}
           </li>
         </ul>
         <h3>UTF-16:</h3>

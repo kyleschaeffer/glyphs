@@ -17,13 +17,14 @@ export type GlyphStoreSlice = {
   loadingResults: boolean
   query: string
   ready: boolean
+  related: (Glyph | null)[]
   results: SearchResult[]
 
   register: (registration: ReturnType<typeof registerSearchWorker>) => void
   requestGlyph: (char: string) => void
   requestQuery: (query: string) => void
   setChar: (char: string | null, debounce?: boolean) => void
-  setGlyph: (glyph: Glyph | null) => void
+  setGlyph: (glyph: Glyph | null, related: (Glyph | null)[]) => void
   setQuery: (query: string) => void
   setReady: (count: number) => void
   setResults: (results: SearchResult[]) => void
@@ -44,6 +45,7 @@ export const createGlyphStoreSlice: AppStoreSlice<GlyphStoreSlice> = (set, get, 
   loadingResults: false,
   query: '',
   ready: true,
+  related: [],
   results: [],
 
   register({ requestGlyph, requestQuery }) {
@@ -87,16 +89,17 @@ export const createGlyphStoreSlice: AppStoreSlice<GlyphStoreSlice> = (set, get, 
           draft.debouncingChar = false
         })
         if (char) get().requestGlyph(char)
-        else get().setGlyph(null)
+        else get().setGlyph(null, [])
       },
       debounce ? DEBOUNCE_REQUEST_MS : 0
     )
   },
 
-  setGlyph(glyph) {
+  setGlyph(glyph, related) {
     set((draft) => {
       draft.loadingGlyph = false
       draft.glyph = glyph
+      draft.related = related
     })
   },
 

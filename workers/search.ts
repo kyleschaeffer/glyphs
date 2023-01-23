@@ -2,7 +2,7 @@ import type { Glyph } from '../store/types'
 import type { ClientMessage, WorkerMessage, SearchResult } from './types'
 
 export type SearchWorkerCallbacks = {
-  onGlyphResponse?: (glyph: Glyph | null) => void
+  onGlyphResponse?: (glyph: Glyph | null, related: (Glyph | null)[]) => void
   onQueryResponse?: (results: SearchResult[]) => void
   onWorkerReady?: (count: number) => void
 }
@@ -17,7 +17,7 @@ export const registerSearchWorker = ({
   worker.addEventListener('message', (event: MessageEvent<WorkerMessage>) => {
     switch (event?.data?.type) {
       case 'GLYPH_RESPONSE':
-        onGlyphResponse?.(event.data.payload.glyph)
+        onGlyphResponse?.(event.data.payload.glyph, event.data.payload.related)
         break
       case 'QUERY_RESPONSE':
         onQueryResponse?.(event.data.payload.results)

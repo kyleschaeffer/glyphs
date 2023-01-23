@@ -1,10 +1,12 @@
 import Fuse from 'fuse.js'
+import z from 'zod'
+import { decimalToString } from '../core/convert'
 import type { Glyph } from '../store/types'
 import type { ClientMessage, WorkerMessage, SearchResult } from './types'
-import z from 'zod'
 
 const post = (message: WorkerMessage) => self.postMessage(message)
-const postGlyphResponse = (glyph: Glyph | null) => post({ type: 'GLYPH_RESPONSE', payload: { glyph } })
+const postGlyphResponse = (glyph: Glyph | null, related: (Glyph | null)[]) =>
+  post({ type: 'GLYPH_RESPONSE', payload: { glyph, related } })
 const postQueryResponse = (results: SearchResult[]) => post({ type: 'QUERY_RESPONSE', payload: { results } })
 const postWorkerReady = (count: number) => post({ type: 'WORKER_READY', payload: { count } })
 
@@ -56,6 +58,11 @@ class SearchController {
     return this.glyphs?.get(char) ?? null
   }
 
+  getRelated(glyph: Glyph): (Glyph | null)[] {
+    const chars = glyph.d.map((d) => decimalToString(d))
+    return chars.map((char) => (char !== glyph.c ? this.get(char) : null))
+  }
+
   search(query: string): SearchResult[] {
     return this.fuse?.search(query, { limit: 500 }) ?? []
   }
@@ -65,9 +72,12 @@ const Search = new SearchController()
 
 self.onmessage = (event: MessageEvent<ClientMessage>) => {
   switch (event?.data?.type) {
-    case 'REQUEST_GLYPH':
-      postGlyphResponse(Search.get(event.data.payload.char))
+    case 'REQUEST_GLYPH': {
+      const glyph = Search.get(event.data.payload.char)
+      const related = glyph ? Search.getRelated(glyph) : []
+      postGlyphResponse(glyph, related)
       break
+    }
     case 'REQUEST_QUERY':
       postQueryResponse(Search.search(event.data.payload.query))
       break
