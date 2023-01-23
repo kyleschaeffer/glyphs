@@ -451,7 +451,7 @@ code {
   $percent: $i / 10;
   $width: 128px * $percent;
 
-  @container (width >= #{$width}) {
+  @container (width >= #{$width - 6.4px}) {
     .measure-width {
       width: $width;
     }
