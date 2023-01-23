@@ -11,11 +11,11 @@ export default function GlyphRoute() {
   const glyph = router.isReady ? z.string().parse(router.query.glyph) : null
   const setChar = useAppStore((store) => store.setChar)
 
-  const init = useRef(false)
+  const glyphRoute = useRef<string | null>(null)
   useEffect(() => {
-    if (init.current || !router.isReady || loading) return
+    if (!router.isReady || loading || glyphRoute.current === glyph) return
     setChar(glyph)
-    init.current = true
+    glyphRoute.current = glyph
   }, [glyph, loading, router.isReady, setChar])
 
   if (loading) return <div>Loading&hellip;</div>

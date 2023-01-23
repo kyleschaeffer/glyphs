@@ -248,7 +248,7 @@ code {
 
 /* stylelint-disable-next-line selector-id-pattern */
 #__next {
-  height: 100%;
+  min-height: 100%;
   isolation: isolate;
 }
 
@@ -282,7 +282,8 @@ code {
 }
 
 .search {
-  position: relative;
+  position: sticky;
+  top: 0;
   width: var(--app-width);
   padding: var(--result-gap) var(--result-gap) 0;
   margin-inline: auto;
