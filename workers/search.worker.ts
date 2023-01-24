@@ -1,6 +1,6 @@
 import Fuse from 'fuse.js'
 import z from 'zod'
-import { decimalToString } from '../core/convert'
+import { decimalToString, stringToDecimals } from '../core/convert'
 import type { Glyph } from '../store/types'
 import type { ClientMessage, WorkerMessage, SearchResult } from './types'
 
@@ -64,7 +64,17 @@ class SearchController {
   }
 
   search(query: string): SearchResult[] {
-    return this.fuse?.search(query, { limit: 500 }) ?? []
+    let results = this.fuse?.search(query, { limit: 500 }) ?? []
+
+    if (!results.length) {
+      const chars = stringToDecimals(query).map(decimalToString)
+      chars.forEach((char) => {
+        const glyph = this.get(char)
+        if (glyph) results.push({ item: glyph, refIndex: -1 })
+      })
+    }
+
+    return results
   }
 }
 
