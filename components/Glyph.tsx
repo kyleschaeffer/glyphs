@@ -45,7 +45,7 @@ export function Glyph() {
       <div className={cx('glyph')}>
         <header className={cx('head')}>
           <h2 className={cx('name')}>{glyph.n}</h2>
-          <button className={cx('close')} onClick={close}>
+          <button className={cx('close')} onClick={close} title="Close (⎋)">
             ✗
           </button>
         </header>
