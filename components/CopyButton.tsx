@@ -1,6 +1,7 @@
-import { MouseEvent, ReactNode, useCallback, useRef, useState } from 'react'
+import type { ReactNode } from 'react'
 import { bindStyles } from '../core/browser'
 import styles from './CopyButton.module.scss'
+import { useCopyText } from './hooks/useCopyText'
 
 const cx = bindStyles(styles)
 
@@ -16,32 +17,10 @@ type CopyButtonProps = {
 export function CopyButton(props: CopyButtonProps) {
   const { copiedIcon = '✓', copiedLabel = 'Copied', copyIcon = '⧉', copyLabel = 'Copy Text', hideLabel, text } = props
 
-  const [loading, setLoading] = useState(false)
-  const [copied, setCopied] = useState(false)
-  const copiedTimerRef = useRef<ReturnType<typeof setTimeout>>()
-
-  const copy = useCallback(
-    async (e: MouseEvent<HTMLButtonElement, globalThis.MouseEvent>) => {
-      e.preventDefault()
-
-      setLoading(true)
-      try {
-        await navigator.clipboard?.writeText(text)
-        setCopied(true)
-
-        clearTimeout(copiedTimerRef.current)
-        copiedTimerRef.current = setTimeout(() => setCopied(false), 3000)
-      } catch (e) {
-        console.warn('Failed to copy', e)
-      } finally {
-        setLoading(false)
-      }
-    },
-    [text]
-  )
+  const { copy, copying, copied } = useCopyText(text)
 
   return (
-    <button className={cx('copy', { copied })} onClick={copy} disabled={loading}>
+    <button className={cx('copy', { copied })} onClick={copy} disabled={copying}>
       <span>
         {copied && <span className={cx('copied-icon')}>{copiedIcon}</span>}
         <span className={cx('icon')}>{copyIcon}</span>
