@@ -1,0 +1,12 @@
+.theme-btn {
+  margin-inline-start: 1.5em;
+  padding: 0.25em 0.75em;
+  background: transparent;
+  border: 0;
+  border-radius: var(--radius-2);
+
+  &:hover,
+  &:focus-visible {
+    background-color: var(--mono3);
+  }
+}

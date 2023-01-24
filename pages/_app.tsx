@@ -1,6 +1,7 @@
 import type { AppProps } from 'next/app'
 import Head from 'next/head'
 import { WorkerController } from '../components/controllers/WorkerController'
+import { ThemeController } from '../components/ThemeController'
 import '../styles/globals.scss'
 
 export default function App({ Component, pageProps }: AppProps) {
@@ -13,7 +14,9 @@ export default function App({ Component, pageProps }: AppProps) {
         />
       </Head>
       <WorkerController />
-      <Component {...pageProps} />
+      <ThemeController>
+        <Component {...pageProps} />
+      </ThemeController>
     </>
   )
 }

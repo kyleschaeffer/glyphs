@@ -2,6 +2,7 @@ import Link from 'next/link'
 import { bindStyles } from '../core/browser'
 import { useAppStore } from '../store/app'
 import styles from './Summary.module.scss'
+import { ThemeButton } from './ThemeButton'
 
 const cx = bindStyles(styles)
 
@@ -20,7 +21,8 @@ export function Summary() {
         <Link href={`https://www.unicode.org/versions/Unicode${UNICODE_VERSION}.0/`} target="_blank">
           <span>{UNICODE_VERSION}.0</span>
           <span> ↗</span>
-        </Link>
+        </Link>{' '}
+        <ThemeButton />
       </p>
     </footer>
   )

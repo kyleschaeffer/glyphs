@@ -1,6 +1,11 @@
 .summary {
+  display: flex;
+  gap: var(--space-5);
+  align-items: center;
+  justify-content: center;
   color: var(--mono9);
+  padding-inline: 1.5em;
   font-size: var(--font-size-sm);
-  margin-block-start: var(--result-gap);
   text-align: center;
+  margin-block-start: var(--result-gap);
 }

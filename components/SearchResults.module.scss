@@ -16,10 +16,9 @@
   line-height: var(--result-size);
   white-space: pre;
   text-align: center;
-  background: rgb(0 0 0 / 0%);
+  background: transparent;
   border: 0;
   border-radius: var(--radius-2);
-  cursor: pointer;
 
   &:hover,
   &:focus-visible {
