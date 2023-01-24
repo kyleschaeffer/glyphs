@@ -6,6 +6,7 @@ import { bindStyles } from '../core/browser'
 import { utf16ToUnicodeEscapeSequence } from '../core/convert'
 import { cssEntities, htmlEntities } from '../core/glyph'
 import { useAppStore } from '../store/app'
+import { Character } from './Character'
 import { CopyButton } from './CopyButton'
 import styles from './Glyph.module.scss'
 
@@ -49,21 +50,7 @@ export function Glyph() {
             ✗
           </button>
         </header>
-        <h1 className={cx('char')}>
-          <span className={cx('char-inner')}>{glyph.c}</span>
-          <span className={cx('char-measure')}>
-            <span className={cx('measure', 'measure-width')}>
-              <span className={cx('tick', 'tick1')} />
-              <span className={cx('measure-value')}> em</span>
-              <span className={cx('tick', 'tick2')} />
-            </span>
-            <span className={cx('measure', 'measure-height')}>
-              <span className={cx('tick', 'tick1')} />
-              <span className={cx('measure-height-value')}>1 em</span>
-              <span className={cx('tick', 'tick2')} />
-            </span>
-          </span>
-        </h1>
+        <Character>{glyph.c}</Character>
         <CopyButton text={glyph.c} copyLabel="Copy glyph" />
         <h3>JavaScript:</h3>
         <ul role="list">
