@@ -25,13 +25,14 @@ body {
 a {
   color: var(--mono12);
 
-  &:hover {
-    text-decoration-color: var(--accent8);
+  &:hover,
+  &:focus-visible {
+    text-decoration-color: var(--outline-color);
   }
 
   &:focus-visible {
     border-radius: var(--radius-1);
-    outline: 2px solid var(--accent8);
+    outline: 2px solid var(--outline-color);
     outline-offset: 2px;
   }
 }
@@ -90,7 +91,7 @@ button {
 
   &:focus-visible {
     border-radius: var(--radius-1);
-    outline: 2px solid var(--accent8);
+    outline: 2px solid var(--outline-color);
     outline-offset: 2px;
   }
 }
@@ -122,7 +123,7 @@ code {
 
 ::selection {
   color: var(--white12);
-  background-color: var(--accent7);
+  background-color: var(--highlight-color);
 }
 
 ::placeholder {

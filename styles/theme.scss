@@ -57,6 +57,10 @@
   --white11: hsl(0deg 0% 100% / 59.2%);
   --white12: hsl(0deg 0% 100% / 92.3%);
 
+  // Color: typography
+  --highlight-color: var(--accent7);
+  --outline-color: var(--accent8);
+
   // Font: family
   --font-body: system-ui, -apple-system, blinkmacsystemfont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell',
     'Fira Sans', 'Droid Sans', 'Helvetica Neue', arial, sans-serif;

@@ -1,9 +1,11 @@
 .theme-btn {
-  margin-inline-start: 1.5em;
-  padding: 0.25em 0.75em;
+  width: 1.75em;
+  font-size: 1.125rem;
+  text-align: center;
   background: transparent;
   border: 0;
   border-radius: var(--radius-2);
+  margin-inline-start: 1.5em;
 
   &:hover,
   &:focus-visible {
