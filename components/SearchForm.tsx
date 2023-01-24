@@ -58,7 +58,7 @@ export function SearchForm() {
 
   return (
     <div className="search">
-      <input className="input" type="text" value={query} onChange={handleQueryChange} />
+      <input className="input" type="text" value={query} onChange={handleQueryChange} maxLength={128} />
       {!loading && !!query && (
         <button className="input-addon clear" onClick={clear}>
           ✗

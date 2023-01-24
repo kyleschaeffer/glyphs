@@ -64,15 +64,16 @@ class SearchController {
   }
 
   search(query: string): SearchResult[] {
-    let results = this.fuse?.search(query, { limit: 500 }) ?? []
+    let results = this.fuse?.search(query.slice(0, 128), { limit: 500 }) ?? []
 
-    if (!results.length) {
-      const chars = stringToDecimals(query).map(decimalToString)
-      chars.forEach((char) => {
-        const glyph = this.get(char)
-        if (glyph) results.push({ item: glyph, refIndex: -1 })
-      })
-    }
+    const decimals = new Set([...stringToDecimals(query)])
+    const chars = Array.from(decimals)
+      .map(decimalToString)
+      .filter((c) => results.every((r) => r.item.c !== c))
+    chars.forEach((char) => {
+      const glyph = this.get(char)
+      if (glyph) results.push({ item: glyph, refIndex: -1 })
+    })
 
     return results
   }
