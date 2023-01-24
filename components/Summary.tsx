@@ -1,5 +1,9 @@
 import Link from 'next/link'
+import { bindStyles } from '../core/browser'
 import { useAppStore } from '../store/app'
+import styles from './Summary.module.scss'
+
+const cx = bindStyles(styles)
 
 const UNICODE_VERSION = process.env.NEXT_PUBLIC_UNICODE_VERSION || ''
 
@@ -10,7 +14,7 @@ export function Summary() {
   if (!ready) return null
 
   return (
-    <footer className="summary">
+    <footer className={cx('summary')}>
       <p>
         Enter a character or keywords to search <strong>{glyphCount.toLocaleString()}</strong> glyphs in Unicode{' '}
         <Link href={`https://www.unicode.org/versions/Unicode${UNICODE_VERSION}.0/`} target="_blank">

@@ -2,10 +2,14 @@ import Head from 'next/head'
 import Link from 'next/link'
 import { useRouter } from 'next/router'
 import { useCallback, useEffect } from 'react'
+import { bindStyles } from '../core/browser'
 import { utf16ToUnicodeEscapeSequence } from '../core/convert'
 import { cssEntities, htmlEntities } from '../core/glyph'
 import { useAppStore } from '../store/app'
 import { CopyButton } from './CopyButton'
+import styles from './Glyph.module.scss'
+
+const cx = bindStyles(styles)
 
 export function Glyph() {
   const router = useRouter()
@@ -38,25 +42,25 @@ export function Glyph() {
           {glyph.c} {glyph.n}
         </title>
       </Head>
-      <div className="glyph">
-        <header className="head">
-          <h2 className="name">{glyph.n}</h2>
-          <button className="close" onClick={close}>
+      <div className={cx('glyph')}>
+        <header className={cx('head')}>
+          <h2 className={cx('name')}>{glyph.n}</h2>
+          <button className={cx('close')} onClick={close}>
             ✗
           </button>
         </header>
-        <h1 className="char">
-          <span className="char-inner">{glyph.c}</span>
-          <span className="char-measure">
-            <span className="measure measure-width">
-              <span className="tick tick1" />
-              <span className="measure-value"> em</span>
-              <span className="tick tick2" />
+        <h1 className={cx('char')}>
+          <span className={cx('char-inner')}>{glyph.c}</span>
+          <span className={cx('char-measure')}>
+            <span className={cx('measure', 'measure-width')}>
+              <span className={cx('tick', 'tick1')} />
+              <span className={cx('measure-value')}> em</span>
+              <span className={cx('tick', 'tick2')} />
             </span>
-            <span className="measure measure-height">
-              <span className="tick tick1" />
-              <span className="measure-height-value">1 em</span>
-              <span className="tick tick2" />
+            <span className={cx('measure', 'measure-height')}>
+              <span className={cx('tick', 'tick1')} />
+              <span className={cx('measure-height-value')}>1 em</span>
+              <span className={cx('tick', 'tick2')} />
             </span>
           </span>
         </h1>

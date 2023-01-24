@@ -1,8 +1,12 @@
 import { useRouter } from 'next/router'
 import { ChangeEvent, useCallback, useEffect, useRef } from 'react'
 import { z } from 'zod'
+import { bindStyles } from '../core/browser'
 import { useAppStore } from '../store/app'
 import { useLoading } from './hooks/useLoading'
+import styles from './SearchForm.module.scss'
+
+const cx = bindStyles(styles)
 
 export function SearchForm() {
   const router = useRouter()
@@ -57,14 +61,14 @@ export function SearchForm() {
   const clear = useCallback(() => setQuery(''), [setQuery])
 
   return (
-    <div className="search">
-      <input className="input" type="text" value={query} onChange={handleQueryChange} maxLength={128} />
+    <div className={cx('search')}>
+      <input className={cx('input')} type="text" value={query} onChange={handleQueryChange} maxLength={128} />
       {!loading && !!query && (
-        <button className="input-addon clear" onClick={clear}>
+        <button className={cx('input-addon', 'clear')} onClick={clear}>
           ✗
         </button>
       )}
-      {loading && <div className="input-addon loading">◌</div>}
+      {loading && <div className={cx('input-addon', 'loading')}>◌</div>}
     </div>
   )
 }

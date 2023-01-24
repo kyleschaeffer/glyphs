@@ -1,0 +1,28 @@
+.results {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--result-gap);
+  width: var(--app-width);
+  padding: var(--result-gap);
+  list-style: none;
+  margin-inline: auto;
+}
+
+.result {
+  width: var(--result-size);
+  height: var(--result-size);
+  overflow: hidden;
+  font-size: calc(var(--result-size) * 0.625);
+  line-height: var(--result-size);
+  white-space: pre;
+  text-align: center;
+  background: rgb(0 0 0 / 0%);
+  border: 0;
+  border-radius: var(--radius-2);
+  cursor: pointer;
+
+  &:hover,
+  &:focus-visible {
+    background-color: var(--mono3);
+  }
+}

@@ -1,10 +1,14 @@
 import Head from 'next/head'
 import { useRouter } from 'next/router'
 import { useCallback, useEffect } from 'react'
+import { bindStyles } from '../core/browser'
 import { glyphRoute } from '../core/glyph'
 import { useAppStore } from '../store/app'
 import type { Glyph } from '../store/types'
 import { useLoading } from './hooks/useLoading'
+import styles from './SearchResults.module.scss'
+
+const cx = bindStyles(styles)
 
 export function SearchResults() {
   const query = useAppStore((store) => store.query)
@@ -25,7 +29,7 @@ export function SearchResults() {
       <Head>
         <title>Search: {query} — Glyphs</title>
       </Head>
-      <ul className="results">
+      <ul className={cx('results')}>
         {results.map((result) => (
           <li key={result.item.c}>
             <SearchResult glyph={result.item} />
@@ -51,7 +55,7 @@ export function SearchResult(props: SearchResultProps) {
   }, [glyph, setScrollPosition, router])
 
   return (
-    <button className="result" onClick={select} title={`${glyph.c} ${glyph.n}`}>
+    <button className={cx('result')} onClick={select} title={`${glyph.c} ${glyph.n}`}>
       {glyph.c}
     </button>
   )
