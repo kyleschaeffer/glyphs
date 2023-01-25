@@ -8,7 +8,7 @@ import { useAppStore } from '../store/app'
 export default function GlyphRoute() {
   const router = useRouter()
   const loading = useLoading()
-  const glyph = router.isReady ? z.string().parse(router.query.glyph) : null
+  const glyph = router.isReady ? z.string().parse(router.query.glyph).replace('period', '.') : null
   const setChar = useAppStore((store) => store.setChar)
 
   const glyphRoute = useRef<string | null>(null)

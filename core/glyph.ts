@@ -5,7 +5,7 @@ const HTML_SPECIAL_CHARS = new Set(['"', "'", '&', '<', '>'])
 
 export function glyphRoute(char: string): string {
   try {
-    const route = `/${encodeURIComponent(char)}`
+    const route = `/${encodeURIComponent(char).replace('.', 'period')}`
     return route
   } catch (e) {
     console.warn(e)
