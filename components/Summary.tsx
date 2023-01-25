@@ -17,7 +17,7 @@ export function Summary() {
   return (
     <footer className={cx('summary')}>
       <p>
-        Enter a character or keywords to search <strong>{glyphCount.toLocaleString()}</strong> glyphs in Unicode{' '}
+        Searching <strong>{glyphCount.toLocaleString()}</strong> glyphs in Unicode{' '}
         <Link href={`https://www.unicode.org/versions/Unicode${UNICODE_VERSION}.0/`} target="_blank">
           <span>{UNICODE_VERSION}.0</span>
           <span> ↗</span>

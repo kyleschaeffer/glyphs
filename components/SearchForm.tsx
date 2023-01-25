@@ -62,7 +62,14 @@ export function SearchForm() {
 
   return (
     <div className={cx('search')}>
-      <input className={cx('input')} type="text" value={query} onChange={handleQueryChange} maxLength={128} />
+      <input
+        className={cx('input')}
+        type="text"
+        value={query}
+        onChange={handleQueryChange}
+        maxLength={128}
+        placeholder="Enter a character or keywords"
+      />
       {!loading && !!query && (
         <button className={cx('input-addon', 'clear')} onClick={clear} title="Clear (⎋)">
           ✗

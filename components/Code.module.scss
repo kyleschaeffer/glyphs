@@ -8,8 +8,6 @@
   cursor: inherit;
   cursor: pointer;
 
-  // transition: color 0.2s ease;
-
   &:hover,
   &:focus-visible {
     color: var(--mono12);
@@ -19,8 +17,6 @@
 .code::before,
 .code::after {
   color: var(--mono8);
-
-  // transition: color 0.2s ease;
 
   .btn:hover &,
   .btn:focus-visible & {
