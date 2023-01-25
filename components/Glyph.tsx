@@ -57,12 +57,12 @@ export function Glyph() {
         <h3>JavaScript:</h3>
         <ul role="list">
           <li>
-            <Code prefix="str = '" suffix="'">
+            <Code prefix="str\A0=\A0'" suffix="'">
               {escapeSingleQuotes(glyph.c)}
             </Code>
           </li>
           <li>
-            <Code prefix="str = '" suffix="'" wrap>
+            <Code prefix="str\A0=\A0'" suffix="'" wrap>
               {utf16ToUnicodeEscapeSequence(glyph.h)}
             </Code>
           </li>
@@ -81,7 +81,7 @@ export function Glyph() {
         <ul role="list">
           {cssEntities(glyph).map((e, i) => (
             <li key={i}>
-              <Code prefix="content: '" suffix="';">
+              <Code prefix="content:\A0'" suffix="';" wrap>
                 {e}
               </Code>
             </li>

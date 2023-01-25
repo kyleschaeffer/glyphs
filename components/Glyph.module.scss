@@ -13,7 +13,16 @@
 .name {
   grid-column: 2 / 3;
   padding: var(--result-gap);
+  font-size: 1.5rem;
   text-align: center;
+
+  @media screen and (min-width: 500px) {
+    font-size: 1.75rem;
+  }
+
+  @media screen and (min-width: 768px) {
+    font-size: 2rem;
+  }
 }
 
 .close {

@@ -26,6 +26,19 @@
 
 .copied-icon {
   color: var(--accent9);
+  animation: pop-in 0.3s cubic-bezier(0.58, 0.3, 0, 1.57);
+}
+
+@keyframes pop-in {
+  0% {
+    scale: 0.5;
+    opacity: 0;
+  }
+
+  100% {
+    scale: 1;
+    opacity: 1;
+  }
 }
 
 .copied .icon,

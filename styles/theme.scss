@@ -104,7 +104,7 @@
   --app-width: calc(var(--result-size) * var(--result-cols) + var(--result-gap) * (var(--result-cols) + 1));
 }
 
-@media screen and (min-width: 480px) {
+@media screen and (min-width: 500px) {
   :root {
     --result-gap: var(--space-4);
     --result-size: 3rem;

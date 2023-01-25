@@ -7,7 +7,8 @@
   border: 0;
   cursor: inherit;
   cursor: pointer;
-  transition: color 0.2s ease;
+
+  // transition: color 0.2s ease;
 
   &:hover,
   &:focus-visible {
@@ -18,7 +19,8 @@
 .code::before,
 .code::after {
   color: var(--mono8);
-  transition: color 0.2s ease;
+
+  // transition: color 0.2s ease;
 
   .btn:hover &,
   .btn:focus-visible & {
@@ -40,8 +42,9 @@
 
 .copied {
   position: absolute;
-  top: 50%;
-  left: calc(100% + var(--space-2));
+  top: 100%;
+  left: 50%;
+  z-index: 100;
   display: flex;
   gap: var(--space-1);
   align-items: center;
@@ -51,11 +54,16 @@
   white-space: nowrap;
   background: var(--mono4);
   border-radius: var(--radius-2);
-  transform: translateY(-50%);
-  transform-origin: 10% 0;
+  transform: translateX(-50%);
   animation: pop-in 0.25s cubic-bezier(0.58, 0.3, 0, 1.57);
   pointer-events: none;
   padding-inline: 0.5em;
+
+  @media screen and (min-width: 500px) {
+    top: 0;
+    left: calc(100% + var(--space-2));
+    transform: none;
+  }
 }
 
 .icon {
