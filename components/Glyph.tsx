@@ -1,12 +1,13 @@
 import Head from 'next/head'
 import Link from 'next/link'
 import { useRouter } from 'next/router'
-import { useCallback, useEffect } from 'react'
+import React, { useCallback, useEffect, useMemo } from 'react'
 import { bindStyles } from '../core/browser'
-import { utf16ToUnicodeEscapeSequence } from '../core/convert'
+import { escapeSingleQuotes, utf16ToUnicodeEscapeSequence } from '../core/convert'
 import { cssEntities, htmlEntities } from '../core/glyph'
 import { useAppStore } from '../store/app'
 import { Character } from './Character'
+import { Code } from './Code'
 import { CopyButton } from './CopyButton'
 import styles from './Glyph.module.scss'
 
@@ -15,8 +16,9 @@ const cx = bindStyles(styles)
 export function Glyph() {
   const router = useRouter()
   const glyph = useAppStore((store) => store.glyph)
-  const related = useAppStore((store) => store.related)
   const query = useAppStore((store) => store.query)
+  const related = useAppStore((store) => store.related)
+  const hasLigature = useMemo(() => related.some((r) => r !== null), [related])
 
   const close = useCallback(() => router.push(query ? `/?q=${encodeURIComponent(query)}` : '/'), [query, router])
 
@@ -55,17 +57,23 @@ export function Glyph() {
         <h3>JavaScript:</h3>
         <ul role="list">
           <li>
-            <code>{glyph.c}</code>
+            <Code prefix="str = '" suffix="'">
+              {escapeSingleQuotes(glyph.c)}
+            </Code>
           </li>
           <li>
-            <code>{utf16ToUnicodeEscapeSequence(glyph.h)}</code>
+            <Code prefix="str = '" suffix="'" wrap>
+              {utf16ToUnicodeEscapeSequence(glyph.h)}
+            </Code>
           </li>
         </ul>
         <h3>HTML:</h3>
         <ul role="list">
           {htmlEntities(glyph).map((e, i) => (
             <li key={i}>
-              <code>{e}</code>
+              <Code prefix="<i>" suffix="</i>" wrap>
+                {e}
+              </Code>
             </li>
           ))}
         </ul>
@@ -73,25 +81,42 @@ export function Glyph() {
         <ul role="list">
           {cssEntities(glyph).map((e, i) => (
             <li key={i}>
-              <code>{e}</code>
+              <Code prefix="content: '" suffix="';">
+                {e}
+              </Code>
             </li>
           ))}
         </ul>
         <h3>UTF-32:</h3>
         <ul role="list">
           <li>
-            {glyph.u.map((u, i) => {
-              const g = related[i]
-              return <code key={i}>{g ? <Link href={`/${g.c}`}>{`U+${u}`}</Link> : `U+${u}`} </code>
-            })}
+            <Code>{glyph.u.map((u) => `U+${u}`).join(' ')}</Code>
           </li>
         </ul>
         <h3>UTF-16:</h3>
         <ul role="list">
           <li>
-            <code>{glyph.h.map((h) => `U+${h}`).join(' ')}</code>
+            <Code>{glyph.h.map((h) => `U+${h}`).join(' ')}</Code>
           </li>
         </ul>
+        {hasLigature && (
+          <>
+            <h3>Ligature:</h3>
+            <ol>
+              {related.map((r, i) => (
+                <li key={i}>
+                  {r ? (
+                    <Link href={`/${r.c}`}>
+                      {r.c} {r.n}
+                    </Link>
+                  ) : (
+                    'Unknown'
+                  )}
+                </li>
+              ))}
+            </ol>
+          </>
+        )}
         <h3>About:</h3>
         <ul role="list">
           {glyph.g && <li>Category: {glyph.g}</li>}
