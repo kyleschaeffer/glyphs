@@ -41,3 +41,23 @@
     color: var(--mono12);
   }
 }
+
+.ligature-link {
+  text-decoration: none;
+}
+
+.ligature-name {
+  text-decoration: underline;
+  text-decoration-color: var(--mono6);
+
+  .ligature-link:hover &,
+  .ligature-link:focus-visible & {
+    text-decoration-color: var(--outline-color);
+  }
+}
+
+.ligature-char {
+  display: inline-block;
+  min-width: 1.5em;
+  text-align: center;
+}

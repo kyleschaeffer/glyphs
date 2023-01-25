@@ -27,7 +27,7 @@ export function SearchResults() {
   return (
     <>
       <Head>
-        <title>Search: {query} — Glyphs</title>
+        <title>Search: {query}</title>
       </Head>
       <ul className={cx('results')}>
         {results.map((result) => (

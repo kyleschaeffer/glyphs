@@ -106,8 +106,9 @@ export function Glyph() {
               {related.map((r, i) => (
                 <li key={i}>
                   {r ? (
-                    <Link href={`/${r.c}`}>
-                      {r.c} {r.n}
+                    <Link className={cx('ligature-link')} href={`/${r.c}`}>
+                      <span className={cx('ligature-char')}>{r.c} </span>
+                      <span className={cx('ligature-name')}>{r.n}</span>
                     </Link>
                   ) : (
                     'Unknown'

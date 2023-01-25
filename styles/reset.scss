@@ -24,6 +24,7 @@ body {
 
 a {
   color: var(--mono12);
+  text-decoration-color: var(--mono6);
 
   &:hover,
   &:focus-visible {
@@ -63,6 +64,11 @@ h3 {
 ul,
 ol {
   padding-inline-start: 1.5em;
+}
+
+ol > li::marker {
+  color: var(--mono7);
+  font-size: 0.875em;
 }
 
 ul[role='list'],
