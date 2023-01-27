@@ -18,7 +18,12 @@ export default function GlyphRoute() {
     glyphRoute.current = glyph
   }, [glyph, loading, router.isReady, setChar])
 
-  if (loading) return <div>Loading&hellip;</div>
+  if (loading)
+    return (
+      <div className="splash center">
+        <div className="loading">⎈</div>
+      </div>
+    )
 
   return <Glyph />
 }

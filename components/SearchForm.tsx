@@ -75,7 +75,11 @@ export function SearchForm() {
           ✗
         </button>
       )}
-      {loading && <div className={cx('input-addon', 'loading')}>◌</div>}
+      {loading && (
+        <div className={cx('input-addon', 'center')}>
+          <div className={cx('loading')}>⎈</div>
+        </div>
+      )}
     </div>
   )
 }

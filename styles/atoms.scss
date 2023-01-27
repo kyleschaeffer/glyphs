@@ -1,0 +1,23 @@
+.splash {
+  height: 100vmin;
+}
+
+.center {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.loading {
+  width: min-content;
+  color: var(--accent10);
+  font-size: 2rem;
+  line-height: 1;
+  animation: 2s spin linear infinite;
+}
+
+@keyframes spin {
+  100% {
+    transform: rotate(360deg);
+  }
+}

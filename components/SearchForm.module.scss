@@ -9,7 +9,7 @@
 .input {
   width: 100%;
   height: var(--result-size);
-  padding: 0 calc(var(--result-size) / 2);
+  padding: 0 4rem 0 calc(var(--result-size) / 2);
   font-size: var(--font-size-lg);
   background: var(--mono3);
   border: 1px solid var(--mono6);
@@ -40,18 +40,5 @@
   &:hover,
   &:focus-visible {
     color: var(--mono12);
-  }
-}
-
-.loading {
-  color: var(--accent11);
-  font-size: 3rem;
-  line-height: 1.17;
-  animation: 2s spin linear infinite;
-}
-
-@keyframes spin {
-  100% {
-    transform: rotate(360deg);
   }
 }
