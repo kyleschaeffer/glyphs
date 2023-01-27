@@ -21,7 +21,7 @@ export default function GlyphRoute() {
   if (loading)
     return (
       <div className="splash center">
-        <div className="loading">⎈</div>
+        <div className="loading">{glyph}</div>
       </div>
     )
 
