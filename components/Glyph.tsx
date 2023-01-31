@@ -53,56 +53,68 @@ export function Glyph() {
           </button>
         </header>
         <Character>{glyph.c}</Character>
-        <CopyButton text={glyph.c} copyLabel="Copy glyph" />
-        <h3>JavaScript:</h3>
-        <ul role="list">
-          <li>
-            <Code prefix="str\A0=\A0'" suffix="'">
-              {escapeSingleQuotes(glyph.c)}
-            </Code>
-          </li>
-          <li>
-            <Code prefix="str\A0=\A0'" suffix="'" wrap>
-              {utf16ToUnicodeEscapeSequence(glyph.h)}
-            </Code>
-          </li>
-        </ul>
-        <h3>HTML:</h3>
-        <ul role="list">
-          {htmlEntities(glyph).map((e, i) => (
-            <li key={i}>
-              <Code prefix="<i>" suffix="</i>" wrap>
-                {e}
+        <div className="center">
+          <CopyButton text={glyph.c} copyLabel="Copy glyph" />
+        </div>
+        <div className={cx('section')}>
+          <h3>JavaScript:</h3>
+          <ul className={cx('codes')} role="list">
+            <li>
+              <Code prefix="str\A0=\A0'" suffix="'">
+                {escapeSingleQuotes(glyph.c)}
               </Code>
             </li>
-          ))}
-        </ul>
-        <h3>CSS:</h3>
-        <ul role="list">
-          {cssEntities(glyph).map((e, i) => (
-            <li key={i}>
-              <Code prefix="content:\A0'" suffix="';" wrap>
-                {e}
+            <li>
+              <Code prefix="str\A0=\A0'" suffix="'" wrap>
+                {utf16ToUnicodeEscapeSequence(glyph.h)}
               </Code>
             </li>
-          ))}
-        </ul>
-        <h3>UTF-32:</h3>
-        <ul role="list">
-          <li>
-            <Code>{glyph.u.map((u) => `U+${u}`).join(' ')}</Code>
-          </li>
-        </ul>
-        <h3>UTF-16:</h3>
-        <ul role="list">
-          <li>
-            <Code>{glyph.h.map((h) => `U+${h}`).join(' ')}</Code>
-          </li>
-        </ul>
+          </ul>
+        </div>
+        <div className={cx('section')}>
+          <h3>HTML:</h3>
+          <ul className={cx('codes')} role="list">
+            {htmlEntities(glyph).map((e, i) => (
+              <li key={i}>
+                <Code prefix="<i>" suffix="</i>" wrap>
+                  {e}
+                </Code>
+              </li>
+            ))}
+          </ul>
+        </div>
+        <div className={cx('section')}>
+          <h3>CSS:</h3>
+          <ul className={cx('codes')} role="list">
+            {cssEntities(glyph).map((e, i) => (
+              <li key={i}>
+                <Code prefix="content:\A0'" suffix="';" wrap>
+                  {e}
+                </Code>
+              </li>
+            ))}
+          </ul>
+        </div>
+        <div className={cx('section')}>
+          <h3>UTF-32:</h3>
+          <ul className={cx('codes')} role="list">
+            <li>
+              <Code>{glyph.u.map((u) => `U+${u}`).join(' ')}</Code>
+            </li>
+          </ul>
+        </div>
+        <div className={cx('section')}>
+          <h3>UTF-16:</h3>
+          <ul className={cx('codes')} role="list">
+            <li>
+              <Code>{glyph.h.map((h) => `U+${h}`).join(' ')}</Code>
+            </li>
+          </ul>
+        </div>
         {hasLigature && (
-          <>
+          <div className={cx('section')}>
             <h3>Ligature:</h3>
-            <ol>
+            <ol className={cx('codes')}>
               {related.map((r, i) => (
                 <li key={i}>
                   {r ? (
@@ -116,22 +128,24 @@ export function Glyph() {
                 </li>
               ))}
             </ol>
-          </>
+          </div>
         )}
-        <h3>About:</h3>
-        <ul role="list">
-          {glyph.g && <li>Category: {glyph.g}</li>}
-          {glyph.k && <li>Keywords: {glyph.k.join(', ')}</li>}
-          {glyph.v && (
-            <li>
-              Unicode version:{' '}
-              <Link href={`https://www.unicode.org/versions/Unicode${glyph.v}.0/`} target="_blank">
-                <span>{glyph.v}.0</span>
-                <span> ↗</span>
-              </Link>
-            </li>
-          )}
-        </ul>
+        <div className={cx('section')}>
+          <h3>About:</h3>
+          <ul className={cx('codes')} role="list">
+            {glyph.g && <li>Category: {glyph.g}</li>}
+            {glyph.k && <li>Keywords: {glyph.k.join(', ')}</li>}
+            {glyph.v && (
+              <li>
+                Unicode version:{' '}
+                <Link href={`https://www.unicode.org/versions/Unicode${glyph.v}.0/`} target="_blank">
+                  <span>{glyph.v}.0</span>
+                  <span> ↗</span>
+                </Link>
+              </li>
+            )}
+          </ul>
+        </div>
       </div>
     </>
   )
