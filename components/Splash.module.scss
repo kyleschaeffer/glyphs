@@ -1,0 +1,30 @@
+.splash {
+  height: 100vmin;
+}
+
+.stack {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-7);
+  align-items: center;
+  text-align: center;
+}
+
+.content {
+  font-size: 2em;
+}
+
+.title {
+  font-weight: 900;
+  font-size: 3rem;
+  line-height: 0.8em;
+  letter-spacing: -0.06em;
+
+  @media screen and (min-width: 500px) {
+    font-size: 4rem;
+  }
+
+  @media screen and (min-width: 768px) {
+    font-size: 5rem;
+  }
+}

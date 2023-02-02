@@ -9,12 +9,15 @@ import { useAppStore } from '../store/app'
 import { Character } from './Character'
 import { Code } from './Code'
 import { CopyButton } from './CopyButton'
+import { Footer } from './Footer'
 import styles from './Glyph.module.scss'
+import { Splash } from './Splash'
 
 const cx = bindStyles(styles)
 
 export function Glyph() {
   const router = useRouter()
+  const char = useAppStore((store) => store.char)
   const glyph = useAppStore((store) => store.glyph)
   const query = useAppStore((store) => store.query)
   const related = useAppStore((store) => store.related)
@@ -36,7 +39,7 @@ export function Glyph() {
     }
   }, [close])
 
-  if (!glyph) return <div>Not found</div>
+  if (!glyph) return <Splash title="Not found">{char}</Splash>
 
   return (
     <>
@@ -147,6 +150,7 @@ export function Glyph() {
           </ul>
         </div>
       </div>
+      <Footer />
     </>
   )
 }

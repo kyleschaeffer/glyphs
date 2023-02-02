@@ -3,6 +3,7 @@ import { useEffect, useRef } from 'react'
 import { z } from 'zod'
 import { Glyph } from '../components/Glyph'
 import { useLoading } from '../components/hooks/useLoading'
+import { Splash } from '../components/Splash'
 import { useAppStore } from '../store/app'
 
 export default function GlyphRoute() {
@@ -20,9 +21,9 @@ export default function GlyphRoute() {
 
   if (loading)
     return (
-      <div className="splash center">
+      <Splash>
         <div className="loading">{glyph}</div>
-      </div>
+      </Splash>
     )
 
   return <Glyph />
