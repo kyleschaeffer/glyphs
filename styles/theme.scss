@@ -62,9 +62,12 @@
   --outline-color: var(--accent-8);
 
   // Font: family
-  --font-body: system-ui, -apple-system, blinkmacsystemfont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell',
+  --font-sans: system-ui, -apple-system, blinkmacsystemfont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell',
     'Fira Sans', 'Droid Sans', 'Helvetica Neue', arial, sans-serif;
+  --font-serif: 'Times', 'Times New Roman', serif;
+  --font-body: var(--font-sans);
   --font-mono: ui-monospace, sfmono-regular, sf mono, menlo, consolas, liberation mono, monospace;
+  --font-glyph: var(--font-sans);
 
   // Font: size
   --font-size-xs: 12px;

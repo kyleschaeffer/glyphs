@@ -1,14 +1,22 @@
-.theme-btn {
+.btns {
+  display: flex;
+  gap: var(--space-2);
+}
+
+.btn {
   width: 1.75em;
   font-size: 1.125rem;
   text-align: center;
   background: transparent;
   border: 0;
   border-radius: var(--radius-2);
-  margin-inline-start: 1.5em;
 
   &:hover,
   &:focus-visible {
     background-color: var(--mono-3);
   }
+}
+
+.font-btn {
+  font-family: var(--font-glyph);
 }

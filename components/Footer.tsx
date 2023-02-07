@@ -2,7 +2,7 @@ import Link from 'next/link'
 import { bindStyles } from '../core/browser'
 import { useAppStore } from '../store/app'
 import styles from './Footer.module.scss'
-import { ThemeButton } from './ThemeButton'
+import { ThemeButtons } from './ThemeButtons'
 
 const cx = bindStyles(styles)
 
@@ -22,8 +22,8 @@ export function Footer() {
           <span>{UNICODE_VERSION}.0</span>
           <span> ↗</span>
         </Link>{' '}
-        <ThemeButton />
       </p>
+      <ThemeButtons />
     </footer>
   )
 }

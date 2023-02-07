@@ -20,7 +20,8 @@ export const useAppStore = create<AppStore, AppStoreMutators>(
     })),
     {
       name: PERSISTED_STORE_KEY,
-      partialize: ({ theme }) => ({
+      partialize: ({ font, theme }) => ({
+        font,
         theme,
       }),
     }

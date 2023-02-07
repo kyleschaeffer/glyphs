@@ -12,6 +12,7 @@
   height: var(--result-size);
   overflow: hidden;
   font-size: calc(var(--result-size) * 0.625);
+  font-family: var(--font-glyph);
   line-height: var(--result-size);
   white-space: pre;
   text-align: center;
