@@ -10,17 +10,17 @@
 
   &:hover,
   &:focus-visible {
-    color: var(--mono12);
+    color: var(--mono-12);
   }
 }
 
 .code::before,
 .code::after {
-  color: var(--mono8);
+  color: var(--mono-8);
 
   .btn:hover &,
   .btn:focus-visible & {
-    color: var(--mono9);
+    color: var(--mono-9);
   }
 }
 
@@ -44,11 +44,11 @@
   display: flex;
   gap: var(--space-1);
   align-items: center;
-  color: var(--mono9);
+  color: var(--mono-9);
   font-size: 0.75rem;
   font-family: var(--font-body);
   white-space: nowrap;
-  background: var(--mono4);
+  background: var(--mono-4);
   border-radius: var(--radius-2);
   transform: translateX(-50%);
   animation: pop-in 0.25s cubic-bezier(0.58, 0.3, 0, 1.57);
@@ -63,7 +63,7 @@
 }
 
 .icon {
-  color: var(--accent9);
+  color: var(--accent-9);
   font-weight: 600;
   font-size: 1rem;
 }
@@ -81,5 +81,5 @@
 }
 
 .template {
-  color: var(--mono8);
+  color: var(--mono-8);
 }

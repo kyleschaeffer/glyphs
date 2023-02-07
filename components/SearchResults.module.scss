@@ -2,10 +2,9 @@
   display: flex;
   flex-wrap: wrap;
   gap: var(--result-gap);
-  width: var(--app-width);
+  justify-content: center;
   padding: var(--result-gap);
   list-style: none;
-  margin-inline: auto;
 }
 
 .result {
@@ -22,6 +21,6 @@
 
   &:hover,
   &:focus-visible {
-    background-color: var(--mono3);
+    background-color: var(--mono-3);
   }
 }

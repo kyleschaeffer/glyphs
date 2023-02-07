@@ -1,9 +1,7 @@
 .search {
   position: sticky;
   top: 0;
-  width: var(--app-width);
   padding: var(--result-gap) var(--result-gap) 0;
-  margin-inline: auto;
 }
 
 .input {
@@ -11,12 +9,12 @@
   height: var(--result-size);
   padding: 0 4rem 0 calc(var(--result-size) / 2);
   font-size: var(--font-size-lg);
-  background: var(--mono3);
-  border: 1px solid var(--mono6);
+  background: var(--mono-3);
+  border: 1px solid var(--mono-6);
   border-radius: calc(var(--result-size) / 2);
 
   &:focus-visible {
-    border-color: var(--mono8);
+    border-color: var(--mono-8);
   }
 }
 
@@ -31,7 +29,7 @@
 }
 
 .clear {
-  color: var(--mono10);
+  color: var(--mono-10);
   font-weight: 200;
   font-size: 2rem;
   background: transparent;
@@ -39,6 +37,6 @@
 
   &:hover,
   &:focus-visible {
-    color: var(--mono12);
+    color: var(--mono-12);
   }
 }

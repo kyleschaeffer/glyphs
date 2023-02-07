@@ -11,7 +11,7 @@
 
   &:hover,
   &:focus-visible {
-    background-color: var(--mono3);
+    background-color: var(--mono-3);
   }
 }
 
@@ -21,11 +21,11 @@
 }
 
 .icon {
-  color: var(--mono8);
+  color: var(--mono-8);
 }
 
 .copied-icon {
-  color: var(--accent9);
+  color: var(--accent-9);
   animation: pop-in 0.3s cubic-bezier(0.58, 0.3, 0, 1.57);
 }
 

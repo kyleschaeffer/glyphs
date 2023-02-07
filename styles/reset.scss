@@ -15,16 +15,16 @@ body {
 }
 
 body {
-  color: var(--mono11);
+  color: var(--mono-11);
   font-family: var(--font-body);
   line-height: var(--line-normal);
-  background: var(--mono1);
+  background: var(--mono-1);
   -webkit-font-smoothing: antialiased;
 }
 
 a {
-  color: var(--mono12);
-  text-decoration-color: var(--mono6);
+  color: var(--mono-12);
+  text-decoration-color: var(--mono-6);
 
   &:hover,
   &:focus-visible {
@@ -45,7 +45,7 @@ h4,
 h5,
 h6,
 button {
-  color: var(--mono12);
+  color: var(--mono-12);
   line-height: var(--line-compact);
   overflow-wrap: break-word;
 }
@@ -67,7 +67,7 @@ ol {
 }
 
 ol > li::marker {
-  color: var(--mono7);
+  color: var(--mono-7);
   font-size: 0.875em;
 }
 
@@ -82,13 +82,13 @@ input,
 select,
 textarea {
   padding: 0;
-  color: var(--mono12);
+  color: var(--mono-12);
   font: inherit;
   outline: none;
 }
 
 button {
-  color: var(--mono12);
+  color: var(--mono-12);
   cursor: pointer;
 
   &:disabled {
@@ -118,7 +118,7 @@ textarea:focus-visible {
 
 hr {
   border: 0;
-  border-inline-start: 1px solid var(--mono4);
+  border-inline-start: 1px solid var(--mono-4);
 }
 
 pre,
@@ -128,12 +128,12 @@ code {
 }
 
 ::selection {
-  color: var(--white12);
+  color: var(--white-12);
   background-color: var(--highlight-color);
 }
 
 ::placeholder {
-  color: var(--mono9);
+  color: var(--mono-9);
 }
 
 /* stylelint-disable-next-line selector-id-pattern */
