@@ -3,7 +3,12 @@ import Link from 'next/link'
 import { useRouter } from 'next/router'
 import React, { useCallback, useEffect, useMemo } from 'react'
 import { bindStyles } from '../core/browser'
-import { escapeSingleQuotes, utf16ToUnicodeEscapeSequence } from '../core/convert'
+import {
+  decimalToHexEscapeSequence,
+  escapeSingleQuotes,
+  utf16ToUnicodeEscapeSequence,
+  utf32ToCodePointEscapeSequence,
+} from '../core/convert'
 import { cssEntities, htmlEntities } from '../core/glyph'
 import { useAppStore } from '../store/app'
 import { Character } from './Character'
@@ -65,6 +70,18 @@ export function Glyph() {
             <li>
               <Code prefix="str\A0=\A0'" suffix="'">
                 {escapeSingleQuotes(glyph.c)}
+              </Code>
+            </li>
+            {glyph.d.length === 1 && glyph.d[0] <= 0xff && (
+              <li>
+                <Code prefix="str\A0=\A0'" suffix="'">
+                  {decimalToHexEscapeSequence(glyph.d[0])}
+                </Code>
+              </li>
+            )}
+            <li>
+              <Code prefix="str\A0=\A0'" suffix="'" wrap>
+                {utf32ToCodePointEscapeSequence(glyph.u)}
               </Code>
             </li>
             <li>

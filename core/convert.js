@@ -91,6 +91,26 @@ function utf16ToUnicodeEscapeSequence(hexes) {
 }
 
 /**
+ * Convert decimal value to a Unicode hexadecimal escape sequence
+ *
+ * @param   {number} decimal Decimal value
+ * @returns {string}
+ */
+function decimalToHexEscapeSequence(decimal) {
+  return decimal <= 0xff ? `\\x${decimal.toString(16)}` : ''
+}
+
+/**
+ * Convert UTF-32 hexadecimal encodings to a Unicode code point escape sequence
+ *
+ * @param   {string[]} hexes UTF-32 hexadecimal encodings
+ * @returns {string}
+ */
+function utf32ToCodePointEscapeSequence(hexes) {
+  return hexes.map((hex) => `\\u{${trimHex(hex)}}`).join('')
+}
+
+/**
  * Sanitize a string by escaping single quotes
  *
  * @param   {string} str String value
@@ -156,6 +176,7 @@ function decimalToString(decimal) {
 
 module.exports = {
   decimalToHex,
+  decimalToHexEscapeSequence,
   decimalToHtml,
   decimalToString,
   decimalToUtf16,
@@ -168,6 +189,7 @@ module.exports = {
   trimHex,
   utf16ToString,
   utf16ToUnicodeEscapeSequence,
+  utf32ToCodePointEscapeSequence,
   utf32ToCss,
   utf32ToHtml,
 }
