@@ -64,7 +64,7 @@ class SearchController {
   }
 
   search(query: string): SearchResult[] {
-    let results = this.fuse?.search(query.slice(0, 128), { limit: 500 }) ?? []
+    let results = this.fuse?.search(query.slice(0, 128), { limit: 1000 }) ?? []
 
     const resultsChars = new Set([...results.map((r) => r.item.c)])
     const queryChars = new Set([...stringToDecimals(query).map(decimalToString)])

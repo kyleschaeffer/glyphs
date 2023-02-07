@@ -6,6 +6,8 @@ import { bindStyles } from '../core/browser'
 import {
   decimalToHexEscapeSequence,
   escapeSingleQuotes,
+  stringToBinary,
+  stringToUtf8,
   utf16ToUnicodeEscapeSequence,
   utf32ToCodePointEscapeSequence,
 } from '../core/convert'
@@ -119,7 +121,7 @@ export function Glyph() {
           <h3>URL:</h3>
           <ul className={cx('codes')} role="list">
             <li>
-              <Code prefix="path/" wrap>
+              <Code prefix="glyphs.dev/" wrap>
                 {encodeURIComponent(glyph.c)}
               </Code>
             </li>
@@ -138,6 +140,26 @@ export function Glyph() {
           <ul className={cx('codes')} role="list">
             <li>
               <Code>{glyph.h.map((h) => `U+${h}`).join(' ')}</Code>
+            </li>
+          </ul>
+        </div>
+        <div className={cx('section')}>
+          <h3>UTF-8:</h3>
+          <ul className={cx('codes')} role="list">
+            <li>
+              <Code>
+                {stringToUtf8(glyph.c)
+                  .map((h) => `U+${h}`)
+                  .join(' ')}
+              </Code>
+            </li>
+          </ul>
+        </div>
+        <div className={cx('section')}>
+          <h3>Binary:</h3>
+          <ul className={cx('codes')} role="list">
+            <li>
+              <Code>{stringToBinary(glyph.c).join(' ')}</Code>
             </li>
           </ul>
         </div>

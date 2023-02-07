@@ -19,6 +19,16 @@ function hexToDecimal(hex) {
 }
 
 /**
+ * Convert a hexadecimal value to a binary value
+ *
+ * @param   {string} hex Hexadecimal value
+ * @returns {string}
+ */
+function hexToBinary(hex) {
+  return parseInt(hex, 16).toString(2).padStart(8, '0')
+}
+
+/**
  * Convert a decimal value to a fixed-size hexadecimal value
  *  - Example: `90` -> `"005A"`
  *
@@ -97,7 +107,7 @@ function utf16ToUnicodeEscapeSequence(hexes) {
  * @returns {string}
  */
 function decimalToHexEscapeSequence(decimal) {
-  return decimal <= 0xff ? `\\x${decimal.toString(16)}` : ''
+  return decimal <= 0xff ? `\\x${decimalToHex(decimal, 0)}` : ''
 }
 
 /**
@@ -132,6 +142,26 @@ function decimalToUtf16(decimal) {
   const lead = 0xd800 + (decimal >> 10)
   const tail = 0xdc00 + (decimal & parseInt('1111111111', 2))
   return [decimalToHex(lead), decimalToHex(tail)]
+}
+
+/**
+ * Convert a string to one or more UTF-8 hexadecimal encodings
+ *
+ * @param   {string}   str String to convert
+ * @returns {string[]}
+ */
+function stringToUtf8(str) {
+  return Array.from(new TextEncoder().encode(str)).map((d) => decimalToHex(d, 2))
+}
+
+/**
+ * Convert a string to one or more UTF-8 binary encodings
+ *
+ * @param   {string}   str String to convert
+ * @returns {string[]}
+ */
+function stringToBinary(str) {
+  return stringToUtf8(str).map(hexToBinary)
 }
 
 /**
@@ -183,9 +213,12 @@ module.exports = {
   decimalToUtf32,
   entityToHtml,
   escapeSingleQuotes,
+  hexToBinary,
   hexToDecimal,
+  stringToBinary,
   stringToDecimals,
   stringToUtf16,
+  stringToUtf8,
   trimHex,
   utf16ToString,
   utf16ToUnicodeEscapeSequence,
