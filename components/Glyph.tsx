@@ -116,6 +116,16 @@ export function Glyph() {
           </ul>
         </div>
         <div className={cx('section')}>
+          <h3>URL:</h3>
+          <ul className={cx('codes')} role="list">
+            <li>
+              <Code prefix="path/" wrap>
+                {encodeURIComponent(glyph.c)}
+              </Code>
+            </li>
+          </ul>
+        </div>
+        <div className={cx('section')}>
           <h3>UTF-32:</h3>
           <ul className={cx('codes')} role="list">
             <li>
