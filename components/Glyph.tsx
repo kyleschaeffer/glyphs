@@ -118,7 +118,7 @@ export function Glyph() {
           </ul>
         </div>
         <div className={cx('section')}>
-          <h3>URL:</h3>
+          <h3>URI:</h3>
           <ul className={cx('codes')} role="list">
             <li>
               <Code prefix="glyphs.dev/" wrap>

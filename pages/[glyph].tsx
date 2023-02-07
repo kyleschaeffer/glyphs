@@ -19,7 +19,7 @@ export default function GlyphRoute() {
     glyphRoute.current = glyph
   }, [glyph, loading, router.isReady, setChar])
 
-  if (loading)
+  if (loading || glyphRoute.current !== glyph)
     return (
       <Splash>
         <div className="loading">{glyph}</div>
