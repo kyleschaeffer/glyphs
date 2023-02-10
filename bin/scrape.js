@@ -18,36 +18,7 @@ const { decimalToString, decimalToUtf16, decimalToUtf32, hexToDecimal, stringToU
 
 dotenv.config()
 
-const UNICODE_VERSION = process.env.UNICODE_VERSION ?? ''
-if (!UNICODE_VERSION) throw new Error('Unicode version not defined')
-
-// CSV; 14 columns; [0]=hex32; [1]=name; [10]?=keywords
-const UNICODE_DATA_URL = `https://www.unicode.org/Public/${UNICODE_VERSION}.0/ucd/UnicodeData.txt`
-
-// [1]=entity; [2]=hex32A; [3]=hex32B
-const HTML_ENTITY_DATA_URL = 'https://html.spec.whatwg.org/multipage/named-characters.html'
-const HTML_ENTITY_DATA_SEARCH = /<code>(\w+);?<\/code>(?:.*?)<td> U\+([\d\w]+)(?: U\+([\d\w]+))?/gi
-
-// [1]=hex32; [2]=character; [3]=name; [4]?=keywords
-const EMOJI_DATA_URL = `https://www.unicode.org/emoji/charts-${UNICODE_VERSION}/emoji-list.html`
-const EMOJI_DATA_SEARCH =
-  /<tr><td class='rchars'>\d+<\/td>\n?<td class='code'><a.*?>(.*?)<\/a><\/td>\n?<td class='andr'><a.*?><img alt='(.*?)'.*?<\/td>\n?<td class='name'>(.*?)<\/td>\n?<td class='name'>(.*?)<\/td>/gi
-
-// [1]=hex32; [2]=character; [3]=name
-// TODO: categories and groups
-const EMOJI_TONE_DATA_URL = `https://www.unicode.org/emoji/charts-${UNICODE_VERSION}/full-emoji-modifiers.html`
-const EMOJI_TONE_DATA_SEARCH =
-  /<tr><td class='rchars'>\d+<\/td>\n?<td class='code'><a.*?>(.*?)<\/a><\/td>\n?<td class='chars'>(.*?)<\/td>\n?.*?\n.*?\n.*?\n.*?\n.*?\n.*?\n.*?\n.*?\n.*?\n.*?\n.*?\n<td class='name'>(.*?)<\/td>/gi
-
-// CSV; 2 columns; [0]=hex32Start; [1]=hex32End; [2]=block
-const UNICODE_BLOCK_DATA_URL = `https://www.unicode.org/Public/${UNICODE_VERSION}.0/ucd/Blocks.txt`
-const UNICODE_BLOCK_DATA_SEARCH = /(.*?)(?:\.\.(.*))?;\s(.*?)\n/gim
-
-// CSV; 2 columns; [0]=hex32Start; [1]?=hex32End; [2]=version; [3]?=count; [4]=description
-const UNICODE_VERSION_DATA_URL = `https://www.unicode.org/Public/${UNICODE_VERSION}.0/ucd/DerivedAge.txt`
-const UNICODE_VERSION_DATA_SEARCH = /(.*?)(?:\.\.(.*))?\s+;\s([\d.]+)\s#\s+(?:\[(\d+)\])?(.*?)\n/gim
-
-const EXCLUDED_GROUPS = ['High Private Use Surrogates', 'High Surrogates', 'Low Surrogates']
+const UNICODE_VERSIONS = ['5.0', '6.0', '7.0', '8.0', '9.0', '10.0', '11.0', '12.0', '13.0', '14.0', '15.0']
 
 /**
  * Perform a GET request to the given URL and return the response as text
@@ -128,7 +99,35 @@ function glyphWords(name, keywords) {
   return [titleCase(glyphName), glyphKeywords.size ? [...glyphKeywords] : undefined]
 }
 
-async function scrape() {
+async function scrape(UNICODE_VERSION) {
+  // CSV; 14 columns; [0]=hex32; [1]=name; [10]?=keywords
+  const UNICODE_DATA_URL = `https://www.unicode.org/Public/${UNICODE_VERSION}.0/ucd/UnicodeData.txt`
+
+  // [1]=entity; [2]=hex32A; [3]=hex32B
+  const HTML_ENTITY_DATA_URL = 'https://html.spec.whatwg.org/multipage/named-characters.html'
+  const HTML_ENTITY_DATA_SEARCH = /<code>(\w+);?<\/code>(?:.*?)<td> U\+([\d\w]+)(?: U\+([\d\w]+))?/gi
+
+  // [1]=hex32; [2]=character; [3]=name; [4]?=keywords
+  const EMOJI_DATA_URL = `https://www.unicode.org/emoji/charts-${UNICODE_VERSION}/emoji-list.html`
+  const EMOJI_DATA_SEARCH =
+    /<tr><td class='rchars'>\d+<\/td>\n?<td class='code'><a.*?>(.*?)<\/a><\/td>\n?<td class='andr'><a.*?><img alt='(.*?)'.*?<\/td>\n?<td class='name'>(.*?)<\/td>\n?<td class='name'>(.*?)<\/td>/gi
+
+  // [1]=hex32; [2]=character; [3]=name
+  // TODO: categories and groups
+  const EMOJI_TONE_DATA_URL = `https://www.unicode.org/emoji/charts-${UNICODE_VERSION}/full-emoji-modifiers.html`
+  const EMOJI_TONE_DATA_SEARCH =
+    /<tr><td class='rchars'>\d+<\/td>\n?<td class='code'><a.*?>(.*?)<\/a><\/td>\n?<td class='chars'>(.*?)<\/td>\n?.*?\n.*?\n.*?\n.*?\n.*?\n.*?\n.*?\n.*?\n.*?\n.*?\n.*?\n<td class='name'>(.*?)<\/td>/gi
+
+  // CSV; 2 columns; [0]=hex32Start; [1]=hex32End; [2]=block
+  const UNICODE_BLOCK_DATA_URL = `https://www.unicode.org/Public/${UNICODE_VERSION}.0/ucd/Blocks.txt`
+  const UNICODE_BLOCK_DATA_SEARCH = /(.*?)(?:\.\.(.*))?;\s(.*?)\n/gim
+
+  // CSV; 2 columns; [0]=hex32Start; [1]?=hex32End; [2]=version; [3]?=count; [4]=description
+  const UNICODE_VERSION_DATA_URL = `https://www.unicode.org/Public/${UNICODE_VERSION}.0/ucd/DerivedAge.txt`
+  const UNICODE_VERSION_DATA_SEARCH = /(.*?)(?:\.\.(.*))?\s+;\s([\d.]+)\s#\s+(?:\[(\d+)\])?(.*?)\n/gim
+
+  const EXCLUDED_GROUPS = ['High Private Use Surrogates', 'High Surrogates', 'Low Surrogates']
+
   /** @type {Map<string, Glyph>} */
   const glyphs = new Map()
 
@@ -156,6 +155,9 @@ async function scrape() {
 
     const [, glyphKeywords] = glyphWords(existingGlyph.n, [glyph.n, ...(existingGlyph.k ?? []), ...(glyph.k ?? [])])
     const glyphEntities = [...new Set([...(existingGlyph.e ?? []), ...(glyph.e ?? [])])]
+      .reverse()
+      // Remove outdated and unsupported HTML entities like `&COPY;` in favor of newer `&copy;`
+      .filter((e, i, arr) => (i === 0 ? true : e.toLowerCase() !== arr[i - 1]))
     glyphs.set(glyph.c, {
       ...existingGlyph,
       k: glyphKeywords,
@@ -296,4 +298,8 @@ async function scrape() {
   fs.writeFileSync(`public/glyphs/${UNICODE_VERSION}.json`, JSON.stringify([...glyphs.values()]), { flag: 'w' })
 }
 
-scrape()
+;(async () => {
+  for (const version of UNICODE_VERSIONS) {
+    await scrape(version)
+  }
+})()
