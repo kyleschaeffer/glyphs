@@ -1,7 +1,14 @@
 import Fuse from 'fuse.js'
 import z from 'zod'
-import { decimalToString, stringToDecimals } from '../core/convert'
-import type { Glyph } from '../store/types'
+import {
+  decimalToString,
+  decimalToUtf16,
+  decimalToUtf32,
+  stringToBinary,
+  stringToDecimals,
+  stringToUtf8,
+} from '../core/convert'
+import type { Glyph, GlyphsFile } from '../store/types'
 import type { ClientMessage, WorkerMessage, SearchResult } from './types'
 
 const post = (message: WorkerMessage) => self.postMessage(message)
@@ -25,26 +32,40 @@ class SearchController {
     this.loading = true
     try {
       const response = await fetch(`/glyphs/${version}.json`)
-      const glyphs = (await response.json()) as Glyph[]
+      const glyphsFile = (await response.json()) as GlyphsFile
 
-      this.fuse = new Fuse(glyphs, {
+      this.glyphs = new Map()
+      for (const glyph of glyphsFile.glyphs) {
+        this.glyphs.set(glyph.c, {
+          char: glyph.c,
+          name: glyph.n,
+          keywords: glyph.k,
+          entities: glyph.e,
+          decimals: glyph.d,
+          utf32: glyph.d.map(decimalToUtf32),
+          utf16: glyph.d.flatMap(decimalToUtf16),
+          utf8: stringToUtf8(glyph.c),
+          binary: stringToBinary(glyph.c),
+          block: glyph.b !== undefined ? glyphsFile.blocks[glyph.b] : undefined,
+          version: glyph.v !== undefined ? glyphsFile.versions[glyph.v] : undefined,
+        })
+      }
+
+      this.fuse = new Fuse(Array.from(this.glyphs.values()), {
         keys: [
-          { name: 'c', weight: 1.0 },
-          { name: 'd', weight: 0.1 },
-          { name: 'u', weight: 0.1 },
-          { name: 'h', weight: 0.1 },
-          { name: 'n', weight: 0.5 },
-          { name: 'g', weight: 0.1 },
-          { name: 'k', weight: 0.3 },
-          { name: 'e', weight: 0.2 },
+          { name: 'char', weight: 1.0 },
+          { name: 'name', weight: 0.7 },
+          { name: 'keywords', weight: 0.5 },
+          { name: 'entities', weight: 0.3 },
+          { name: 'decimals', weight: 0.1 },
+          { name: 'utf32', weight: 0.1 },
+          { name: 'utf16', weight: 0.1 },
+          { name: 'utf8', weight: 0.05 },
+          { name: 'binary', weight: 0.05 },
+          { name: 'block', weight: 0.2 },
         ],
         threshold: 0.4,
       })
-
-      this.glyphs = new Map()
-      for (const glyph of glyphs) {
-        this.glyphs.set(glyph.c, glyph)
-      }
 
       postWorkerReady(this.glyphs.size)
     } catch (e) {
@@ -59,14 +80,14 @@ class SearchController {
   }
 
   getRelated(glyph: Glyph): (Glyph | null)[] {
-    const chars = glyph.d.map((d) => decimalToString(d))
-    return chars.map((char) => (char !== glyph.c ? this.get(char) : null))
+    const chars = glyph.decimals.map((d) => decimalToString(d))
+    return chars.map((char) => (char !== glyph.char ? this.get(char) : null))
   }
 
   search(query: string): SearchResult[] {
     let results = this.fuse?.search(query.slice(0, 128), { limit: 1000 }) ?? []
 
-    const resultsChars = new Set([...results.map((r) => r.item.c)])
+    const resultsChars = new Set([...results.map((r) => r.item.char)])
     const queryChars = new Set([...stringToDecimals(query).map(decimalToString)])
     queryChars.forEach((char) => {
       if (resultsChars.has(char)) return

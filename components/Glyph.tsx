@@ -52,43 +52,43 @@ export function Glyph() {
     <>
       <Head>
         <title>
-          {glyph.c} {glyph.n}
+          {glyph.char} {glyph.name}
         </title>
       </Head>
       <div className={cx('glyph')}>
         <header className={cx('head')}>
-          <h2 className={cx('name')}>{glyph.n}</h2>
+          <h2 className={cx('name')}>{glyph.name}</h2>
           <button className={cx('close')} onClick={close} title="Close (⎋)">
             ✗
           </button>
         </header>
-        <Character>{glyph.c}</Character>
+        <Character>{glyph.char}</Character>
         <div className="center">
-          <CopyButton text={glyph.c} copyLabel="Copy glyph" />
+          <CopyButton text={glyph.char} copyLabel="Copy glyph" />
         </div>
         <div className={cx('section')}>
           <h3>JavaScript:</h3>
           <ul className={cx('codes')} role="list">
             <li>
               <Code prefix="str\A0=\A0'" suffix="'">
-                {escapeSingleQuotes(glyph.c)}
+                {escapeSingleQuotes(glyph.char)}
               </Code>
             </li>
-            {glyph.d.length === 1 && glyph.d[0] <= 0xff && (
+            {glyph.decimals.length === 1 && glyph.decimals[0] <= 0xff && (
               <li>
                 <Code prefix="str\A0=\A0'" suffix="'">
-                  {decimalToHexEscapeSequence(glyph.d[0])}
+                  {decimalToHexEscapeSequence(glyph.decimals[0])}
                 </Code>
               </li>
             )}
             <li>
               <Code prefix="str\A0=\A0'" suffix="'" wrap>
-                {utf32ToCodePointEscapeSequence(glyph.u)}
+                {utf32ToCodePointEscapeSequence(glyph.utf32)}
               </Code>
             </li>
             <li>
               <Code prefix="str\A0=\A0'" suffix="'" wrap>
-                {utf16ToUnicodeEscapeSequence(glyph.h)}
+                {utf16ToUnicodeEscapeSequence(glyph.utf16)}
               </Code>
             </li>
           </ul>
@@ -122,7 +122,7 @@ export function Glyph() {
           <ul className={cx('codes')} role="list">
             <li>
               <Code prefix="glyphs.dev/" wrap>
-                {encodeURIComponent(glyph.c)}
+                {encodeURIComponent(glyph.char)}
               </Code>
             </li>
           </ul>
@@ -131,7 +131,7 @@ export function Glyph() {
           <h3>UTF-32:</h3>
           <ul className={cx('codes')} role="list">
             <li>
-              <Code>{glyph.u.map((u) => `U+${u}`).join(' ')}</Code>
+              <Code>{glyph.utf32.map((u) => `U+${u}`).join(' ')}</Code>
             </li>
           </ul>
         </div>
@@ -139,7 +139,7 @@ export function Glyph() {
           <h3>UTF-16:</h3>
           <ul className={cx('codes')} role="list">
             <li>
-              <Code>{glyph.h.map((h) => `U+${h}`).join(' ')}</Code>
+              <Code>{glyph.utf16.map((u) => `U+${u}`).join(' ')}</Code>
             </li>
           </ul>
         </div>
@@ -147,11 +147,7 @@ export function Glyph() {
           <h3>UTF-8:</h3>
           <ul className={cx('codes')} role="list">
             <li>
-              <Code>
-                {stringToUtf8(glyph.c)
-                  .map((h) => `U+${h}`)
-                  .join(' ')}
-              </Code>
+              <Code>{glyph.utf8.map((u) => `U+${u}`).join(' ')}</Code>
             </li>
           </ul>
         </div>
@@ -159,7 +155,7 @@ export function Glyph() {
           <h3>Binary:</h3>
           <ul className={cx('codes')} role="list">
             <li>
-              <Code>{stringToBinary(glyph.c).join(' ')}</Code>
+              <Code>{glyph.binary.join(' ')}</Code>
             </li>
           </ul>
         </div>
@@ -170,9 +166,9 @@ export function Glyph() {
               {related.map((r, i) => (
                 <li key={i}>
                   {r ? (
-                    <Link className={cx('ligature-link')} href={`/${r.c}`}>
-                      <span className={cx('ligature-char')}>{r.c} </span>
-                      <span className={cx('ligature-name')}>{r.n}</span>
+                    <Link className={cx('ligature-link')} href={`/${r.char}`}>
+                      <span className={cx('ligature-char')}>{r.char} </span>
+                      <span className={cx('ligature-name')}>{r.name}</span>
                     </Link>
                   ) : (
                     'Unknown'
@@ -185,13 +181,13 @@ export function Glyph() {
         <div className={cx('section')}>
           <h3>About:</h3>
           <ul className={cx('codes')} role="list">
-            {glyph.g && <li>Category: {glyph.g}</li>}
-            {glyph.k && <li>Keywords: {glyph.k.join(', ')}</li>}
-            {glyph.v && (
+            {glyph.block && <li>Category: {glyph.block}</li>}
+            {glyph.keywords && <li>Keywords: {glyph.keywords.join(', ')}</li>}
+            {glyph.version && (
               <li>
                 Unicode version:{' '}
-                <Link href={`https://www.unicode.org/versions/Unicode${glyph.v}.0/`} target="_blank">
-                  <span>{glyph.v}.0</span>
+                <Link href={`https://www.unicode.org/versions/Unicode${glyph.version}.0/`} target="_blank">
+                  <span>{glyph.version}.0</span>
                   <span> ↗</span>
                 </Link>
               </li>

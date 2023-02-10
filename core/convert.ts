@@ -1,30 +1,27 @@
 /**
  * Convert a string to individual character decimal values
  *
- * @param   {string}   str String
- * @returns {number[]}
+ * @param str String
  */
-function stringToDecimals(str) {
+export function stringToDecimals(str: string): number[] {
   return str.split('').map((char) => char.charCodeAt(0))
 }
 
 /**
  * Convert a hexadecimal value to a decimal value
  *
- * @param   {string} hex Hexadecimal value
- * @returns {number}
+ * @param hex Hexadecimal value
  */
-function hexToDecimal(hex) {
+export function hexToDecimal(hex: string): number {
   return parseInt(hex, 16)
 }
 
 /**
  * Convert a hexadecimal value to a binary value
  *
- * @param   {string} hex Hexadecimal value
- * @returns {string}
+ * @param hex Hexadecimal value
  */
-function hexToBinary(hex) {
+export function hexToBinary(hex: string): string {
   return parseInt(hex, 16).toString(2).padStart(8, '0')
 }
 
@@ -32,111 +29,100 @@ function hexToBinary(hex) {
  * Convert a decimal value to a fixed-size hexadecimal value
  *  - Example: `90` -> `"005A"`
  *
- * @param   {number} decimal Decimal value
- * @param   {size}   size    String size, padded with leading zeroes if needed (default: `4`)
- * @returns {string}
+ * @param decimal Decimal value
+ * @param size    String size, padded with leading zeroes if needed (default: `4`)
  */
-function decimalToHex(decimal, size = 4) {
+export function decimalToHex(decimal: number, size: number = 4): string {
   return decimal.toString(16).toUpperCase().padStart(size, '0')
 }
 
 /**
  * Trim leading zeroes from a hexadecimal value
  *
- * @param   {string} hex Hexadecimal value
- * @returns {string}
+ * @param hex Hexadecimal value
  */
-function trimHex(hex) {
+export function trimHex(hex: string): string {
   return hex.replace(/^0*/, '')
 }
 
 /**
  * Convert an HTML entity name to an HTML entity
  *
- * @param   {string} entity Entity name
- * @returns {string}
+ * @param entity Entity name
  */
-function entityToHtml(entity) {
+export function entityToHtml(entity: string): string {
   return `&${entity};`
 }
 
 /**
  * Convert a decimal value to an HTML entity
  *
- * @param   {number} decimal Decimal value
- * @returns {string}
+ * @param decimal Decimal value
  */
-function decimalToHtml(decimal) {
+export function decimalToHtml(decimal: number): string {
   return `&#${decimal};`
 }
 
 /**
  * Convert a hexadecimal value to an HTML entity; note that HTML requires UTF-32 encoded values
  *
- * @param   {string} hex UTF-32 encoded hexadecimal value
- * @returns {string}
+ * @param hex UTF-32 encoded hexadecimal value
  */
-function utf32ToHtml(hex) {
+export function utf32ToHtml(hex: string): string {
   return `&#x${trimHex(hex)};`
 }
 
 /**
  * Convert a hexadecimal value to CSS notation; note that CSS requires UTF-32 encoded values without leading zeroes
  *
- * @param   {string} hex Hexadecimal value to convert
- * @returns {string}
+ * @param hex Hexadecimal value to convert
  */
-function utf32ToCss(hex) {
+export function utf32ToCss(hex: string): string {
   return `\\${trimHex(hex)}`
 }
 
 /**
  * Convert UTF-16 hexadecimal encodings to a Unicode escape sequence
  *
- * @param   {string[]} hexes  UTF-16 hexadecimal encodings
- * @returns {string}
+ * @param hexes UTF-16 hexadecimal encodings
  */
-function utf16ToUnicodeEscapeSequence(hexes) {
+export function utf16ToUnicodeEscapeSequence(hexes: string[]): string {
   return hexes.map((hex) => `\\u${hex}`).join('')
 }
 
 /**
  * Convert decimal value to a Unicode hexadecimal escape sequence
  *
- * @param   {number} decimal Decimal value
- * @returns {string}
+ * @param decimal Decimal value
  */
-function decimalToHexEscapeSequence(decimal) {
+export function decimalToHexEscapeSequence(decimal: number): string {
   return decimal <= 0xff ? `\\x${decimalToHex(decimal, 0)}` : ''
 }
 
 /**
  * Convert UTF-32 hexadecimal encodings to a Unicode code point escape sequence
  *
- * @param   {string[]} hexes UTF-32 hexadecimal encodings
- * @returns {string}
+ * @param hexes UTF-32 hexadecimal encodings
  */
-function utf32ToCodePointEscapeSequence(hexes) {
+export function utf32ToCodePointEscapeSequence(hexes: string[]): string {
   return hexes.map((hex) => `\\u{${trimHex(hex)}}`).join('')
 }
 
 /**
  * Sanitize a string by escaping single quotes
  *
- * @param   {string} str String value
- * @returns {string}
+ * @param str String value
  */
-function escapeSingleQuotes(str) {
+export function escapeSingleQuotes(str: string): string {
   return str.replace(/'/g, "\\'")
 }
 
 /**
  * Convert a decimal value to one or more UTF-16 hexadecimal encodings
  *
- * @param   {number}   decimal Decimal value to convert
- * @returns {string[]}
+ * @param decimal Decimal value to convert
  */
-function decimalToUtf16(decimal) {
+export function decimalToUtf16(decimal: number): string[] {
   if (decimal <= 0xffff) return [decimalToHex(decimal)]
   decimal -= 0x10000
   const lead = 0xd800 + (decimal >> 10)
@@ -147,82 +133,53 @@ function decimalToUtf16(decimal) {
 /**
  * Convert a string to one or more UTF-8 hexadecimal encodings
  *
- * @param   {string}   str String to convert
- * @returns {string[]}
+ * @param str String to convert
  */
-function stringToUtf8(str) {
+export function stringToUtf8(str: string): string[] {
   return Array.from(new TextEncoder().encode(str)).map((d) => decimalToHex(d, 2))
 }
 
 /**
  * Convert a string to one or more UTF-8 binary encodings
  *
- * @param   {string}   str String to convert
- * @returns {string[]}
+ * @param str String to convert
  */
-function stringToBinary(str) {
+export function stringToBinary(str: string): string[] {
   return stringToUtf8(str).map(hexToBinary)
 }
 
 /**
  * Convert a string to one or more UTF-16 hexadecimal encodings
  *
- * @param   {string}   str String
- * @returns {string[]}
+ * @param str String
  */
-function stringToUtf16(str) {
+export function stringToUtf16(str: string): string[] {
   return stringToDecimals(str).flatMap(decimalToUtf16)
 }
 
 /**
  * Convert a decimal value to a UTF-32 hexadecimal encoding
  *
- * @param   {number} decimal Decimal value
- * @returns {string}
+ * @param decimal Decimal value
  */
-function decimalToUtf32(decimal) {
+export function decimalToUtf32(decimal: number): string {
   return decimalToHex(decimal, 8)
 }
 
 /**
  * Convert UTF-16 hexadecimal encodings to a string
  *
- * @param   {string[]} hexes UTF-16 Hexadecimal encodings
- * @returns {string}
+ * @param hexes UTF-16 Hexadecimal encodings
  */
-function utf16ToString(hexes) {
+export function utf16ToString(hexes: string[]): string {
   return String.fromCharCode(...hexes.map((hex) => hexToDecimal(hex)))
 }
 
 /**
  * Convert a decimal value to a string
  *
- * @param   {number} decimal Decimal value
- * @returns {string}
+ * @param decimal Decimal value
  */
-function decimalToString(decimal) {
+export function decimalToString(decimal: number): string {
   return utf16ToString(decimalToUtf16(decimal))
-}
-
-module.exports = {
-  decimalToHex,
-  decimalToHexEscapeSequence,
-  decimalToHtml,
-  decimalToString,
-  decimalToUtf16,
-  decimalToUtf32,
-  entityToHtml,
-  escapeSingleQuotes,
-  hexToBinary,
-  hexToDecimal,
-  stringToBinary,
-  stringToDecimals,
-  stringToUtf16,
-  stringToUtf8,
-  trimHex,
-  utf16ToString,
-  utf16ToUnicodeEscapeSequence,
-  utf32ToCodePointEscapeSequence,
-  utf32ToCss,
-  utf32ToHtml,
 }

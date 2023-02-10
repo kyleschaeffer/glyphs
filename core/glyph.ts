@@ -16,14 +16,14 @@ export function glyphRoute(char: string): string {
 export function htmlEntities(glyph: Glyph): string[] {
   const entities = []
 
-  if (!HTML_SPECIAL_CHARS.has(glyph.c)) entities.push(glyph.c)
-  if (glyph.e) glyph.e.forEach((e) => entities.push(entityToHtml(e)))
-  entities.push(glyph.u.map(utf32ToHtml).join(''))
-  entities.push(glyph.d.map(decimalToHtml).join(''))
+  if (!HTML_SPECIAL_CHARS.has(glyph.char)) entities.push(glyph.char)
+  if (glyph.entities) glyph.entities.forEach((e) => entities.push(entityToHtml(e)))
+  entities.push(glyph.utf32.map(utf32ToHtml).join(''))
+  entities.push(glyph.decimals.map(decimalToHtml).join(''))
 
   return entities
 }
 
 export function cssEntities(glyph: Glyph): string[] {
-  return [escapeSingleQuotes(glyph.c), glyph.u.map(utf32ToCss).join('')]
+  return [escapeSingleQuotes(glyph.char), glyph.utf32.map(utf32ToCss).join('')]
 }

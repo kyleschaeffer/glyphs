@@ -31,7 +31,7 @@ export function SearchResults() {
       </Head>
       <ul className={cx('results')}>
         {results.map((result) => (
-          <li key={result.item.c}>
+          <li key={result.item.char}>
             <SearchResult glyph={result.item} />
           </li>
         ))}
@@ -51,12 +51,12 @@ export function SearchResult(props: SearchResultProps) {
   const setScrollPosition = useAppStore((store) => store.setScrollPosition)
   const select = useCallback(() => {
     setScrollPosition(document.scrollingElement?.scrollTop ?? null)
-    router.push(glyphRoute(glyph.c))
+    router.push(glyphRoute(glyph.char))
   }, [glyph, setScrollPosition, router])
 
   return (
-    <button className={cx('result')} onClick={select} title={`${glyph.c} ${glyph.n}`}>
-      {glyph.c}
+    <button className={cx('result')} onClick={select} title={`${glyph.char} ${glyph.name}`}>
+      {glyph.char}
     </button>
   )
 }
