@@ -28,7 +28,7 @@ const UNICODE_BLOCK_DATA_SEARCH = /(.*?)(?:\.\.(.*))?;\s(.*?)\n/gim
 // CSV; 2 columns; [0]=utf32Start; [1]?=utf32End; [2]=version; [3]?=count; [4]=description
 const UNICODE_VERSION_DATA_SEARCH = /(.*?)(?:\.\.(.*))?\s+;\s([\d.]+)\s#\s+(?:\[(\d+)\])?(.*?)\n/gim
 
-const EXCLUDED_GROUPS = ['High Private Use Surrogates', 'High Surrogates', 'Low Surrogates']
+const EXCLUDED_BLOCKS = ['High Private Use Surrogates', 'High Surrogates', 'Low Surrogates']
 
 const htmlEntities = new Map<number, string[]>()
 
@@ -43,7 +43,7 @@ async function scrape(version: string): Promise<void> {
 
   const glyphs = new Map<string, GlyphData>()
   const blocks = new Set<string>()
-  const blockMap = new Map<number, number>()
+  const blockMap = new Map<number, number | null>()
   const versions = new Set<string>()
   const versionMap = new Map<number, number>()
 
@@ -109,8 +109,9 @@ async function scrape(version: string): Promise<void> {
     const [, utf32Start, utf32End, block] = blockMatch
     const startDecimal = hexToDecimal(utf32Start)
     const endDecimal = hexToDecimal(utf32End)
-    blocks.add(block)
-    const id = Array.from(blocks).indexOf(block)
+    const excluded = EXCLUDED_BLOCKS.includes(block)
+    if (!excluded) blocks.add(block)
+    const id = excluded ? null : Array.from(blocks).indexOf(block)
     for (let decimal = startDecimal; decimal <= endDecimal; decimal++) {
       blockMap.set(decimal, id)
     }
@@ -138,6 +139,8 @@ async function scrape(version: string): Promise<void> {
     if (cols.length < 14 || cols[1] === '<control>') continue
     const [utf32, name, , , , , , , , , keywords] = cols
     const decimal = hexToDecimal(utf32)
+    const block = blockMap.get(decimal)
+    if (block === null) continue
     const char = decimalToString(decimal)
     const [glyphName, glyphKeywords] = glyphWords(name, keywords?.replace('&amp;', '&').split(/[,;|]/) ?? [])
     addGlyph({
@@ -146,7 +149,7 @@ async function scrape(version: string): Promise<void> {
       k: glyphKeywords,
       e: htmlEntities.get(decimal)?.sort(),
       d: [decimal],
-      b: blockMap.get(decimal),
+      b: block,
       v: versionMap.get(decimal),
     })
   }
