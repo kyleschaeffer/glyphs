@@ -26,17 +26,20 @@ const EMOJI_TONE_DATA_SEARCH =
 const UNICODE_BLOCK_DATA_SEARCH = /(.*?)(?:\.\.(.*))?;\s(.*?)\n/gim
 
 // CSV; 2 columns; [0]=utf32Start; [1]?=utf32End; [2]=version; [3]?=count; [4]=description
+const UNICODE_VERSION_DATA_URL = `https://www.unicode.org/Public/15.0.0/ucd/DerivedAge.txt`
 const UNICODE_VERSION_DATA_SEARCH = /(.*?)(?:\.\.(.*))?\s+;\s([\d.]+)\s#\s+(?:\[(\d+)\])?(.*?)\n/gim
 
 const EXCLUDED_BLOCKS = ['High Private Use Surrogates', 'High Surrogates', 'Low Surrogates']
 
 const htmlEntities = new Map<number, string[]>()
+const versions = new Set<string>()
+const versionMap = new Map<number, number>()
+const appearedVersions = new Map<string, number>()
 
 async function scrape(version: string): Promise<void> {
   const EMOJI_DATA_URL = `https://www.unicode.org/emoji/charts-${version}/emoji-list.html`
   const EMOJI_TONE_DATA_URL = `https://www.unicode.org/emoji/charts-${version}/full-emoji-modifiers.html`
   const UNICODE_BLOCK_DATA_URL = `https://www.unicode.org/Public/${version}.0/ucd/Blocks.txt`
-  const UNICODE_VERSION_DATA_URL = `https://www.unicode.org/Public/${version}.0/ucd/DerivedAge.txt`
 
   // CSV; 14 columns; [0]=utf32; [1]=name; [10]?=keywords
   const UNICODE_DATA_URL = `https://www.unicode.org/Public/${version}.0/ucd/UnicodeData.txt`
@@ -44,8 +47,6 @@ async function scrape(version: string): Promise<void> {
   const glyphs = new Map<string, GlyphData>()
   const blocks = new Set<string>()
   const blockMap = new Map<number, number | null>()
-  const versions = new Set<string>()
-  const versionMap = new Map<number, number>()
 
   if (!htmlEntities.size) {
     // Get HTML entity data
@@ -66,8 +67,43 @@ async function scrape(version: string): Promise<void> {
     }
   }
 
+  if (!versions.size) {
+    // Get Unicode version data
+    console.log(`GET ${UNICODE_VERSION_DATA_URL}`)
+    const unicodeVersionData = await fetch<string>(UNICODE_VERSION_DATA_URL)
+
+    // Save Unicode versions
+    let versionMatch = UNICODE_VERSION_DATA_SEARCH.exec(unicodeVersionData)
+    while (versionMatch) {
+      const [, utf32Start, utf32End, version] = versionMatch
+      const startDecimal = hexToDecimal(utf32Start)
+      const endDecimal = utf32End ? hexToDecimal(utf32End) : startDecimal
+      versions.add(version)
+      const id = Array.from(versions).indexOf(version)
+      for (let decimal = startDecimal; decimal <= endDecimal; decimal++) {
+        versionMap.set(decimal, id)
+      }
+      versionMatch = UNICODE_VERSION_DATA_SEARCH.exec(unicodeVersionData)
+    }
+  }
+
   function addGlyph(glyph: GlyphData): void {
     const existingGlyph = glyphs.get(glyph.c)
+
+    if (glyph.v === undefined && existingGlyph?.v === undefined) {
+      // Unicode includes some newer data in the 5.0 dataset, so we’ll use version data from the first character if
+      // available when crawling 5.0 data
+      let appearedVersion = version === '5.0' ? versionMap.get(glyph.d[0]) : appearedVersions.get(glyph.c)
+
+      // Glyph appeared this version
+      if (appearedVersion === undefined) {
+        appearedVersion = Array.from(versions).indexOf(version)
+        appearedVersions.set(glyph.c, appearedVersion)
+      }
+
+      glyph.v = appearedVersion
+    }
+
     if (!existingGlyph) {
       glyphs.set(glyph.c, glyph)
       return
@@ -99,10 +135,6 @@ async function scrape(version: string): Promise<void> {
   console.log(`GET ${UNICODE_BLOCK_DATA_URL}`)
   const unicodeBlockData = await fetch<string>(UNICODE_BLOCK_DATA_URL)
 
-  // Get Unicode version data
-  console.log(`GET ${UNICODE_VERSION_DATA_URL}`)
-  const unicodeVersionData = await fetch<string>(UNICODE_VERSION_DATA_URL)
-
   // Save Unicode blocks
   let blockMatch = UNICODE_BLOCK_DATA_SEARCH.exec(unicodeBlockData)
   while (blockMatch) {
@@ -116,20 +148,6 @@ async function scrape(version: string): Promise<void> {
       blockMap.set(decimal, id)
     }
     blockMatch = UNICODE_BLOCK_DATA_SEARCH.exec(unicodeBlockData)
-  }
-
-  // Save Unicode versions
-  let versionMatch = UNICODE_VERSION_DATA_SEARCH.exec(unicodeVersionData)
-  while (versionMatch) {
-    const [, utf32Start, utf32End, version] = versionMatch
-    const startDecimal = hexToDecimal(utf32Start)
-    const endDecimal = utf32End ? hexToDecimal(utf32End) : startDecimal
-    versions.add(version)
-    const id = Array.from(versions).indexOf(version)
-    for (let decimal = startDecimal; decimal <= endDecimal; decimal++) {
-      versionMap.set(decimal, id)
-    }
-    versionMatch = UNICODE_VERSION_DATA_SEARCH.exec(unicodeVersionData)
   }
 
   // Create unicode glyphs
@@ -192,7 +210,7 @@ async function scrape(version: string): Promise<void> {
   }
 
   // Write to file
-  console.log(`Writing ${glyphs.size} glyphs to file...`)
+  console.log(`Writing ${glyphs.size} glyphs to ${version}.json...`)
 
   const glyphsFile: GlyphsFile = {
     glyphs: Array.from(glyphs.values()),
