@@ -11,8 +11,7 @@ export const EMOJI_DATA_SEARCH =
   /<tr><td class='rchars'>\d+<\/td>\n?<td class='code'><a.*?>(.*?)<\/a><\/td>\n?<td class='andr'><a.*?><img alt='(.*?)'.*?<\/td>\n?<td class='name'>(.*?)<\/td>\n?<td class='name'>(.*?)<\/td>/gi
 
 // [1]=utf32; [2]=character; [3]=name
-// TODO: categories and groups
-export const EMOJI_TONE_DATA_SEARCH =
+export const EMOJI_MODIFIER_DATA_SEARCH =
   /<tr><td class='rchars'>\d+<\/td>\n?<td class='code'><a.*?>(.*?)<\/a><\/td>\n?<td class='chars'>(.*?)<\/td>\n?.*?\n.*?\n.*?\n.*?\n.*?\n.*?\n.*?\n.*?\n.*?\n.*?\n.*?\n<td class='name'>(.*?)<\/td>/gi
 
 // CSV; 2 columns; [0]=utf32Start; [1]=utf32End; [2]=block
