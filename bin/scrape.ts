@@ -1,35 +1,21 @@
 import dotenv from 'dotenv'
 import fs from 'fs'
-import { IncomingMessage } from 'http'
-import https from 'https'
 import { decimalToString, hexToDecimal } from '../core/convert'
+import { mergeKeywords, sanitizeWord, titleCase } from '../core/lang'
 import { GlyphData, GlyphsFile } from '../store/types'
+import {
+  EMOJI_DATA_SEARCH,
+  EMOJI_TONE_DATA_SEARCH,
+  EXCLUDED_BLOCKS,
+  HTML_ENTITY_DATA_SEARCH,
+  HTML_ENTITY_DATA_URL,
+  UNICODE_BLOCK_DATA_SEARCH,
+  UNICODE_VERSION_DATA_SEARCH,
+  UNICODE_VERSION_DATA_URL,
+  UNICODE_VERSIONS,
+} from './config'
 
 dotenv.config()
-
-const UNICODE_VERSIONS = ['5.0', '6.0', '7.0', '8.0', '9.0', '10.0', '11.0', '12.0', '13.0', '14.0', '15.0']
-
-// [1]=entity; [2]=decimal
-const HTML_ENTITY_DATA_URL = 'https://www.w3.org/TR/html4/sgml/entities.html'
-const HTML_ENTITY_DATA_SEARCH = /!ENTITY\s+(\w+)\s+CDATA\s+"&amp;#(\d+)/g
-
-// [1]=utf32; [2]=character; [3]=name; [4]?=keywords
-const EMOJI_DATA_SEARCH =
-  /<tr><td class='rchars'>\d+<\/td>\n?<td class='code'><a.*?>(.*?)<\/a><\/td>\n?<td class='andr'><a.*?><img alt='(.*?)'.*?<\/td>\n?<td class='name'>(.*?)<\/td>\n?<td class='name'>(.*?)<\/td>/gi
-
-// [1]=utf32; [2]=character; [3]=name
-// TODO: categories and groups
-const EMOJI_TONE_DATA_SEARCH =
-  /<tr><td class='rchars'>\d+<\/td>\n?<td class='code'><a.*?>(.*?)<\/a><\/td>\n?<td class='chars'>(.*?)<\/td>\n?.*?\n.*?\n.*?\n.*?\n.*?\n.*?\n.*?\n.*?\n.*?\n.*?\n.*?\n<td class='name'>(.*?)<\/td>/gi
-
-// CSV; 2 columns; [0]=utf32Start; [1]=utf32End; [2]=block
-const UNICODE_BLOCK_DATA_SEARCH = /(.*?)(?:\.\.(.*))?;\s(.*?)\n/gim
-
-// CSV; 2 columns; [0]=utf32Start; [1]?=utf32End; [2]=version; [3]?=count; [4]=description
-const UNICODE_VERSION_DATA_URL = `https://www.unicode.org/Public/15.0.0/ucd/DerivedAge.txt`
-const UNICODE_VERSION_DATA_SEARCH = /(.*?)(?:\.\.(.*))?\s+;\s([\d.]+)\s#\s+(?:\[(\d+)\])?(.*?)\n/gim
-
-const EXCLUDED_BLOCKS = ['High Private Use Surrogates', 'High Surrogates', 'Low Surrogates']
 
 const htmlEntities = new Map<number, string[]>()
 const versions = new Set<string>()
@@ -51,7 +37,7 @@ async function scrape(version: string): Promise<void> {
   if (!htmlEntities.size) {
     // Get HTML entity data
     console.log(`GET ${HTML_ENTITY_DATA_URL}`)
-    const htmlEntityData = await fetch<string>(HTML_ENTITY_DATA_URL)
+    const htmlEntityData = await (await fetch(HTML_ENTITY_DATA_URL)).text()
 
     let entityMatch = HTML_ENTITY_DATA_SEARCH.exec(htmlEntityData)
     while (entityMatch) {
@@ -70,7 +56,7 @@ async function scrape(version: string): Promise<void> {
   if (!versions.size) {
     // Get Unicode version data
     console.log(`GET ${UNICODE_VERSION_DATA_URL}`)
-    const unicodeVersionData = await fetch<string>(UNICODE_VERSION_DATA_URL)
+    const unicodeVersionData = await (await fetch(UNICODE_VERSION_DATA_URL)).text()
 
     // Save Unicode versions
     let versionMatch = UNICODE_VERSION_DATA_SEARCH.exec(unicodeVersionData)
@@ -109,7 +95,7 @@ async function scrape(version: string): Promise<void> {
       return
     }
 
-    const [, glyphKeywords] = glyphWords(existingGlyph.n, [glyph.n, ...(existingGlyph.k ?? []), ...(glyph.k ?? [])])
+    const [, glyphKeywords] = mergeKeywords(existingGlyph.n, [glyph.n, ...(existingGlyph.k ?? []), ...(glyph.k ?? [])])
     const glyphEntities = Array.from(new Set([...(existingGlyph.e ?? []), ...(glyph.e ?? [])]))
 
     glyphs.set(glyph.c, {
@@ -121,19 +107,19 @@ async function scrape(version: string): Promise<void> {
 
   // Get Unicode data
   console.log(`GET ${UNICODE_DATA_URL}`)
-  const unicodeData = await fetch<string>(UNICODE_DATA_URL)
+  const unicodeData = await (await fetch(UNICODE_DATA_URL)).text()
 
   // Get Emoji list
   console.log(`GET ${EMOJI_DATA_URL}`)
-  const emojiData = await fetch<string>(EMOJI_DATA_URL)
+  const emojiData = await (await fetch(EMOJI_DATA_URL)).text()
 
   // Get Emoji tones
   console.log(`GET ${EMOJI_TONE_DATA_URL}`)
-  const emojiToneData = await fetch<string>(EMOJI_TONE_DATA_URL)
+  const emojiToneData = await (await fetch(EMOJI_TONE_DATA_URL)).text()
 
   // Get Unicode block data
   console.log(`GET ${UNICODE_BLOCK_DATA_URL}`)
-  const unicodeBlockData = await fetch<string>(UNICODE_BLOCK_DATA_URL)
+  const unicodeBlockData = await (await fetch(UNICODE_BLOCK_DATA_URL)).text()
 
   // Save Unicode blocks
   let blockMatch = UNICODE_BLOCK_DATA_SEARCH.exec(unicodeBlockData)
@@ -160,7 +146,7 @@ async function scrape(version: string): Promise<void> {
     const block = blockMap.get(decimal)
     if (block === null) continue
     const char = decimalToString(decimal)
-    const [glyphName, glyphKeywords] = glyphWords(name, keywords?.replace('&amp;', '&').split(/[,;|]/) ?? [])
+    const [glyphName, glyphKeywords] = mergeKeywords(name, keywords?.replace('&amp;', '&').split(/[,;|]/) ?? [])
     addGlyph({
       c: char,
       n: glyphName,
@@ -177,7 +163,7 @@ async function scrape(version: string): Promise<void> {
   while (emojiMatch) {
     const [, utf32, char, name, keywords] = emojiMatch
     const decimals = utf32.split(' ').map((u) => hexToDecimal(u.replace(/^U\+/, '')))
-    const [glyphName, glyphKeywords] = glyphWords(
+    const [glyphName, glyphKeywords] = mergeKeywords(
       name,
       keywords
         .replace(/<span class='keye'>/gi, '')
@@ -199,7 +185,7 @@ async function scrape(version: string): Promise<void> {
   while (emojiToneMatch) {
     const [, utf32, char, name] = emojiToneMatch
     const decimals = utf32.split(' ').map((u) => hexToDecimal(u.replace(/^U\+/, '')))
-    const [glyphName, glyphKeywords] = glyphWords(name, [])
+    const [glyphName, glyphKeywords] = mergeKeywords(name, [])
     addGlyph({
       c: char,
       n: glyphName,
@@ -219,80 +205,6 @@ async function scrape(version: string): Promise<void> {
   }
 
   fs.writeFileSync(`public/glyphs/${version}.json`, JSON.stringify(glyphsFile), { flag: 'w' })
-}
-
-/**
- * Perform a GET request to the given URL and return the response as text
- *
- * @param url Fetch URL
- */
-async function fetch<T>(url: string): Promise<T> {
-  return new Promise((resolve, reject) => {
-    const { hostname, pathname } = new URL(url)
-    const req = https.request(
-      {
-        method: 'GET',
-        hostname,
-        path: pathname,
-        port: 443,
-      },
-      (res: IncomingMessage) => {
-        let data = ''
-        res.on('data', (d: string) => (data += d.toString()))
-        res.on('end', () => resolve(data as T))
-      }
-    )
-    req.on('error', reject)
-    req.end()
-  })
-}
-
-/**
- * Capitalize the first letter in a string
- *
- * @param str String to modify
- */
-function sentenceCase(str: string): string {
-  return str.length ? `${str[0].toUpperCase()}${str.toLowerCase().slice(1)}` : str
-}
-
-/**
- * Transform a string to title case
- *
- * @param str String to modify
- */
-function titleCase(str: string): string {
-  return str
-    .split(/[\s-]/)
-    .filter((w) => w.length)
-    .map((_word) => _word.split('.').map(sentenceCase).join('.'))
-    .join(' ')
-}
-
-/**
- * Sanitize a word string
- *
- * @param word Word string
- */
-function sanitizeWord(word: string): string {
-  return word.replace(/&amp;/gi, '&').replace(/⊛/gi, '').replace(/^</, '').replace(/>$/, '').trim().toLowerCase()
-}
-
-/**
- * Get deduped glyph name and keywords
- *
- * @param name     Glyph name; additional names will be merged into keywords
- * @param keywords Keywords, comma-, semicolon-, or pipe-separated
- */
-function glyphWords(name: string, keywords: string[]): [name: string, keywords: string[] | undefined] {
-  const [glyphName, ...additionalNames] = name
-    .replace('&amp;', '&')
-    .split(/[,;|]/)
-    .map(sanitizeWord)
-    .filter((w) => w.length)
-  const glyphKeywords = new Set([...additionalNames, ...keywords].map(sanitizeWord).filter((w) => w.length))
-  glyphKeywords.delete(glyphName)
-  return [titleCase(glyphName), glyphKeywords.size ? Array.from(glyphKeywords) : undefined]
 }
 
 ;(async () => {
