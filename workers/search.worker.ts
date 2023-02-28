@@ -47,6 +47,7 @@ class SearchController {
           utf8: stringToUtf8(glyph.c),
           block: glyph.b !== undefined ? glyphsFile.blocks[glyph.b] : undefined,
           version: glyph.v !== undefined ? glyphsFile.versions[glyph.v] : undefined,
+          ligatures: glyph.l,
         })
       }
 

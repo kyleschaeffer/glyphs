@@ -28,6 +28,9 @@ export type Glyph = {
 
   /** Unicode version */
   version?: string
+
+  /** Ligatures */
+  ligatures?: string[]
 }
 
 export type GlyphData = {
@@ -51,6 +54,9 @@ export type GlyphData = {
 
   /** Version index */
   v?: number
+
+  /** Ligatures */
+  l?: string[]
 }
 
 export type GlyphsFile = {

@@ -32,6 +32,7 @@ async function run() {
     const UNICODE_DATA_URL = `https://www.unicode.org/Public/${version}.0/ucd/UnicodeData.txt`
 
     const glyphs = new Map<string, GlyphData>()
+    const ligatures = new Map<string, string[]>()
     const blocks = new Set<string>()
     const blockMap = new Map<number, number | null>()
 
@@ -86,6 +87,14 @@ async function run() {
         }
 
         glyph.v = appearedVersion
+      }
+
+      if (glyph.d.length > 1) {
+        glyph.d.forEach((decimal) => {
+          const char = decimalToString(decimal)
+          const decimalLigatures = ligatures.get(char) ?? []
+          if (!decimalLigatures.includes(glyph.c)) ligatures.set(char, [...decimalLigatures, glyph.c])
+        })
       }
 
       if (!existingGlyph) {
@@ -194,6 +203,9 @@ async function run() {
 
     console.log('⚡️ Adding ligature data…')
     for (const glyph of Array.from(glyphs.values())) {
+      const glyphLigatures = ligatures.get(glyph.c)
+      if (glyphLigatures) glyph.l = glyphLigatures
+
       if (glyph.d.length <= 1) continue
       let keywords = glyph.k
       for (const decimal of glyph.d) {
