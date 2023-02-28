@@ -170,6 +170,22 @@ export function Glyph() {
             </ol>
           </div>
         )}
+        {glyph.ligatures?.length && (
+          <div className={cx('section')}>
+            <h3>Used in:</h3>
+            <div className={cx('used-in')}>
+              {glyph.ligatures.map((l, i) => (
+                <span key={i}>
+                  {
+                    <Link className={cx('ligature-link')} href={`/${l}`}>
+                      <span className={cx('ligature-char')}>{l} </span>
+                    </Link>
+                  }
+                </span>
+              ))}
+            </div>
+          </div>
+        )}
         <div className={cx('section')}>
           <h3>About:</h3>
           <ul className={cx('codes')} role="list">
