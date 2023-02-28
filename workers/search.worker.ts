@@ -45,7 +45,6 @@ class SearchController {
           utf32: glyph.d.map(decimalToUtf32),
           utf16: glyph.d.flatMap(decimalToUtf16),
           utf8: stringToUtf8(glyph.c),
-          binary: stringToBinary(glyph.c),
           block: glyph.b !== undefined ? glyphsFile.blocks[glyph.b] : undefined,
           version: glyph.v !== undefined ? glyphsFile.versions[glyph.v] : undefined,
         })
@@ -61,7 +60,6 @@ class SearchController {
           { name: 'utf32', weight: 0.1 },
           { name: 'utf16', weight: 0.1 },
           { name: 'utf8', weight: 0.05 },
-          { name: 'binary', weight: 0.05 },
           { name: 'block', weight: 0.2 },
         ],
         threshold: 0.4,

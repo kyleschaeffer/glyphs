@@ -151,14 +151,6 @@ export function Glyph() {
             </li>
           </ul>
         </div>
-        <div className={cx('section')}>
-          <h3>Binary:</h3>
-          <ul className={cx('codes')} role="list">
-            <li>
-              <Code>{glyph.binary.join(' ')}</Code>
-            </li>
-          </ul>
-        </div>
         {hasLigature && (
           <div className={cx('section')}>
             <h3>Ligature:</h3>

@@ -23,9 +23,6 @@ export type Glyph = {
   /** UTF-8 hexadecimal encodings */
   utf8: string[]
 
-  /** UTF-8 binary encodings */
-  binary: string[]
-
   /** Unicode block name */
   block?: string
 
