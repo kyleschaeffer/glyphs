@@ -26,7 +26,11 @@ export function titleCase(str: string): string {
  * @param word Word string
  */
 export function sanitizeWord(word: string): string {
-  return word.replace(/&amp;/gi, '&').replace(/⊛/gi, '').replace(/^</, '').replace(/>$/, '').trim().toLowerCase()
+  return word
+    .replace(/&amp;/gi, '&')
+    .replace(/[⊛“”]|^<|>$/g, '')
+    .trim()
+    .toLowerCase()
 }
 
 /**
