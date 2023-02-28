@@ -158,7 +158,7 @@ export function Glyph() {
               {related.map((r, i) => (
                 <li key={i}>
                   {r ? (
-                    <Link className={cx('ligature-link')} href={`/${r.char}`}>
+                    <Link className={cx('ligature-link')} href={`/${encodeURIComponent(r.char)}`}>
                       <span className={cx('ligature-char')}>{r.char} </span>
                       <span className={cx('ligature-name')}>{r.name}</span>
                     </Link>
@@ -177,7 +177,7 @@ export function Glyph() {
               {glyph.ligatures.map((l, i) => (
                 <span key={i}>
                   {
-                    <Link className={cx('ligature-link')} href={`/${l}`}>
+                    <Link className={cx('ligature-link')} href={`/${encodeURIComponent(l)}`}>
                       <span className={cx('ligature-char')}>{l} </span>
                     </Link>
                   }
