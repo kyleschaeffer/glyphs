@@ -211,7 +211,6 @@ async function run() {
       for (const decimal of glyph.d) {
         const ligatureChar = glyphs.get(decimalToString(decimal))
         if (!ligatureChar) continue
-        if (glyph.b === undefined && ligatureChar.b !== undefined) glyph.b = ligatureChar.b
         if (ligatureChar.k) [, keywords] = mergeKeywords(glyph.n, [...(keywords ?? []), ...ligatureChar.k])
       }
       glyph.k = keywords
