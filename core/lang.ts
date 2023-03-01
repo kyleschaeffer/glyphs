@@ -52,5 +52,5 @@ export function mergeKeywords(name: string, keywords: string[]): [name: string, 
  * @param str String
  */
 export function slugify(str: string): string {
-  return str.replace(/\s+/, '-').toLowerCase()
+  return str.replace(/\s+/g, '-').toLowerCase()
 }
