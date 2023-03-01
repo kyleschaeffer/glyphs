@@ -6,12 +6,11 @@ import { bindStyles } from '../core/browser'
 import {
   decimalToHexEscapeSequence,
   escapeSingleQuotes,
-  stringToBinary,
-  stringToUtf8,
   utf16ToUnicodeEscapeSequence,
   utf32ToCodePointEscapeSequence,
 } from '../core/convert'
 import { cssEntities, htmlEntities } from '../core/glyph'
+import { slugify } from '../core/lang'
 import { useAppStore } from '../store/app'
 import { Character } from './Character'
 import { Code } from './Code'
@@ -189,7 +188,11 @@ export function Glyph() {
         <div className={cx('section')}>
           <h3>About:</h3>
           <ul className={cx('codes')} role="list">
-            {glyph.block && <li>Category: {glyph.block}</li>}
+            {glyph.block && (
+              <li>
+                Block: <Link href={`/block/${slugify(glyph.block)}`}>{glyph.block}</Link>
+              </li>
+            )}
             {glyph.keywords && <li>Keywords: {glyph.keywords.join(', ')}</li>}
             {glyph.version && (
               <li>
