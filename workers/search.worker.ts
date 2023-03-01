@@ -1,17 +1,14 @@
 import Fuse from 'fuse.js'
 import z from 'zod'
-import {
-  decimalToString,
-  decimalToUtf16,
-  decimalToUtf32,
-  stringToBinary,
-  stringToDecimals,
-  stringToUtf8,
-} from '../core/convert'
+import { decimalToString, decimalToUtf16, decimalToUtf32, stringToDecimals, stringToUtf8 } from '../core/convert'
+import { assertNonNullable } from '../core/error'
+import { slugify } from '../core/lang'
 import type { Glyph, GlyphsFile } from '../store/types'
 import type { ClientMessage, WorkerMessage, SearchResult } from './types'
 
 const post = (message: WorkerMessage) => self.postMessage(message)
+const postBlockResponse = (block: string | null, glyphs: Glyph[]) =>
+  post({ type: 'BLOCK_RESPONSE', payload: { block, glyphs } })
 const postGlyphResponse = (glyph: Glyph | null, related: (Glyph | null)[]) =>
   post({ type: 'GLYPH_RESPONSE', payload: { glyph, related } })
 const postQueryResponse = (results: SearchResult[]) => post({ type: 'QUERY_RESPONSE', payload: { results } })
@@ -20,6 +17,7 @@ const postWorkerReady = (count: number) => post({ type: 'WORKER_READY', payload:
 class SearchController {
   loading = false
   glyphs: Map<string, Glyph> | null = null
+  blocks: Map<string, { block: string; glyphs: string[] }> | null = null
   fuse: Fuse<Glyph> | null = null
 
   constructor() {
@@ -35,7 +33,9 @@ class SearchController {
       const glyphsFile = (await response.json()) as GlyphsFile
 
       this.glyphs = new Map()
+      this.blocks = new Map()
       for (const glyph of glyphsFile.glyphs) {
+        const block = glyph.b !== undefined ? glyphsFile.blocks[glyph.b] : undefined
         this.glyphs.set(glyph.c, {
           char: glyph.c,
           name: glyph.n,
@@ -45,10 +45,15 @@ class SearchController {
           utf32: glyph.d.map(decimalToUtf32),
           utf16: glyph.d.flatMap(decimalToUtf16),
           utf8: stringToUtf8(glyph.c),
-          block: glyph.b !== undefined ? glyphsFile.blocks[glyph.b] : undefined,
+          block,
           version: glyph.v !== undefined ? glyphsFile.versions[glyph.v] : undefined,
           ligatures: glyph.l,
         })
+        if (block) {
+          const slug = slugify(block)
+          const blockGlyphs = this.blocks.get(slug)?.glyphs ?? []
+          this.blocks.set(slug, { block, glyphs: [...blockGlyphs, glyph.c] })
+        }
       }
 
       this.fuse = new Fuse(Array.from(this.glyphs.values()), {
@@ -83,6 +88,12 @@ class SearchController {
     return chars.map((char) => (char !== glyph.char ? this.get(char) : null))
   }
 
+  getBlock(slug: string): { block: string | null; glyphs: Glyph[] } {
+    const block = this.blocks?.get(slug)
+    if (!block) return { block: null, glyphs: [] }
+    return { block: block.block, glyphs: block.glyphs.map((c) => assertNonNullable(this.get(c))) }
+  }
+
   search(query: string): SearchResult[] {
     let results = this.fuse?.search(query.slice(0, 128), { limit: 1000 }) ?? []
 
@@ -106,6 +117,11 @@ const Search = new SearchController()
 
 self.onmessage = (event: MessageEvent<ClientMessage>) => {
   switch (event?.data?.type) {
+    case 'REQUEST_BLOCK': {
+      const { block, glyphs } = Search.getBlock(event.data.payload.block)
+      postBlockResponse(block, glyphs)
+      break
+    }
     case 'REQUEST_GLYPH': {
       const glyph = Search.get(event.data.payload.char)
       const related = glyph ? Search.getRelated(glyph) : []

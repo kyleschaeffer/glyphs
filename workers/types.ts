@@ -8,11 +8,13 @@ type Message<T extends string = string, P = {}> = {
 
 export type SearchResult = Fuse.FuseResult<Glyph>
 
+export type RequestBlockMessage = Message<'REQUEST_BLOCK', { block: string }>
 export type RequestGlyphMessage = Message<'REQUEST_GLYPH', { char: string }>
 export type RequestQueryMessage = Message<'REQUEST_QUERY', { query: string }>
-export type ClientMessage = RequestGlyphMessage | RequestQueryMessage
+export type ClientMessage = RequestBlockMessage | RequestGlyphMessage | RequestQueryMessage
 
+export type BlockResponseMessage = Message<'BLOCK_RESPONSE', { block: string | null; glyphs: Glyph[] }>
 export type GlyphResponseMessage = Message<'GLYPH_RESPONSE', { glyph: Glyph | null; related: (Glyph | null)[] }>
 export type QueryResponseMessage = Message<'QUERY_RESPONSE', { results: SearchResult[] }>
 export type WorkerReadyMessage = Message<'WORKER_READY', { count: number }>
-export type WorkerMessage = GlyphResponseMessage | QueryResponseMessage | WorkerReadyMessage
+export type WorkerMessage = BlockResponseMessage | GlyphResponseMessage | QueryResponseMessage | WorkerReadyMessage
