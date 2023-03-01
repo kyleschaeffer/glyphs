@@ -8,11 +8,13 @@ import type { Glyph } from './types'
 const DEBOUNCE_REQUEST_MS = 500
 
 export type GlyphStoreSlice = {
+  block: { block: string | null; glyphs: Glyph[] }
   char: string | null
   count: number
   debouncingChar: boolean
   debouncingQuery: boolean
   glyph: Glyph | null
+  loadingBlock: boolean
   loadingGlyph: boolean
   loadingResults: boolean
   query: string
@@ -22,8 +24,10 @@ export type GlyphStoreSlice = {
   results: SearchResult[]
 
   register: (registration: ReturnType<typeof registerSearchWorker>) => void
+  requestBlock: (block: string) => void
   requestGlyph: (char: string) => void
   requestQuery: (query: string) => void
+  setBlock: (block: string | null, glyphs: Glyph[]) => void
   setChar: (char: string | null, debounce?: boolean) => void
   setGlyph: (glyph: Glyph | null, related: (Glyph | null)[]) => void
   setQuery: (query: string) => void
@@ -32,17 +36,20 @@ export type GlyphStoreSlice = {
   setResults: (results: SearchResult[]) => void
 }
 
+let _postBlockRequest: (block: string) => void = () => throwUnreachable('Search worker not registered')
 let _postGlyphRequest: (char: string) => void = () => throwUnreachable('Search worker not registered')
 let _postQueryRequest: (query: string) => void = () => throwUnreachable('Search worker not registered')
 let _requestGlyphTimer: ReturnType<typeof setTimeout>
 let _requestQueryTimer: ReturnType<typeof setTimeout>
 
 export const createGlyphStoreSlice: AppStoreSlice<GlyphStoreSlice> = (set, get, store) => ({
+  block: { block: null, glyphs: [] },
   char: null,
   count: 0,
   debouncingChar: false,
   debouncingQuery: false,
   glyph: null,
+  loadingBlock: false,
   loadingGlyph: false,
   loadingResults: false,
   query: '',
@@ -51,12 +58,24 @@ export const createGlyphStoreSlice: AppStoreSlice<GlyphStoreSlice> = (set, get, 
   related: [],
   results: [],
 
-  register({ requestGlyph, requestQuery }) {
+  register({ requestBlock, requestGlyph, requestQuery }) {
     set((draft) => {
       draft.ready = false
     })
+    _postBlockRequest = requestBlock
     _postGlyphRequest = requestGlyph
     _postQueryRequest = requestQuery
+  },
+
+  requestBlock(block) {
+    const { loadingBlock, ready } = get()
+    if (loadingBlock || !ready) return
+
+    set((draft) => {
+      draft.loadingBlock = true
+    })
+
+    _postBlockRequest(block)
   },
 
   requestGlyph(char) {
@@ -77,6 +96,13 @@ export const createGlyphStoreSlice: AppStoreSlice<GlyphStoreSlice> = (set, get, 
       draft.loadingResults = true
     })
     _postQueryRequest(query)
+  },
+
+  setBlock(block, glyphs) {
+    set((draft) => {
+      draft.loadingBlock = false
+      draft.block = { block, glyphs }
+    })
   },
 
   setChar(char, debounce) {
