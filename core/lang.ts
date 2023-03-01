@@ -45,3 +45,12 @@ export function mergeKeywords(name: string, keywords: string[]): [name: string, 
   mergedKeywords.delete(sanitizedName)
   return [titleCase(sanitizedName), mergedKeywords.size ? Array.from(mergedKeywords) : undefined]
 }
+
+/**
+ * Transform a string into a URL-friendly slug
+ *
+ * @param str String
+ */
+export function slugify(str: string): string {
+  return str.replace(/\s+/, '-').toLowerCase()
+}
