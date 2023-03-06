@@ -188,14 +188,14 @@ export function Glyph() {
         <div className={cx('section')}>
           <h3>About:</h3>
           <ul className={cx('codes')} role="list">
-            {glyph.block && (
-              <li>
-                Block: <Link href={`/block/${slugify(glyph.block)}`}>{glyph.block}</Link>
-              </li>
-            )}
             {glyph.script && (
               <li>
                 Script: <Link href={`/script/${slugify(glyph.script)}`}>{glyph.script}</Link>
+              </li>
+            )}
+            {glyph.block && (
+              <li>
+                Block: <Link href={`/block/${slugify(glyph.block)}`}>{glyph.block}</Link>
               </li>
             )}
             {glyph.keywords && <li>Keywords: {glyph.keywords.join(', ')}</li>}

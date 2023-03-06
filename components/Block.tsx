@@ -40,6 +40,7 @@ export function Block() {
       </Head>
       <div className={cx('block')}>
         <h1 className={cx('title')}>Unicode Block: {block.block}</h1>
+        <p className={cx('title')}>{block.glyphs.length.toLocaleString()} glyphs</p>
         <ul className={cx('results')}>
           {block.glyphs.map((glyph) => (
             <li key={glyph.char}>

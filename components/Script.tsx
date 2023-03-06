@@ -40,6 +40,7 @@ export function Script() {
       </Head>
       <div className={cx('script')}>
         <h1 className={cx('title')}>Unicode Script: {script.script}</h1>
+        <p className={cx('title')}>{script.glyphs.length.toLocaleString()} glyphs</p>
         <ul className={cx('results')}>
           {script.glyphs.map((glyph) => (
             <li key={glyph.char}>
