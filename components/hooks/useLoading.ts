@@ -7,6 +7,7 @@ export function useLoading(): boolean {
       store.loadingResults ||
       store.loadingBlock ||
       store.loadingGlyph ||
+      store.loadingScript ||
       store.debouncingQuery ||
       store.debouncingChar
   )

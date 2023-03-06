@@ -12,12 +12,15 @@ const postBlockResponse = (block: string | null, glyphs: Glyph[]) =>
 const postGlyphResponse = (glyph: Glyph | null, related: (Glyph | null)[]) =>
   post({ type: 'GLYPH_RESPONSE', payload: { glyph, related } })
 const postQueryResponse = (results: SearchResult[]) => post({ type: 'QUERY_RESPONSE', payload: { results } })
+const postScriptResponse = (script: string | null, glyphs: Glyph[]) =>
+  post({ type: 'SCRIPT_RESPONSE', payload: { script, glyphs } })
 const postWorkerReady = (count: number) => post({ type: 'WORKER_READY', payload: { count } })
 
 class SearchController {
   loading = false
   glyphs: Map<string, Glyph> | null = null
   blocks: Map<string, { block: string; glyphs: string[] }> | null = null
+  scripts: Map<string, { script: string; glyphs: string[] }> | null = null
   fuse: Fuse<Glyph> | null = null
 
   constructor() {
@@ -34,8 +37,10 @@ class SearchController {
 
       this.glyphs = new Map()
       this.blocks = new Map()
+      this.scripts = new Map()
       for (const glyph of glyphsFile.glyphs) {
         const block = glyph.b !== undefined ? glyphsFile.blocks[glyph.b] : undefined
+        const script = glyph.s !== undefined ? glyphsFile.scripts[glyph.s] : undefined
         this.glyphs.set(glyph.c, {
           char: glyph.c,
           name: glyph.n,
@@ -46,6 +51,7 @@ class SearchController {
           utf16: glyph.d.flatMap(decimalToUtf16),
           utf8: stringToUtf8(glyph.c),
           block,
+          script,
           version: glyph.v !== undefined ? glyphsFile.versions[glyph.v] : undefined,
           ligatures: glyph.l,
         })
@@ -53,6 +59,11 @@ class SearchController {
           const slug = slugify(block)
           const blockGlyphs = this.blocks.get(slug)?.glyphs ?? []
           this.blocks.set(slug, { block, glyphs: [...blockGlyphs, glyph.c] })
+        }
+        if (script) {
+          const slug = slugify(script)
+          const scriptGlyphs = this.scripts.get(slug)?.glyphs ?? []
+          this.scripts.set(slug, { script, glyphs: [...scriptGlyphs, glyph.c] })
         }
       }
 
@@ -94,6 +105,12 @@ class SearchController {
     return { block: block.block, glyphs: block.glyphs.map((c) => assertNonNullable(this.get(c))) }
   }
 
+  getScript(slug: string): { script: string | null; glyphs: Glyph[] } {
+    const script = this.scripts?.get(slug)
+    if (!script) return { script: null, glyphs: [] }
+    return { script: script.script, glyphs: script.glyphs.map((c) => assertNonNullable(this.get(c))) }
+  }
+
   search(query: string): SearchResult[] {
     let results = this.fuse?.search(query.slice(0, 128), { limit: 1000 }) ?? []
 
@@ -128,9 +145,15 @@ self.onmessage = (event: MessageEvent<ClientMessage>) => {
       postGlyphResponse(glyph, related)
       break
     }
-    case 'REQUEST_QUERY':
+    case 'REQUEST_QUERY': {
       postQueryResponse(Search.search(event.data.payload.query))
       break
+    }
+    case 'REQUEST_SCRIPT': {
+      const { script, glyphs } = Search.getScript(event.data.payload.script)
+      postScriptResponse(script, glyphs)
+      break
+    }
     default:
       console.warn('Unknown client message event:', event)
   }

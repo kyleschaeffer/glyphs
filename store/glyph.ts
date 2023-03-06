@@ -17,20 +17,24 @@ export type GlyphStoreSlice = {
   loadingBlock: boolean
   loadingGlyph: boolean
   loadingResults: boolean
+  loadingScript: boolean
   query: string
   scrollPosition: number | null
   ready: boolean
   related: (Glyph | null)[]
   results: SearchResult[]
+  script: { script: string | null; glyphs: Glyph[] }
 
   register: (registration: ReturnType<typeof registerSearchWorker>) => void
   requestBlock: (block: string) => void
   requestGlyph: (char: string) => void
   requestQuery: (query: string) => void
+  requestScript: (script: string) => void
   setBlock: (block: string | null, glyphs: Glyph[]) => void
   setChar: (char: string | null, debounce?: boolean) => void
   setGlyph: (glyph: Glyph | null, related: (Glyph | null)[]) => void
   setQuery: (query: string) => void
+  setScript: (script: string | null, glyphs: Glyph[]) => void
   setScrollPosition: (position: number | null) => void
   setReady: (count: number) => void
   setResults: (results: SearchResult[]) => void
@@ -39,6 +43,7 @@ export type GlyphStoreSlice = {
 let _postBlockRequest: (block: string) => void = () => throwUnreachable('Search worker not registered')
 let _postGlyphRequest: (char: string) => void = () => throwUnreachable('Search worker not registered')
 let _postQueryRequest: (query: string) => void = () => throwUnreachable('Search worker not registered')
+let _postScriptRequest: (script: string) => void = () => throwUnreachable('Search worker not registered')
 let _requestGlyphTimer: ReturnType<typeof setTimeout>
 let _requestQueryTimer: ReturnType<typeof setTimeout>
 
@@ -52,19 +57,22 @@ export const createGlyphStoreSlice: AppStoreSlice<GlyphStoreSlice> = (set, get, 
   loadingBlock: false,
   loadingGlyph: false,
   loadingResults: false,
+  loadingScript: false,
   query: '',
   scrollPosition: null,
   ready: true,
   related: [],
   results: [],
+  script: { script: null, glyphs: [] },
 
-  register({ requestBlock, requestGlyph, requestQuery }) {
+  register({ requestBlock, requestGlyph, requestQuery, requestScript }) {
     set((draft) => {
       draft.ready = false
     })
     _postBlockRequest = requestBlock
     _postGlyphRequest = requestGlyph
     _postQueryRequest = requestQuery
+    _postScriptRequest = requestScript
   },
 
   requestBlock(block) {
@@ -96,6 +104,17 @@ export const createGlyphStoreSlice: AppStoreSlice<GlyphStoreSlice> = (set, get, 
       draft.loadingResults = true
     })
     _postQueryRequest(query)
+  },
+
+  requestScript(script) {
+    const { loadingScript, ready } = get()
+    if (loadingScript || !ready) return
+
+    set((draft) => {
+      draft.loadingScript = true
+    })
+
+    _postScriptRequest(script)
   },
 
   setBlock(block, glyphs) {
@@ -165,6 +184,13 @@ export const createGlyphStoreSlice: AppStoreSlice<GlyphStoreSlice> = (set, get, 
     set((draft) => {
       draft.loadingResults = false
       draft.results = results as WritableDraft<SearchResult>[]
+    })
+  },
+
+  setScript(script, glyphs) {
+    set((draft) => {
+      draft.loadingScript = false
+      draft.script = { script, glyphs }
     })
   },
 })
