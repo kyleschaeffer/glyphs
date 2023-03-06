@@ -26,6 +26,9 @@ export type Glyph = {
   /** Unicode block name */
   block?: string
 
+  /** Unicode script name */
+  script?: string
+
   /** Unicode version */
   version?: string
 
@@ -52,6 +55,9 @@ export type GlyphData = {
   /** Block index */
   b?: number
 
+  /** Script index */
+  s?: number
+
   /** Version index */
   v?: number
 
@@ -65,6 +71,9 @@ export type GlyphsFile = {
 
   /** Unicode block names */
   blocks: string[]
+
+  /** Unicode script names */
+  scripts: string[]
 
   /** Unicode version numbers */
   versions: string[]

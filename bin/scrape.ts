@@ -13,6 +13,7 @@ import {
   UNICODE_VERSION_DATA_SEARCH,
   UNICODE_VERSION_DATA_URL,
   UNICODE_VERSIONS,
+  UNICODE_SCRIPT_DATA_SEARCH,
 } from './config'
 
 dotenv.config()
@@ -27,6 +28,7 @@ async function run() {
     const EMOJI_DATA_URL = `https://www.unicode.org/emoji/charts-${version}/emoji-list.html`
     const EMOJI_MODIFIER_DATA_URL = `https://www.unicode.org/emoji/charts-${version}/full-emoji-modifiers.html`
     const UNICODE_BLOCK_DATA_URL = `https://www.unicode.org/Public/${version}.0/ucd/Blocks.txt`
+    const UNICODE_SCRIPT_DATA_URL = `https://www.unicode.org/Public/${version}.0/ucd/Scripts.txt`
 
     // CSV; 14 columns; [0]=utf32; [1]=name; [10]?=keywords
     const UNICODE_DATA_URL = `https://www.unicode.org/Public/${version}.0/ucd/UnicodeData.txt`
@@ -35,6 +37,8 @@ async function run() {
     const ligatures = new Map<string, string[]>()
     const blocks = new Set<string>()
     const blockMap = new Map<number, number | null>()
+    const scripts = new Set<string>()
+    const scriptMap = new Map<number, number>()
 
     if (!htmlEntities.size) {
       // Get HTML entity data
@@ -122,6 +126,7 @@ async function run() {
     const emojiData = await (await fetch(EMOJI_DATA_URL)).text()
     const emojiModifierData = await (await fetch(EMOJI_MODIFIER_DATA_URL)).text()
     const unicodeBlockData = await (await fetch(UNICODE_BLOCK_DATA_URL)).text()
+    const unicodeScriptData = await (await fetch(UNICODE_SCRIPT_DATA_URL)).text()
 
     // Save Unicode blocks
     console.log('🗿 Creating block map…')
@@ -132,14 +137,29 @@ async function run() {
       const endDecimal = hexToDecimal(utf32End)
       const excluded = EXCLUDED_BLOCKS.includes(block)
       if (!excluded) blocks.add(block)
-      const id = excluded ? null : Array.from(blocks).indexOf(block)
+      const index = excluded ? null : Array.from(blocks).indexOf(block)
       for (let decimal = startDecimal; decimal <= endDecimal; decimal++) {
-        blockMap.set(decimal, id)
+        blockMap.set(decimal, index)
       }
       blockMatch = UNICODE_BLOCK_DATA_SEARCH.exec(unicodeBlockData)
     }
 
-    // Create unicode glyphs
+    // Save Unicode scripts
+    console.log('📝 Creating script map…')
+    let scriptMatch = UNICODE_SCRIPT_DATA_SEARCH.exec(unicodeScriptData)
+    while (scriptMatch) {
+      const [, utf32Start, utf32End, script] = scriptMatch
+      const startDecimal = hexToDecimal(utf32Start)
+      const endDecimal = utf32End ? hexToDecimal(utf32End) : startDecimal
+      scripts.add(script.replace(/_/g, ' '))
+      const index = Array.from(scripts).indexOf(script.replace(/_/g, ' '))
+      for (let decimal = startDecimal; decimal <= endDecimal; decimal++) {
+        scriptMap.set(decimal, index)
+      }
+      scriptMatch = UNICODE_SCRIPT_DATA_SEARCH.exec(unicodeScriptData)
+    }
+
+    // Create Unicode glyphs
     console.log('🧙🏻‍♀️ Adding Unicode glyphs…')
     const rows = unicodeData.split('\n')
     for (const row of rows) {
@@ -158,6 +178,7 @@ async function run() {
         e: htmlEntities.get(decimal)?.sort(),
         d: [decimal],
         b: block,
+        s: scriptMap.get(decimal),
         v: versionMap.get(decimal),
       })
     }
@@ -222,6 +243,7 @@ async function run() {
     const glyphsFile: GlyphsFile = {
       glyphs: Array.from(glyphs.values()),
       blocks: Array.from(blocks),
+      scripts: Array.from(scripts),
       versions: Array.from(versions),
     }
 

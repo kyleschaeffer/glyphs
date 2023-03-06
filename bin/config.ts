@@ -15,8 +15,11 @@ export const EMOJI_MODIFIER_DATA_SEARCH =
   /<tr><td class='rchars'>\d+<\/td>\n?<td class='code'><a.*?>(.*?)<\/a><\/td>\n?<td class='chars'>(.*?)<\/td>\n?.*?\n.*?\n.*?\n.*?\n.*?\n.*?\n.*?\n.*?\n.*?\n.*?\n.*?\n<td class='name'>(.*?)<\/td>/gi
 
 // CSV; 2 columns; [0]=utf32Start; [1]=utf32End; [2]=block
-export const UNICODE_BLOCK_DATA_SEARCH = /(.*?)(?:\.\.(.*))?;\s(.*?)\n/gim
+export const UNICODE_BLOCK_DATA_SEARCH = /(.*?)(?:\.\.(.*))?;\s(.*?)\n/gm
+
+// CSV; 3 columns; [0]=utf32Start; [1]?=utf32End; [2]=name
+export const UNICODE_SCRIPT_DATA_SEARCH = /^([\w]+)(?:\.\.([\w]+))?\s+;\s+(\w+)/gm
 
 // CSV; 2 columns; [0]=utf32Start; [1]?=utf32End; [2]=version; [3]?=count; [4]=description
 export const UNICODE_VERSION_DATA_URL = `https://www.unicode.org/Public/15.0.0/ucd/DerivedAge.txt`
-export const UNICODE_VERSION_DATA_SEARCH = /(.*?)(?:\.\.(.*))?\s+;\s([\d.]+)\s#\s+(?:\[(\d+)\])?(.*?)\n/gim
+export const UNICODE_VERSION_DATA_SEARCH = /(.*?)(?:\.\.(.*))?\s+;\s([\d.]+)\s#\s+(?:\[(\d+)\])?(.*?)\n/gm
