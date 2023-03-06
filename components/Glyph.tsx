@@ -193,6 +193,11 @@ export function Glyph() {
                 Block: <Link href={`/block/${slugify(glyph.block)}`}>{glyph.block}</Link>
               </li>
             )}
+            {glyph.script && (
+              <li>
+                Script: <Link href={`/script/${slugify(glyph.script)}`}>{glyph.script}</Link>
+              </li>
+            )}
             {glyph.keywords && <li>Keywords: {glyph.keywords.join(', ')}</li>}
             {glyph.version && (
               <li>
