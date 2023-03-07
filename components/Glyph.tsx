@@ -198,7 +198,17 @@ export function Glyph() {
                 Block: <Link href={`/block/${slugify(glyph.block)}`}>{glyph.block}</Link>
               </li>
             )}
-            {glyph.keywords && <li>Keywords: {glyph.keywords.join(', ')}</li>}
+            {glyph.keywords && (
+              <li>
+                Keywords:{' '}
+                {glyph.keywords.map((keyword, i) => (
+                  <span key={i}>
+                    {i > 0 && <span>, </span>}
+                    <Link href={`/?q=${encodeURIComponent(keyword)}`}>{keyword}</Link>
+                  </span>
+                ))}
+              </li>
+            )}
             {glyph.version && (
               <li>
                 Unicode version:{' '}
