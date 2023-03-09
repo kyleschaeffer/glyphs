@@ -23,10 +23,10 @@ export type Glyph = {
   /** UTF-8 hexadecimal encodings */
   utf8: string[]
 
-  /** Unicode block name */
+  /** Unicode block slug ID */
   block?: string
 
-  /** Unicode script name */
+  /** Unicode script slug ID */
   script?: string
 
   /** Unicode version */
@@ -34,6 +34,17 @@ export type Glyph = {
 
   /** Ligatures */
   ligatures?: string[]
+}
+
+export type Block = {
+  /** Block name */
+  name: string
+
+  /** Block range */
+  range: [number, number]
+
+  /** Glyph characters in the block */
+  glyphs?: string[]
 }
 
 export type GlyphData = {
@@ -52,9 +63,6 @@ export type GlyphData = {
   /** UTF-32 decimal values  */
   d: number[]
 
-  /** Block index */
-  b?: number
-
   /** Script index */
   s?: number
 
@@ -65,12 +73,20 @@ export type GlyphData = {
   l?: string[]
 }
 
+export type BlockData = {
+  /** Block name */
+  n: string
+
+  /** Block range */
+  r: [number, number]
+}
+
 export type GlyphsFile = {
   /** Glyph data */
   glyphs: GlyphData[]
 
-  /** Unicode block names */
-  blocks: string[]
+  /** Unicode blocks */
+  blocks: BlockData[]
 
   /** Unicode script names */
   scripts: string[]

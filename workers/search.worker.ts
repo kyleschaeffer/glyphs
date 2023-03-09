@@ -19,8 +19,8 @@ const postWorkerReady = (count: number) => post({ type: 'WORKER_READY', payload:
 class SearchController {
   loading = false
   glyphs: Map<string, Glyph> | null = null
-  blocks: Map<string, { block: string; glyphs: string[] }> | null = null
-  scripts: Map<string, { script: string; glyphs: string[] }> | null = null
+  blocks: Map<string, { name: string; range: [number, number]; glyphs: string[] }> | null = null
+  scripts: Map<string, { name: string; glyphs: string[] }> | null = null
   fuse: Fuse<Glyph> | null = null
 
   constructor() {
@@ -38,8 +38,29 @@ class SearchController {
       this.glyphs = new Map()
       this.blocks = new Map()
       this.scripts = new Map()
+
+      for (const block of glyphsFile.blocks) {
+        const slug = slugify(block.n)
+        this.blocks.set(slug, { name: block.n, range: block.r, glyphs: [] })
+      }
+
+      for (const script of glyphsFile.scripts) {
+        const slug = slugify(script)
+        this.scripts.set(slug, { name: script, glyphs: [] })
+      }
+
       for (const glyph of glyphsFile.glyphs) {
-        const block = glyph.b !== undefined ? glyphsFile.blocks[glyph.b] : undefined
+        const block =
+          glyph.d.length === 1
+            ? Array.from(this.blocks.entries()).find(
+                ([
+                  ,
+                  {
+                    range: [start, end],
+                  },
+                ]) => glyph.d[0] >= start && glyph.d[0] <= end
+              )
+            : undefined
         const script = glyph.s !== undefined ? glyphsFile.scripts[glyph.s] : undefined
         this.glyphs.set(glyph.c, {
           char: glyph.c,
@@ -50,20 +71,18 @@ class SearchController {
           utf32: glyph.d.map(decimalToUtf32),
           utf16: glyph.d.flatMap(decimalToUtf16),
           utf8: stringToUtf8(glyph.c),
-          block,
+          block: block ? block[0] : undefined,
           script,
           version: glyph.v !== undefined ? glyphsFile.versions[glyph.v] : undefined,
           ligatures: glyph.l,
         })
         if (block) {
-          const slug = slugify(block)
-          const blockGlyphs = this.blocks.get(slug)?.glyphs ?? []
-          this.blocks.set(slug, { block, glyphs: [...blockGlyphs, glyph.c] })
+          this.blocks.get(block[0])?.glyphs.push(glyph.c)
         }
         if (script) {
           const slug = slugify(script)
           const scriptGlyphs = this.scripts.get(slug)?.glyphs ?? []
-          this.scripts.set(slug, { script, glyphs: [...scriptGlyphs, glyph.c] })
+          this.scripts.set(slug, { name: script, glyphs: [...scriptGlyphs, glyph.c] })
         }
       }
 
@@ -102,13 +121,13 @@ class SearchController {
   getBlock(slug: string): { block: string | null; glyphs: Glyph[] } {
     const block = this.blocks?.get(slug)
     if (!block) return { block: null, glyphs: [] }
-    return { block: block.block, glyphs: block.glyphs.map((c) => assertNonNullable(this.get(c))) }
+    return { block: block.name, glyphs: block.glyphs.map((c) => assertNonNullable(this.get(c))) }
   }
 
   getScript(slug: string): { script: string | null; glyphs: Glyph[] } {
     const script = this.scripts?.get(slug)
     if (!script) return { script: null, glyphs: [] }
-    return { script: script.script, glyphs: script.glyphs.map((c) => assertNonNullable(this.get(c))) }
+    return { script: script.name, glyphs: script.glyphs.map((c) => assertNonNullable(this.get(c))) }
   }
 
   search(query: string): SearchResult[] {

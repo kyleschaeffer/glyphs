@@ -2,7 +2,7 @@ import dotenv from 'dotenv'
 import fs from 'fs'
 import { decimalToString, hexToDecimal } from '../core/convert'
 import { mergeKeywords } from '../core/lang'
-import { GlyphData, GlyphsFile } from '../store/types'
+import { BlockData, GlyphData, GlyphsFile } from '../store/types'
 import {
   EMOJI_DATA_SEARCH,
   EMOJI_MODIFIER_DATA_SEARCH,
@@ -35,8 +35,7 @@ async function run() {
 
     const glyphs = new Map<string, GlyphData>()
     const ligatures = new Map<string, string[]>()
-    const blocks = new Set<string>()
-    const blockMap = new Map<number, number | null>()
+    const blocks = new Map<string, BlockData>()
     const scripts = new Set<string>()
     const scriptMap = new Map<number, number>()
 
@@ -135,11 +134,8 @@ async function run() {
       const [, utf32Start, utf32End, block] = blockMatch
       const startDecimal = hexToDecimal(utf32Start)
       const endDecimal = hexToDecimal(utf32End)
-      const excluded = EXCLUDED_BLOCKS.includes(block)
-      if (!excluded) blocks.add(block)
-      const index = excluded ? null : Array.from(blocks).indexOf(block)
-      for (let decimal = startDecimal; decimal <= endDecimal; decimal++) {
-        blockMap.set(decimal, index)
+      if (!EXCLUDED_BLOCKS.includes(block)) {
+        blocks.set(block, { n: block, r: [startDecimal, endDecimal] })
       }
       blockMatch = UNICODE_BLOCK_DATA_SEARCH.exec(unicodeBlockData)
     }
@@ -167,8 +163,8 @@ async function run() {
       if (cols.length < 14 || cols[1] === '<control>') continue
       const [utf32, name, , , , , , , , , keywords] = cols
       const decimal = hexToDecimal(utf32)
-      const block = blockMap.get(decimal)
-      if (block === null) continue
+      const block = Array.from(blocks.values()).find(({ r: [start, end] }) => decimal >= start && decimal <= end)
+      if (!block) continue // Ignore excluded blocks
       const char = decimalToString(decimal)
       const [glyphName, glyphKeywords] = mergeKeywords(name, keywords?.replace('&amp;', '&').split(/[,;|]/) ?? [])
       addGlyph({
@@ -177,7 +173,6 @@ async function run() {
         k: glyphKeywords,
         e: htmlEntities.get(decimal)?.sort(),
         d: [decimal],
-        b: block,
         s: scriptMap.get(decimal),
         v: versionMap.get(decimal),
       })
@@ -242,7 +237,7 @@ async function run() {
 
     const glyphsFile: GlyphsFile = {
       glyphs: Array.from(glyphs.values()),
-      blocks: Array.from(blocks),
+      blocks: Array.from(blocks.values()),
       scripts: Array.from(scripts),
       versions: Array.from(versions),
     }
