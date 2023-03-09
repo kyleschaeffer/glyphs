@@ -1,7 +1,7 @@
 import { ReactNode, useEffect } from 'react'
-import { bindStyles } from '../core/browser'
-import { useAppStore } from '../store/app'
-import { useToggleFont, useToggleTheme } from './hooks/useToggleTheme'
+import { bindStyles } from '../../core/browser'
+import { useAppStore } from '../../store/app'
+import { useToggleFont, useToggleTheme } from '../hooks/useToggleTheme'
 import styles from './ThemeController.module.scss'
 
 const cx = bindStyles(styles)
