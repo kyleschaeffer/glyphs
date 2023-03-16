@@ -2,7 +2,7 @@ import dotenv from 'dotenv'
 import fs from 'fs'
 import { decimalToString, hexToDecimal } from '../core/convert'
 import { mergeKeywords } from '../core/lang'
-import { BlockData, GlyphData, GlyphsFile } from '../store/types'
+import { BlockData, GlyphData, GlyphsFile } from '../workers/types'
 import {
   EMOJI_DATA_SEARCH,
   EMOJI_MODIFIER_DATA_SEARCH,

@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 import { bindStyles } from '../core/browser'
+import { useToggleFont, useToggleTheme } from '../hooks/useTheme'
 import { useAppStore } from '../store/app'
-import { useToggleFont, useToggleTheme } from './hooks/useToggleTheme'
 import styles from './ThemeButtons.module.scss'
 
 const cx = bindStyles(styles)

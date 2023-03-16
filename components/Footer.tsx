@@ -9,15 +9,15 @@ const cx = bindStyles(styles)
 const UNICODE_VERSION = process.env.NEXT_PUBLIC_UNICODE_VERSION || ''
 
 export function Footer() {
-  const ready = useAppStore((store) => store.ready)
-  const glyphCount = useAppStore((store) => store.count)
+  const ready = useAppStore((store) => store.workerReady)
+  const count = useAppStore((store) => store.glyphCount)
 
   if (!ready) return null
 
   return (
     <footer className={cx('footer')}>
       <p>
-        Searching <strong>{glyphCount.toLocaleString()}</strong> glyphs in Unicode{' '}
+        Searching <strong>{count.toLocaleString()}</strong> glyphs in Unicode{' '}
         <Link href={`https://www.unicode.org/versions/Unicode${UNICODE_VERSION}.0/`} target="_blank">
           <span>{UNICODE_VERSION}.0</span>
           <span> ↗</span>

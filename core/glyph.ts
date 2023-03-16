@@ -1,4 +1,4 @@
-import type { Glyph } from '../store/types'
+import type { Glyph } from '../workers/types'
 import { decimalToHtml, entityToHtml, escapeSingleQuotes, utf32ToCss, utf32ToHtml } from './convert'
 
 const HTML_SPECIAL_CHARS = new Set(['"', "'", '&', '<', '>'])

@@ -4,8 +4,7 @@ import { useCallback, useEffect } from 'react'
 import { bindStyles } from '../core/browser'
 import { glyphRoute } from '../core/glyph'
 import { useAppStore } from '../store/app'
-import type { Glyph } from '../store/types'
-import { useLoading } from './hooks/useLoading'
+import type { Glyph } from '../workers/types'
 import styles from './SearchResults.module.scss'
 
 const cx = bindStyles(styles)
@@ -14,7 +13,7 @@ export function SearchResults() {
   const query = useAppStore((store) => store.query)
   const scrollPosition = useAppStore((store) => store.scrollPosition)
   const results = useAppStore((store) => store.results)
-  const loading = useLoading()
+  const loading = useAppStore((store) => store.debouncingQuery || store.loadingResults)
 
   useEffect(() => {
     if (scrollPosition === null) return
@@ -31,8 +30,8 @@ export function SearchResults() {
       </Head>
       <ul className={cx('results')}>
         {results.map((result) => (
-          <li key={result.item.char}>
-            <SearchResult glyph={result.item} />
+          <li key={result.char}>
+            <SearchResult glyph={result} />
           </li>
         ))}
       </ul>

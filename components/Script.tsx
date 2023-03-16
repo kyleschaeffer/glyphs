@@ -4,9 +4,9 @@ import React, { useCallback, useEffect } from 'react'
 import { bindStyles } from '../core/browser'
 import { glyphRoute } from '../core/glyph'
 import { useAppStore } from '../store/app'
-import { Glyph } from '../store/types'
-import styles from './Script.module.scss'
+import { Glyph } from '../workers/types'
 import { Footer } from './Footer'
+import styles from './Script.module.scss'
 import { Splash } from './Splash'
 
 const cx = bindStyles(styles)
@@ -31,15 +31,15 @@ export function Script() {
     }
   }, [close])
 
-  if (!script.script) return <Splash title="Not found" />
+  if (!script) return <Splash title="Not found" />
 
   return (
     <>
       <Head>
-        <title>{script.script}</title>
+        <title>{script.name}</title>
       </Head>
       <div className={cx('script')}>
-        <h1 className={cx('title')}>Unicode Script: {script.script}</h1>
+        <h1 className={cx('title')}>Unicode Script: {script.name}</h1>
         <p className={cx('title')}>{script.glyphs.length.toLocaleString()} glyphs</p>
         <ul className={cx('results')}>
           {script.glyphs.map((glyph) => (

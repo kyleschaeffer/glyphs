@@ -1,26 +1,16 @@
 import Fuse from 'fuse.js'
 import z from 'zod'
 import { decimalToString, decimalToUtf16, decimalToUtf32, stringToDecimals, stringToUtf8 } from '../core/convert'
-import { assertNonNullable } from '../core/error'
 import { slugify } from '../core/lang'
-import type { Glyph, GlyphsFile } from '../store/types'
-import type { ClientMessage, WorkerMessage, SearchResult } from './types'
+import type { Block, ClientRequestMessage, Glyph, GlyphsFile, Script, WorkerResponseMessage } from './types'
 
-const post = (message: WorkerMessage) => self.postMessage(message)
-const postBlockResponse = (block: string | null, glyphs: Glyph[]) =>
-  post({ type: 'BLOCK_RESPONSE', payload: { block, glyphs } })
-const postGlyphResponse = (glyph: Glyph | null, related: (Glyph | null)[]) =>
-  post({ type: 'GLYPH_RESPONSE', payload: { glyph, related } })
-const postQueryResponse = (results: SearchResult[]) => post({ type: 'QUERY_RESPONSE', payload: { results } })
-const postScriptResponse = (script: string | null, glyphs: Glyph[]) =>
-  post({ type: 'SCRIPT_RESPONSE', payload: { script, glyphs } })
-const postWorkerReady = (count: number) => post({ type: 'WORKER_READY', payload: { count } })
+const post = (message: WorkerResponseMessage) => self.postMessage(message)
 
 class SearchController {
   loading = false
   glyphs: Map<string, Glyph> | null = null
-  blocks: Map<string, { name: string; range: [number, number]; glyphs: string[] }> | null = null
-  scripts: Map<string, { name: string; glyphs: string[] }> | null = null
+  blocks: Map<string, Block> | null = null
+  scripts: Map<string, Script> | null = null
   fuse: Fuse<Glyph> | null = null
 
   constructor() {
@@ -62,7 +52,7 @@ class SearchController {
               )
             : undefined
         const script = glyph.s !== undefined ? glyphsFile.scripts[glyph.s] : undefined
-        this.glyphs.set(glyph.c, {
+        const newGlyph: Glyph = {
           char: glyph.c,
           name: glyph.n,
           keywords: glyph.k,
@@ -75,15 +65,10 @@ class SearchController {
           script,
           version: glyph.v !== undefined ? glyphsFile.versions[glyph.v] : undefined,
           ligatures: glyph.l,
-        })
-        if (block) {
-          this.blocks.get(block[0])?.glyphs.push(glyph.c)
         }
-        if (script) {
-          const slug = slugify(script)
-          const scriptGlyphs = this.scripts.get(slug)?.glyphs ?? []
-          this.scripts.set(slug, { name: script, glyphs: [...scriptGlyphs, glyph.c] })
-        }
+        this.glyphs.set(glyph.c, newGlyph)
+        if (block) this.blocks.get(block[0])?.glyphs.push(newGlyph)
+        if (script) this.scripts.get(slugify(script))?.glyphs.push(newGlyph)
       }
 
       this.fuse = new Fuse(Array.from(this.glyphs.values()), {
@@ -101,7 +86,7 @@ class SearchController {
         threshold: 0.4,
       })
 
-      postWorkerReady(this.glyphs.size)
+      post({ type: 'WORKER_READY', payload: { count: this.glyphs.size } })
     } catch (e) {
       console.error(e)
     } finally {
@@ -109,39 +94,37 @@ class SearchController {
     }
   }
 
-  get(char: string): Glyph | null {
+  getGlyph(char: string): Glyph | null {
     return this.glyphs?.get(char) ?? null
   }
 
-  getRelated(glyph: Glyph): (Glyph | null)[] {
+  getLigatureGlyphs(glyph: Glyph): Glyph[] {
     const chars = glyph.decimals.map((d) => decimalToString(d))
-    return chars.map((char) => (char !== glyph.char ? this.get(char) : null))
+    return chars
+      .map((char) => (char !== glyph.char ? this.getGlyph(char) : null))
+      .filter((glyph): glyph is Glyph => !!glyph)
   }
 
-  getBlock(slug: string): { block: string | null; glyphs: Glyph[] } {
-    const block = this.blocks?.get(slug)
-    if (!block) return { block: null, glyphs: [] }
-    return { block: block.name, glyphs: block.glyphs.map((c) => assertNonNullable(this.get(c))) }
+  getBlock(slug: string): Block | null {
+    return this.blocks?.get(slug) ?? null
   }
 
-  getScript(slug: string): { script: string | null; glyphs: Glyph[] } {
-    const script = this.scripts?.get(slug)
-    if (!script) return { script: null, glyphs: [] }
-    return { script: script.name, glyphs: script.glyphs.map((c) => assertNonNullable(this.get(c))) }
+  getScript(slug: string): Script | null {
+    return this.scripts?.get(slug) ?? null
   }
 
-  search(query: string): SearchResult[] {
-    let results = this.fuse?.search(query.slice(0, 128), { limit: 1000 }) ?? []
+  search(query: string): Glyph[] {
+    let results = this.fuse?.search(query.slice(0, 128), { limit: 1000 }).map((r) => r.item) ?? []
 
-    const resultsChars = new Set([...results.map((r) => r.item.char)])
+    const resultsChars = new Set([...results.map((r) => r.char)])
     const queryChars = new Set([...stringToDecimals(query).map(decimalToString)])
     queryChars.forEach((char) => {
       if (resultsChars.has(char)) return
 
-      const glyph = this.get(char)
+      const glyph = this.getGlyph(char)
       if (!glyph) return
 
-      results.push({ item: glyph, refIndex: -1 })
+      results.push(glyph)
       resultsChars.add(char)
     })
 
@@ -151,26 +134,28 @@ class SearchController {
 
 const Search = new SearchController()
 
-self.onmessage = (event: MessageEvent<ClientMessage>) => {
-  switch (event?.data?.type) {
-    case 'REQUEST_BLOCK': {
-      const { block, glyphs } = Search.getBlock(event.data.payload.block)
-      postBlockResponse(block, glyphs)
+self.onmessage = (event: MessageEvent<ClientRequestMessage>) => {
+  if (!event?.data?.type) return
+  switch (event.data.type) {
+    case 'BLOCK_REQUEST': {
+      const block = Search.getBlock(event.data.payload.slug)
+      post({ type: 'BLOCK_RESPONSE', payload: { block } })
       break
     }
-    case 'REQUEST_GLYPH': {
-      const glyph = Search.get(event.data.payload.char)
-      const related = glyph ? Search.getRelated(glyph) : []
-      postGlyphResponse(glyph, related)
+    case 'GLYPH_REQUEST': {
+      const glyph = Search.getGlyph(event.data.payload.char)
+      const ligature = glyph ? Search.getLigatureGlyphs(glyph) : []
+      post({ type: 'GLYPH_RESPONSE', payload: { glyph, ligature } })
       break
     }
-    case 'REQUEST_QUERY': {
-      postQueryResponse(Search.search(event.data.payload.query))
+    case 'QUERY_REQUEST': {
+      const results = Search.search(event.data.payload.query)
+      post({ type: 'QUERY_RESPONSE', payload: { results } })
       break
     }
-    case 'REQUEST_SCRIPT': {
-      const { script, glyphs } = Search.getScript(event.data.payload.script)
-      postScriptResponse(script, glyphs)
+    case 'SCRIPT_REQUEST': {
+      const script = Search.getScript(event.data.payload.slug)
+      post({ type: 'SCRIPT_RESPONSE', payload: { script } })
       break
     }
     default:

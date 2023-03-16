@@ -1,7 +1,7 @@
 import Head from 'next/head'
 import Link from 'next/link'
 import { useRouter } from 'next/router'
-import React, { useCallback, useEffect, useMemo } from 'react'
+import React, { useCallback, useEffect } from 'react'
 import { bindStyles } from '../core/browser'
 import {
   decimalToHexEscapeSequence,
@@ -23,11 +23,10 @@ const cx = bindStyles(styles)
 
 export function Glyph() {
   const router = useRouter()
-  const char = useAppStore((store) => store.char)
+  const route = useAppStore((store) => store.glyphRoute)
   const glyph = useAppStore((store) => store.glyph)
+  const ligature = useAppStore((store) => store.glyphLigature)
   const query = useAppStore((store) => store.query)
-  const related = useAppStore((store) => store.related)
-  const hasLigature = useMemo(() => related.some((r) => r !== null), [related])
 
   const close = useCallback(() => router.push(query ? `/?q=${encodeURIComponent(query)}` : '/'), [query, router])
 
@@ -45,7 +44,7 @@ export function Glyph() {
     }
   }, [close])
 
-  if (!glyph) return <Splash title="Not found">{char}</Splash>
+  if (!glyph) return <Splash title="Not found">{route}</Splash>
 
   return (
     <>
@@ -150,11 +149,11 @@ export function Glyph() {
             </li>
           </ul>
         </div>
-        {hasLigature && (
+        {ligature.length > 0 && (
           <div className={cx('section')}>
             <h3>Ligature:</h3>
             <ol className={cx('codes')}>
-              {related.map((r, i) => (
+              {ligature.map((r, i) => (
                 <li key={i}>
                   {r ? (
                     <Link className={cx('ligature-link')} href={`/${encodeURIComponent(r.char)}`}>

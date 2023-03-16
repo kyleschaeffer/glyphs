@@ -4,7 +4,7 @@ import React, { useCallback, useEffect } from 'react'
 import { bindStyles } from '../core/browser'
 import { glyphRoute } from '../core/glyph'
 import { useAppStore } from '../store/app'
-import { Glyph } from '../store/types'
+import { Glyph } from '../workers/types'
 import styles from './Block.module.scss'
 import { Footer } from './Footer'
 import { Splash } from './Splash'
@@ -31,16 +31,18 @@ export function Block() {
     }
   }, [close])
 
-  if (!block.block) return <Splash title="Not found" />
+  if (!block) return <Splash title="Not found" />
 
   return (
     <>
       <Head>
-        <title>{block.block}</title>
+        <title>{block.name}</title>
       </Head>
       <div className={cx('block')}>
-        <h1 className={cx('title')}>Unicode Block: {block.block}</h1>
-        <p className={cx('title')}>{block.glyphs.length.toLocaleString()} glyphs</p>
+        <h1 className={cx('title')}>Unicode Block: {block.name}</h1>
+        <p className={cx('title')}>
+          {block.range[0]}→{block.range[1]} • {block.glyphs.length.toLocaleString()} glyphs
+        </p>
         <ul className={cx('results')}>
           {block.glyphs.map((glyph) => (
             <li key={glyph.char}>

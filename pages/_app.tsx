@@ -1,7 +1,8 @@
 import type { AppProps } from 'next/app'
 import Head from 'next/head'
-import { WorkerController } from '../components/controllers/WorkerController'
-import { ThemeController } from '../components/controllers/ThemeController'
+import { InputController } from '../controllers/InputController'
+import { ThemeController } from '../controllers/ThemeController'
+import { WorkerController } from '../controllers/WorkerController'
 import '../styles/globals.scss'
 
 export default function App({ Component, pageProps }: AppProps) {
@@ -13,10 +14,10 @@ export default function App({ Component, pageProps }: AppProps) {
           content="minimum-scale=1, initial-scale=1, width=device-width, shrink-to-fit=no, user-scalable=no, viewport-fit=cover"
         />
       </Head>
+      <ThemeController />
       <WorkerController />
-      <ThemeController>
-        <Component {...pageProps} />
-      </ThemeController>
+      <InputController />
+      <Component {...pageProps} />
     </>
   )
 }

@@ -1,4 +1,4 @@
-export const registerServiceWorker = async () => {
+export async function registerServiceWorker() {
   if (!('serviceWorker' in navigator)) {
     return
   }

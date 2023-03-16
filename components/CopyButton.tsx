@@ -1,7 +1,7 @@
 import type { ReactNode } from 'react'
 import { bindStyles } from '../core/browser'
+import { useCopyText } from '../hooks/useCopyText'
 import styles from './CopyButton.module.scss'
-import { useCopyText } from './hooks/useCopyText'
 
 const cx = bindStyles(styles)
 

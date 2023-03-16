@@ -3,14 +3,13 @@ import { ChangeEvent, useCallback, useEffect, useRef } from 'react'
 import { z } from 'zod'
 import { bindStyles } from '../core/browser'
 import { useAppStore } from '../store/app'
-import { useLoading } from './hooks/useLoading'
 import styles from './SearchForm.module.scss'
 
 const cx = bindStyles(styles)
 
 export function SearchForm() {
   const router = useRouter()
-  const loading = useLoading()
+  const loading = useAppStore((store) => store.debouncingQuery || store.loadingResults)
   const query = useAppStore((store) => store.query)
   const setQuery = useAppStore((store) => store.setQuery)
 

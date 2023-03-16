@@ -1,8 +1,8 @@
 import { bindStyles } from '../core/browser'
-import { useCopyText } from './hooks/useCopyText'
+import { escapeSingleQuotes } from '../core/convert'
+import { useCopyText } from '../hooks/useCopyText'
 import styles from './Code.module.scss'
 import { CSSProperties, useMemo } from 'react'
-import { escapeSingleQuotes } from '../core/convert'
 
 const cx = bindStyles(styles)
 

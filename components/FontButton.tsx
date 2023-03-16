@@ -1,5 +1,5 @@
 import { bindStyles } from '../core/browser'
-import { useToggleFont } from './hooks/useToggleTheme'
+import { useToggleFont } from '../hooks/useTheme'
 import styles from './FontButton.module.scss'
 
 const cx = bindStyles(styles)
