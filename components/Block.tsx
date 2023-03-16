@@ -2,6 +2,7 @@ import Head from 'next/head'
 import { useRouter } from 'next/router'
 import React, { useCallback, useEffect } from 'react'
 import { bindStyles } from '../core/browser'
+import { decimalToUtf32 } from '../core/convert'
 import { glyphRoute } from '../core/glyph'
 import { useAppStore } from '../store/app'
 import { Glyph } from '../workers/types'
@@ -41,7 +42,8 @@ export function Block() {
       <div className={cx('block')}>
         <h1 className={cx('title')}>Unicode Block: {block.name}</h1>
         <p className={cx('title')}>
-          {block.range[0]}→{block.range[1]} • {block.glyphs.length.toLocaleString()} glyphs
+          U+{decimalToUtf32(block.range[0])} → U+{decimalToUtf32(block.range[1])} •{' '}
+          {block.glyphs.length.toLocaleString()} glyphs
         </p>
         <ul className={cx('results')}>
           {block.glyphs.map((glyph) => (
