@@ -1,5 +1,5 @@
 import { Glyph } from '../workers/types'
-import { AppStoreSlice, useAppStore } from './app'
+import { AppStoreSlice } from './app'
 
 const DEBOUNCE_QUERY_MS = 500
 let queryDebounceTimer: ReturnType<typeof setTimeout>
@@ -12,7 +12,6 @@ export type SearchStoreSlice = {
   results: Glyph[]
   scrollPosition: number | null
 
-  initSearch: () => void
   setQuery: (query: string) => void
   setScrollPosition: (position: number | null) => void
 }
@@ -25,16 +24,6 @@ export const createSearchStoreSlice: AppStoreSlice<SearchStoreSlice> = (set, get
   results: [],
   scrollPosition: null,
 
-  initSearch() {
-    get().subscribe((message) => {
-      if (message.type !== 'QUERY_RESPONSE') return
-      useAppStore.setState((draft) => {
-        draft.results = message.payload.results
-        draft.loadingResults = false
-      })
-    })
-  },
-
   setQuery(query) {
     set((draft) => {
       draft.query = query
@@ -42,12 +31,17 @@ export const createSearchStoreSlice: AppStoreSlice<SearchStoreSlice> = (set, get
     })
 
     clearTimeout(queryDebounceTimer)
-    queryDebounceTimer = setTimeout(() => {
+    queryDebounceTimer = setTimeout(async () => {
       set((draft) => {
         draft.debouncingQuery = false
         draft.loadingResults = true
       })
-      get().post({ type: 'QUERY_REQUEST', payload: { query: query } })
+
+      const { results } = await get().search(query)
+      set((draft) => {
+        draft.results = results
+        draft.loadingResults = false
+      })
     }, DEBOUNCE_QUERY_MS)
   },
 

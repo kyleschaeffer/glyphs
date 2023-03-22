@@ -1,17 +1,17 @@
 const CACHE_VERSION = '1.0'
 const CACHED_RESOURCES = ['/', '/favicon.svg', '/glyphs/15.0.json']
 
-const cacheAllRequests = async (requests: RequestInfo[]) => {
+async function cacheAllRequests(requests: RequestInfo[]) {
   const cache = await caches.open(CACHE_VERSION)
   await cache.addAll(requests)
 }
 
-const cacheRequest = async (request: Request, response: Response) => {
+async function cacheRequest(request: Request, response: Response) {
   const cache = await caches.open(CACHE_VERSION)
   await cache.put(request, response)
 }
 
-const handleFetch = async (request: Request, preloadResponsePromise: Promise<Response>, fallbackUrl?: string) => {
+async function handleFetch(request: Request, preloadResponsePromise: Promise<Response>, fallbackUrl?: string) {
   const responseFromCache = await caches.match(request)
   if (responseFromCache) {
     return responseFromCache
@@ -43,7 +43,9 @@ const handleFetch = async (request: Request, preloadResponsePromise: Promise<Res
   }
 }
 
-const enableNavigationPreload = async () => await (self as any).registration.navigationPreload?.enable()
+async function enableNavigationPreload() {
+  await (self as any).registration.navigationPreload?.enable()
+}
 
 self.addEventListener('activate', (event: any) => event.waitUntil(enableNavigationPreload()))
 self.addEventListener('install', (event: any) => event.waitUntil(cacheAllRequests(CACHED_RESOURCES)))

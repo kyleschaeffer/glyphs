@@ -1,5 +1,5 @@
 import { Glyph } from '../workers/types'
-import { AppStoreSlice, useAppStore } from './app'
+import { AppStoreSlice } from './app'
 
 export type GlyphStoreSlice = {
   glyph: Glyph | null
@@ -7,8 +7,7 @@ export type GlyphStoreSlice = {
   glyphRoute: string | null
   loadingGlyph: boolean
 
-  initGlyph: () => void
-  setGlyphRoute: (route: string | null) => void
+  setGlyphRoute: (route: string | null) => Promise<void>
 }
 
 export const createGlyphStoreSlice: AppStoreSlice<GlyphStoreSlice> = (set, get, store) => ({
@@ -17,18 +16,7 @@ export const createGlyphStoreSlice: AppStoreSlice<GlyphStoreSlice> = (set, get, 
   glyphRoute: null,
   loadingGlyph: false,
 
-  initGlyph() {
-    get().subscribe((message) => {
-      if (message.type !== 'GLYPH_RESPONSE') return
-      useAppStore.setState((draft) => {
-        draft.glyph = message.payload.glyph
-        draft.glyphLigature = message.payload.ligature
-        draft.loadingGlyph = false
-      })
-    })
-  },
-
-  setGlyphRoute(route) {
+  async setGlyphRoute(route) {
     set((draft) => {
       draft.glyphRoute = route
       if (!route) {
@@ -37,6 +25,12 @@ export const createGlyphStoreSlice: AppStoreSlice<GlyphStoreSlice> = (set, get, 
       } else draft.loadingGlyph = true
     })
     if (!route) return
-    get().post({ type: 'GLYPH_REQUEST', payload: { char: route } })
+
+    const { glyph, ligature } = await get().getGlyph(route)
+    set((draft) => {
+      draft.glyph = glyph
+      draft.glyphLigature = ligature
+      draft.loadingGlyph = false
+    })
   },
 })

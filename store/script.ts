@@ -1,13 +1,12 @@
 import { Script } from '../workers/types'
-import { AppStoreSlice, useAppStore } from './app'
+import { AppStoreSlice } from './app'
 
 export type ScriptStoreSlice = {
   script: Script | null
   scriptRoute: string | null
   loadingScript: boolean
 
-  initScript: () => void
-  setScriptRoute: (route: string | null) => void
+  setScriptRoute: (route: string | null) => Promise<void>
 }
 
 export const createScriptStoreSlice: AppStoreSlice<ScriptStoreSlice> = (set, get, store) => ({
@@ -15,23 +14,18 @@ export const createScriptStoreSlice: AppStoreSlice<ScriptStoreSlice> = (set, get
   scriptRoute: null,
   loadingScript: false,
 
-  initScript() {
-    get().subscribe((message) => {
-      if (message.type !== 'SCRIPT_RESPONSE') return
-      useAppStore.setState((draft) => {
-        draft.script = message.payload.script
-        draft.loadingScript = false
-      })
-    })
-  },
-
-  setScriptRoute(route) {
+  async setScriptRoute(route) {
     set((draft) => {
       draft.scriptRoute = route
       if (!route) draft.script = null
       else draft.loadingScript = true
     })
     if (!route) return
-    get().post({ type: 'SCRIPT_REQUEST', payload: { slug: route } })
+
+    const { script } = await get().getScript(route)
+    set((draft) => {
+      draft.script = script
+      draft.loadingScript = false
+    })
   },
 })

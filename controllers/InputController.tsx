@@ -6,7 +6,7 @@ export function InputController() {
   const toggleTheme = useToggleTheme()
 
   useEffect(() => {
-    const handleKeyDown = (e: KeyboardEvent) => {
+    function handleKeyDown(e: KeyboardEvent) {
       if (document.activeElement?.matches('input,select,textarea')) return
 
       if (e.key === 'F') toggleFont()

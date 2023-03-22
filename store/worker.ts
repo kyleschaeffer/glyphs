@@ -1,6 +1,14 @@
+import { createResolver, Resolver } from '../core/async'
 import { registerSearchWorker } from '../workers/search'
 import { registerServiceWorker } from '../workers/sw'
-import { ClientRequestMessage, WorkerResponseMessage } from '../workers/types'
+import {
+  BlockResponseMessage,
+  ClientRequestMessage,
+  GlyphResponseMessage,
+  QueryResponseMessage,
+  ScriptResponseMessage,
+  WorkerResponseMessage,
+} from '../workers/types'
 import { AppStoreSlice } from './app'
 
 export type WorkerListener = (message: WorkerResponseMessage) => void
@@ -9,43 +17,78 @@ export type Unsubscribe = () => void
 export type WorkerStoreSlice = {
   workerReady: boolean
 
-  post: (message: ClientRequestMessage) => void
+  getBlock: (slug: string) => Promise<BlockResponseMessage['payload']>
+  getGlyph: (char: string) => Promise<GlyphResponseMessage['payload']>
+  getScript: (slug: string) => Promise<ScriptResponseMessage['payload']>
+  search: (query: string) => Promise<QueryResponseMessage['payload']>
   startWorkers: () => void
-  subscribe: (listener: WorkerListener) => Unsubscribe
 }
 
 export const createWorkerStoreSlice: AppStoreSlice<WorkerStoreSlice> = (set, get, store) => ({
   workerReady: false,
 
-  post(message) {
-    if (!get().workerReady) messageQueue.push(message)
-    else postMessage(message)
+  async getBlock(slug) {
+    getBlockResolver?.reject('Canceled')
+    getBlockResolver = createResolver()
+    postMessage({ type: 'BLOCK_REQUEST', payload: { slug } })
+    return getBlockResolver.promise
+  },
+
+  async getGlyph(char) {
+    getGlyphResolver?.reject('Canceled')
+    getGlyphResolver = createResolver()
+    postMessage({ type: 'GLYPH_REQUEST', payload: { char } })
+    return getGlyphResolver.promise
+  },
+
+  async getScript(slug) {
+    getScriptResolver?.reject('Canceled')
+    getScriptResolver = createResolver()
+    postMessage({ type: 'SCRIPT_REQUEST', payload: { slug } })
+    return getScriptResolver.promise
+  },
+
+  async search(query) {
+    searchResolver?.reject('Canceled')
+    searchResolver = createResolver()
+    postMessage({ type: 'QUERY_REQUEST', payload: { query } })
+    return searchResolver.promise
   },
 
   startWorkers() {
-    get().subscribe((message) => {
-      if (message.type !== 'WORKER_READY') return
-      set((draft) => {
-        draft.workerReady = true
-        draft.glyphCount = message.payload.count
-      })
-      const { initBlock, initGlyph, initScript, initSearch } = get()
-      initBlock()
-      initGlyph()
-      initScript()
-      initSearch()
-    })
-
     void registerServiceWorker()
-    postMessage = registerSearchWorker((message) => listeners.forEach((listener) => listener(message)))
-  },
 
-  subscribe(listener) {
-    listeners.push(listener)
-    return () => (listeners = listeners.filter((l) => l !== listener))
+    postMessage = registerSearchWorker((message) => {
+      switch (message.type) {
+        case 'WORKER_READY':
+          set((draft) => {
+            draft.workerReady = true
+            draft.glyphCount = message.payload.count
+          })
+          break
+        case 'BLOCK_RESPONSE':
+          getBlockResolver?.resolve(message.payload)
+          getBlockResolver = null
+          break
+        case 'GLYPH_RESPONSE':
+          getGlyphResolver?.resolve(message.payload)
+          getGlyphResolver = null
+          break
+        case 'QUERY_RESPONSE':
+          searchResolver?.resolve(message.payload)
+          searchResolver = null
+          break
+        case 'SCRIPT_RESPONSE':
+          getScriptResolver?.resolve(message.payload)
+          getScriptResolver = null
+          break
+      }
+    })
   },
 })
 
-let listeners: ((message: WorkerResponseMessage) => void)[] = []
-let messageQueue: ClientRequestMessage[] = []
-let postMessage: (message: ClientRequestMessage) => void = (message) => messageQueue.push(message)
+let postMessage: (message: ClientRequestMessage) => void = (message) => console.warn('Worker not ready', { message })
+let getBlockResolver: Resolver<BlockResponseMessage['payload']> | null = null
+let getGlyphResolver: Resolver<GlyphResponseMessage['payload']> | null = null
+let getScriptResolver: Resolver<ScriptResponseMessage['payload']> | null = null
+let searchResolver: Resolver<QueryResponseMessage['payload']> | null = null

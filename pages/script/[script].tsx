@@ -14,7 +14,7 @@ export default function ScriptRoute() {
   const scriptRoute = useRef<string | null>(null)
   useEffect(() => {
     if (!router.isReady || loading || !route || scriptRoute.current === route) return
-    setRoute(route)
+    void setRoute(route)
     scriptRoute.current = route
   }, [router.isReady, loading, route, setRoute])
 

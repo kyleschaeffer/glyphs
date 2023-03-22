@@ -14,7 +14,7 @@ export default function GlyphRoute() {
   const glyphRoute = useRef<string | null>(null)
   useEffect(() => {
     if (!router.isReady || loading || glyphRoute.current === route) return
-    setRoute(route)
+    void setRoute(route)
     glyphRoute.current = route
   }, [router.isReady, loading, route, setRoute])
 
