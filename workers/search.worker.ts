@@ -144,8 +144,9 @@ self.onmessage = (event: MessageEvent<ClientRequestMessage>) => {
     }
     case 'GLYPH_REQUEST': {
       const glyph = Search.getGlyph(event.data.payload.char)
+      const block = glyph?.block ? Search.getBlock(glyph.block) : null
       const ligature = glyph ? Search.getLigatureGlyphs(glyph) : []
-      post({ type: 'GLYPH_RESPONSE', payload: { glyph, ligature } })
+      post({ type: 'GLYPH_RESPONSE', payload: { block, glyph, ligature } })
       break
     }
     case 'QUERY_REQUEST': {

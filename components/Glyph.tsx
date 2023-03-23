@@ -25,6 +25,7 @@ export function Glyph() {
   const router = useRouter()
   const route = useAppStore((store) => store.glyphRoute)
   const glyph = useAppStore((store) => store.glyph)
+  const block = useAppStore((store) => store.glyphBlock)
   const ligature = useAppStore((store) => store.glyphLigature)
   const query = useAppStore((store) => store.query)
 
@@ -192,9 +193,9 @@ export function Glyph() {
                 Script: <Link href={`/script/${slugify(glyph.script)}`}>{glyph.script}</Link>
               </li>
             )}
-            {glyph.block && (
+            {glyph.block && block && (
               <li>
-                Block: <Link href={`/block/${slugify(glyph.block)}`}>{glyph.block}</Link>
+                Block: <Link href={`/block/${slugify(glyph.block)}`}>{block.name}</Link>
               </li>
             )}
             {glyph.keywords && (

@@ -11,7 +11,10 @@ export type ClientRequestMessage =
   | ScriptRequestMessage
 
 export type BlockResponseMessage = Message<'BLOCK_RESPONSE', { block: Block | null }>
-export type GlyphResponseMessage = Message<'GLYPH_RESPONSE', { glyph: Glyph | null; ligature: Glyph[] }>
+export type GlyphResponseMessage = Message<
+  'GLYPH_RESPONSE',
+  { block: Block | null; glyph: Glyph | null; ligature: Glyph[] }
+>
 export type QueryResponseMessage = Message<'QUERY_RESPONSE', { results: Glyph[] }>
 export type ScriptResponseMessage = Message<'SCRIPT_RESPONSE', { script: Script | null }>
 export type WorkerReadyMessage = Message<'WORKER_READY', { count: number }>
