@@ -50,6 +50,7 @@ export const createWorkerStoreSlice: AppStoreSlice<WorkerStoreSlice> = (set, get
 
   async search(query) {
     searchResolver?.reject('Canceled')
+    if (!query) return { results: [] }
     searchResolver = createResolver()
     postMessage({ type: 'QUERY_REQUEST', payload: { query } })
     return searchResolver.promise
