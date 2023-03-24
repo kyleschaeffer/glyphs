@@ -12,7 +12,7 @@ export type SearchStoreSlice = {
   results: Glyph[]
   scrollPosition: number | null
 
-  setQuery: (query: string) => void
+  setQuery: (query: string, noDebounce?: boolean) => void
   setScrollPosition: (position: number | null) => void
 }
 
@@ -24,14 +24,14 @@ export const createSearchStoreSlice: AppStoreSlice<SearchStoreSlice> = (set, get
   results: [],
   scrollPosition: null,
 
-  setQuery(query) {
+  setQuery(query, noDebounce) {
     set((draft) => {
       draft.query = query
+      draft.results = []
       draft.debouncingQuery = true
     })
 
-    clearTimeout(queryDebounceTimer)
-    queryDebounceTimer = setTimeout(async () => {
+    async function getResults() {
       set((draft) => {
         draft.debouncingQuery = false
         draft.loadingResults = true
@@ -42,7 +42,11 @@ export const createSearchStoreSlice: AppStoreSlice<SearchStoreSlice> = (set, get
         draft.results = results
         draft.loadingResults = false
       })
-    }, DEBOUNCE_QUERY_MS)
+    }
+
+    clearTimeout(queryDebounceTimer)
+    if (noDebounce) void getResults()
+    else queryDebounceTimer = setTimeout(getResults, DEBOUNCE_QUERY_MS)
   },
 
   setScrollPosition(position) {
