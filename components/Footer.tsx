@@ -9,10 +9,7 @@ const cx = bindStyles(styles)
 const UNICODE_VERSION = process.env.NEXT_PUBLIC_UNICODE_VERSION || ''
 
 export function Footer() {
-  const ready = useAppStore((store) => store.workerReady)
   const count = useAppStore((store) => store.glyphCount)
-
-  if (!ready) return null
 
   return (
     <footer className={cx('footer')}>

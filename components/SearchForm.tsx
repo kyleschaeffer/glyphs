@@ -23,13 +23,13 @@ export function SearchForm() {
 
   const loadedQuery = useRef(false)
   useEffect(() => {
-    if (loadedQuery.current || !router.isReady) return
+    if (loadedQuery.current) return
     const q = z.string().optional().parse(router.query.q)
     if (q && query !== q) {
       setQuery(q)
     }
     loadedQuery.current = true
-  }, [query, router.isReady, router.query, setQuery])
+  }, [query, router.query, setQuery])
 
   const routeTimer = useRef<ReturnType<typeof setTimeout>>()
   useEffect(() => {

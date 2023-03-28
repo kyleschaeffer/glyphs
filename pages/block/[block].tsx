@@ -8,15 +8,15 @@ import { useAppStore } from '../../store/app'
 export default function BlockRoute() {
   const router = useRouter()
   const loading = useAppStore((store) => store.loadingBlock)
-  const route = router.isReady ? z.string().parse(router.query.block) : null
+  const route = z.string().parse(router.query.block)
   const setRoute = useAppStore((store) => store.setBlockRoute)
 
   const blockRoute = useRef<string | null>(null)
   useEffect(() => {
-    if (!router.isReady || loading || !route || blockRoute.current === route) return
+    if (loading || !route || blockRoute.current === route) return
     void setRoute(route)
     blockRoute.current = route
-  }, [router.isReady, loading, route, setRoute])
+  }, [loading, route, setRoute])
 
   if (loading || !route || blockRoute.current !== route)
     return (
