@@ -2,6 +2,7 @@ import type { AppProps } from 'next/app'
 import Head from 'next/head'
 import { Page } from '../components/Page'
 import { InputController } from '../controllers/InputController'
+import { ScrollController } from '../controllers/ScrollController'
 import { ThemeController } from '../controllers/ThemeController'
 import { WorkerController } from '../controllers/WorkerController'
 import '../styles/globals.scss'
@@ -18,9 +19,11 @@ export default function App({ Component, pageProps }: AppProps) {
       <ThemeController />
       <WorkerController />
       <InputController />
-      <Page>
-        <Component {...pageProps} />
-      </Page>
+      <ScrollController>
+        <Page>
+          <Component {...pageProps} />
+        </Page>
+      </ScrollController>
     </>
   )
 }

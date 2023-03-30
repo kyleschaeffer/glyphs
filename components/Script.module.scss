@@ -1,31 +1,3 @@
 .title {
   text-align: center;
 }
-
-.results {
-  display: flex;
-  flex-wrap: wrap;
-  gap: var(--result-gap);
-  justify-content: center;
-  padding: var(--result-gap);
-  list-style: none;
-}
-
-.result {
-  width: var(--result-size);
-  height: var(--result-size);
-  overflow: hidden;
-  font-size: calc(var(--result-size) * 0.625);
-  font-family: var(--font-glyph);
-  line-height: var(--result-size);
-  white-space: pre;
-  text-align: center;
-  background: transparent;
-  border: 0;
-  border-radius: var(--radius-2);
-
-  &:hover,
-  &:focus-visible {
-    background-color: var(--mono-3);
-  }
-}

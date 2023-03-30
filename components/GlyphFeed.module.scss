@@ -1,4 +1,4 @@
-.results {
+.feed {
   display: flex;
   flex-wrap: wrap;
   gap: var(--result-gap);
@@ -7,7 +7,8 @@
   list-style: none;
 }
 
-.result {
+.item {
+  display: block;
   width: var(--result-size);
   height: var(--result-size);
   overflow: hidden;
@@ -16,6 +17,7 @@
   line-height: var(--result-size);
   white-space: pre;
   text-align: center;
+  text-decoration: none;
   background: transparent;
   border: 0;
   border-radius: var(--radius-2);

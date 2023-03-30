@@ -39,10 +39,3 @@ export const useAppStore = create<AppStore, AppStoreMutators>(
     }
   )
 )
-
-/**
- * Clear persisted store state from local storage
- */
-export function clearPersistedStore() {
-  localStorage.removeItem(PERSISTED_STORE_KEY)
-}

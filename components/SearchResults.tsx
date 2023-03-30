@@ -1,24 +1,13 @@
 import Head from 'next/head'
-import { useRouter } from 'next/router'
-import { useCallback, useEffect } from 'react'
-import { bindStyles } from '../core/browser'
-import { glyphRoute } from '../core/glyph'
+import { useScrollAfterLoading } from '../hooks/useScroll'
 import { useAppStore } from '../store/app'
-import type { Glyph } from '../workers/types'
-import styles from './SearchResults.module.scss'
-
-const cx = bindStyles(styles)
+import { GlyphFeed } from './GlyphFeed'
 
 export function SearchResults() {
   const query = useAppStore((store) => store.query)
-  const scrollPosition = useAppStore((store) => store.scrollPosition)
   const results = useAppStore((store) => store.results)
   const loading = useAppStore((store) => store.debouncingQuery || store.loadingResults)
-
-  useEffect(() => {
-    if (scrollPosition === null) return
-    document.scrollingElement?.scrollTo(0, scrollPosition)
-  }, [scrollPosition])
+  useScrollAfterLoading(loading)
 
   if (!loading && !results.length) return <div>No results</div>
   if (!results.length) return null
@@ -28,34 +17,7 @@ export function SearchResults() {
       <Head>
         <title>Search: {query}</title>
       </Head>
-      <ul className={cx('results')}>
-        {results.map((result) => (
-          <li key={result.char}>
-            <SearchResult glyph={result} />
-          </li>
-        ))}
-      </ul>
+      <GlyphFeed glyphs={results} />
     </>
-  )
-}
-
-type SearchResultProps = {
-  glyph: Glyph
-}
-
-export function SearchResult(props: SearchResultProps) {
-  const { glyph } = props
-
-  const router = useRouter()
-  const setScrollPosition = useAppStore((store) => store.setScrollPosition)
-  const select = useCallback(() => {
-    setScrollPosition(document.scrollingElement?.scrollTop ?? null)
-    router.push(glyphRoute(glyph.char))
-  }, [glyph, setScrollPosition, router])
-
-  return (
-    <button className={cx('result')} onClick={select} title={`${glyph.char} ${glyph.name}`}>
-      {glyph.char}
-    </button>
   )
 }

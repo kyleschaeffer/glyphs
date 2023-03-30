@@ -7,12 +7,8 @@ import {
   GlyphResponseMessage,
   QueryResponseMessage,
   ScriptResponseMessage,
-  WorkerResponseMessage,
 } from '../workers/types'
 import { AppStoreSlice } from './app'
-
-export type WorkerListener = (message: WorkerResponseMessage) => void
-export type Unsubscribe = () => void
 
 export type WorkerStoreSlice = {
   workerReady: boolean
