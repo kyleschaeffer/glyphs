@@ -1,6 +1,5 @@
 import Fuse from 'fuse.js'
 import z from 'zod'
-import { LRUCache } from '../core/cache'
 import { decimalToString, decimalToUtf16, decimalToUtf32, stringToDecimals, stringToUtf8 } from '../core/convert'
 import { slugify } from '../core/lang'
 import type { Block, ClientRequestMessage, Glyph, GlyphsFile, Script, WorkerResponseMessage } from './types'
@@ -13,7 +12,6 @@ class SearchController {
   blocks: Map<string, Block> | null = null
   scripts: Map<string, Script> | null = null
   fuse: Fuse<Glyph> | null = null
-  queryCache = new LRUCache<Glyph[]>()
 
   constructor() {
     void this._loadGlyphs()
@@ -116,9 +114,6 @@ class SearchController {
   }
 
   search(query: string): Glyph[] {
-    const cache = this.queryCache.get(query)
-    if (cache) return cache
-
     let results = this.fuse?.search(query.slice(0, 128), { limit: 1000 }).map((r) => r.item) ?? []
 
     const resultsChars = new Set([...results.map((r) => r.char)])
@@ -132,8 +127,6 @@ class SearchController {
       results.push(glyph)
       resultsChars.add(char)
     })
-
-    this.queryCache.set(query, results)
 
     return results
   }

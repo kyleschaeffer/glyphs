@@ -1,8 +1,11 @@
+import { LRUCache } from '../core/cache'
 import { Glyph } from '../workers/types'
 import { AppStoreSlice } from './app'
 
 const DEBOUNCE_QUERY_MS = 500
 let queryDebounceTimer: ReturnType<typeof setTimeout>
+
+const queryCache = new LRUCache<Glyph[]>()
 
 export type SearchStoreSlice = {
   debouncingQuery: boolean
@@ -24,7 +27,7 @@ export const createSearchStoreSlice: AppStoreSlice<SearchStoreSlice> = (set, get
   setQuery(query, noDebounce) {
     set((draft) => {
       draft.query = query
-      draft.results = []
+      draft.results = queryCache.get(query) ?? []
       draft.debouncingQuery = true
     })
 
@@ -38,6 +41,7 @@ export const createSearchStoreSlice: AppStoreSlice<SearchStoreSlice> = (set, get
       set((draft) => {
         draft.results = results
         draft.loadingResults = false
+        queryCache.set(query, results)
       })
     }
 
