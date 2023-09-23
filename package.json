@@ -11,27 +11,27 @@
   },
   "dependencies": {
     "fuse.js": "^6.6.2",
-    "immer": "^10.0.1",
-    "next": "13.3.0",
+    "immer": "^10.0.2",
+    "next": "13.5.2",
     "react": "18.2.0",
     "react-dom": "18.2.0",
-    "sass": "^1.62.0",
-    "zod": "^3.21.4",
-    "zustand": "^4.3.7"
+    "sass": "^1.68.0",
+    "zod": "^3.22.2",
+    "zustand": "^4.4.1"
   },
   "devDependencies": {
-    "@types/node": "18.15.11",
-    "@types/react": "18.0.37",
-    "@types/react-dom": "18.0.11",
-    "dotenv": "^16.0.3",
-    "eslint": "8.38.0",
-    "eslint-config-next": "13.3.0",
-    "postcss": "^8.4.22",
-    "prettier": "^2.8.7",
-    "stylelint": "^15.5.0",
+    "@types/node": "20.6.3",
+    "@types/react": "18.2.22",
+    "@types/react-dom": "18.2.7",
+    "dotenv": "^16.3.1",
+    "eslint": "8.50.0",
+    "eslint-config-next": "13.5.2",
+    "postcss": "^8.4.30",
+    "prettier": "^3.0.3",
+    "stylelint": "^15.10.3",
     "stylelint-config-rational-order": "^0.1.2",
-    "stylelint-config-standard-scss": "^8.0.0",
+    "stylelint-config-standard-scss": "^11.0.0",
     "ts-node": "^10.9.1",
-    "typescript": "5.0.4"
+    "typescript": "5.2.2"
   }
 }
