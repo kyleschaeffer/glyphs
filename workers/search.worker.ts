@@ -28,15 +28,19 @@ class SearchController {
       this.glyphs = new Map()
       this.blocks = new Map()
       this.scripts = new Map()
+      const blockLabels: [slug: string, label: string][] = []
+      const scriptLabels: [slug: string, label: string][] = []
 
       for (const block of glyphsFile.blocks) {
         const slug = slugify(block.n)
         this.blocks.set(slug, { name: block.n, range: block.r, glyphs: [] })
+        blockLabels.push([slug, block.n])
       }
 
       for (const script of glyphsFile.scripts) {
         const slug = slugify(script)
         this.scripts.set(slug, { name: script, glyphs: [] })
+        scriptLabels.push([slug, script])
       }
 
       for (const glyph of glyphsFile.glyphs) {
@@ -86,7 +90,7 @@ class SearchController {
         threshold: 0.4,
       })
 
-      post({ type: 'WORKER_READY', payload: { count: this.glyphs.size } })
+      post({ type: 'WORKER_READY', payload: { blocks: blockLabels, scripts: scriptLabels, count: this.glyphs.size } })
     } catch (e) {
       console.error(e)
     } finally {

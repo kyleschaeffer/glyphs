@@ -3,6 +3,7 @@ import { AppStoreSlice } from './app'
 
 export type BlockStoreSlice = {
   block: Block | null
+  blocks: [slug: string, label: string][]
   blockRoute: string | null
   loadingBlock: boolean
 
@@ -11,6 +12,7 @@ export type BlockStoreSlice = {
 
 export const createBlockStoreSlice: AppStoreSlice<BlockStoreSlice> = (set, get, store) => ({
   block: null,
+  blocks: [],
   blockRoute: null,
   loadingBlock: false,
 

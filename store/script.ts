@@ -3,6 +3,7 @@ import { AppStoreSlice } from './app'
 
 export type ScriptStoreSlice = {
   script: Script | null
+  scripts: [slug: string, label: string][]
   scriptRoute: string | null
   loadingScript: boolean
 
@@ -11,6 +12,7 @@ export type ScriptStoreSlice = {
 
 export const createScriptStoreSlice: AppStoreSlice<ScriptStoreSlice> = (set, get, store) => ({
   script: null,
+  scripts: [],
   scriptRoute: null,
   loadingScript: false,
 

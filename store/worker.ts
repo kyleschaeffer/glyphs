@@ -60,6 +60,8 @@ export const createWorkerStoreSlice: AppStoreSlice<WorkerStoreSlice> = (set, get
         case 'WORKER_READY':
           set((draft) => {
             draft.workerReady = true
+            draft.blocks = message.payload.blocks
+            draft.scripts = message.payload.scripts
             draft.glyphCount = message.payload.count
           })
           break

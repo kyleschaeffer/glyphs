@@ -17,7 +17,10 @@ export type GlyphResponseMessage = Message<
 >
 export type QueryResponseMessage = Message<'QUERY_RESPONSE', { results: Glyph[] }>
 export type ScriptResponseMessage = Message<'SCRIPT_RESPONSE', { script: Script | null }>
-export type WorkerReadyMessage = Message<'WORKER_READY', { count: number }>
+export type WorkerReadyMessage = Message<
+  'WORKER_READY',
+  { blocks: [slug: string, label: string][]; count: number; scripts: [slug: string, label: string][] }
+>
 export type WorkerResponseMessage =
   | BlockResponseMessage
   | GlyphResponseMessage
