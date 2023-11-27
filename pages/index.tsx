@@ -12,20 +12,20 @@ export default function SearchRoute() {
       <Search />
       {!hasQuery && (
         <>
-          <ul>
+          <ol>
             {scripts.map(([slug, label]) => (
               <li key={slug}>
                 <Link href={`/script/${slug}`}>Script: {label}</Link>
               </li>
             ))}
-          </ul>
-          <ul>
+          </ol>
+          <ol>
             {blocks.map(([slug, label]) => (
               <li key={slug}>
                 <Link href={`/block/${slug}`}>Block: {label}</Link>
               </li>
             ))}
-          </ul>
+          </ol>
         </>
       )}
     </>

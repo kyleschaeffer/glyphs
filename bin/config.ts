@@ -1,7 +1,13 @@
-export const UNICODE_VERSIONS = ['5.0', '6.0', '7.0', '8.0', '9.0', '10.0', '11.0', '12.0', '13.0', '14.0', '15.0']
+export const UNICODE_VERSIONS = ['15.0', '14.0', '13.0', '12.0', '11.0', '10.0', '9.0', '8.0', '7.0', '6.0', '5.0']
 
 /** Glyphs from these blocks will not be included in the data set */
-export const EXCLUDED_BLOCKS = ['High Private Use Surrogates', 'High Surrogates', 'Low Surrogates', 'No_Block']
+export const EXCLUDED_BLOCKS = [
+  'Block Name',
+  'High Private Use Surrogates',
+  'High Surrogates',
+  'Low Surrogates',
+  'No_Block',
+]
 
 /** [1]=entity; [2]=decimal */
 export const HTML_ENTITY_DATA_URL = 'https://www.w3.org/TR/html4/sgml/entities.html'
