@@ -1,0 +1,23 @@
+{
+  "name": "@glyphs/build",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "exports": {
+    "./file": "./src/file.ts"
+  },
+  "scripts": {
+    "format": "prettier -w ./src",
+    "lint": "eslint --ignore-pattern **/dist/ --report-unused-disable-directives --max-warnings 0 ."
+  },
+  "bin": {
+    "glyphs-build": "./src/cli.ts",
+    "glyphs-dev": "./src/dev.ts"
+  },
+  "devDependencies": {
+    "@glyphs/config": "*",
+    "@types/node": "^22.10.2",
+    "chalk": "^5.4.0",
+    "esbuild": "^0.24.1"
+  }
+}

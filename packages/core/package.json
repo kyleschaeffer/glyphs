@@ -1,0 +1,19 @@
+{
+  "name": "@glyphs/core",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "module": "./dist/index.js",
+  "types": "./dist/types/src/index.d.ts",
+  "scripts": {
+    "dev": "glyphs-build --platform=neutral --format=esm -t -w",
+    "build": "glyphs-build --platform=neutral --format=esm -t",
+    "format": "prettier -w ./src",
+    "lint": "eslint --ignore-pattern **/dist/ --report-unused-disable-directives --max-warnings 0 .",
+    "test": "bun test"
+  },
+  "devDependencies": {
+    "@glyphs/build": "*",
+    "@glyphs/config": "*"
+  }
+}

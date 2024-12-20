@@ -1,0 +1,91 @@
+@layer utility {
+  /* Pivot: layout */
+  .pivot {
+    position: relative;
+
+    & > *:not(:first-child) {
+      position: absolute;
+    }
+
+    &.pivot-top > *:not(:first-child) {
+      bottom: calc(100% + var(--pivot-offset, 0px));
+      left: 50%;
+      transform: translateX(-50%);
+    }
+
+    &.pivot-bottom > *:not(:first-child) {
+      top: calc(100% + var(--pivot-offset, 0px));
+      left: 50%;
+      transform: translateX(-50%);
+    }
+
+    &.pivot-left > *:not(:first-child) {
+      top: 50%;
+      right: calc(100% + var(--pivot-offset, 0px));
+      transform: translateY(-50%);
+    }
+
+    &.pivot-right > *:not(:first-child) {
+      top: 50%;
+      left: calc(100% + var(--pivot-offset, 0px));
+      transform: translateY(-50%);
+    }
+
+    &.pivot-top-left > *:not(:first-child) {
+      bottom: calc(100% + var(--pivot-offset, 0px));
+      left: 0;
+    }
+
+    &.pivot-top-right > *:not(:first-child) {
+      right: 0;
+      bottom: calc(100% + var(--pivot-offset, 0px));
+    }
+
+    &.pivot-bottom-left > *:not(:first-child) {
+      top: calc(100% + var(--pivot-offset, 0px));
+      left: 0;
+    }
+
+    &.pivot-bottom-right > *:not(:first-child) {
+      top: calc(100% + var(--pivot-offset, 0px));
+      right: 0;
+    }
+  }
+
+  /* Pivot: offset */
+  .pivot-o-1 {
+    --pivot-offset: var(--space-1);
+  }
+
+  .pivot-o-2 {
+    --pivot-offset: var(--space-2);
+  }
+
+  .pivot-o-3 {
+    --pivot-offset: var(--space-3);
+  }
+
+  .pivot-o-4 {
+    --pivot-offset: var(--space-4);
+  }
+
+  .pivot-o-5 {
+    --pivot-offset: var(--space-5);
+  }
+
+  .pivot-o-6 {
+    --pivot-offset: var(--space-6);
+  }
+
+  .pivot-o-7 {
+    --pivot-offset: var(--space-7);
+  }
+
+  .pivot-o-8 {
+    --pivot-offset: var(--space-8);
+  }
+
+  .pivot-o-9 {
+    --pivot-offset: var(--space-9);
+  }
+}

@@ -1,0 +1,49 @@
+:root {
+  /* Typography */
+  --font-system: -apple-system, blinkmacsystemfont, 'Segoe UI', helvetica, arial, sans-serif, 'Apple Color Emoji',
+    'Segoe UI Emoji';
+
+  /* Monochrome palette */
+  --gray-1: #111;
+  --gray-2: #191919;
+  --gray-3: #222;
+  --gray-4: #2a2a2a;
+  --gray-5: #313131;
+  --gray-6: #3a3a3a;
+  --gray-7: #484848;
+  --gray-8: #606060;
+  --gray-9: #6e6e6e;
+  --gray-10: #7b7b7b;
+  --gray-11: #b4b4b4;
+  --gray-12: #eee;
+
+  /* Accent colors */
+  --accent-1: #13131e;
+  --accent-2: #171625;
+  --accent-3: #202248;
+  --accent-4: #262a65;
+  --accent-5: #303374;
+  --accent-6: #3d3e82;
+  --accent-7: #4a4a95;
+  --accent-8: #5958b1;
+  --accent-9: #5b5bd6;
+  --accent-10: #6e6ade;
+  --accent-11: #b1a9ff;
+  --accent-12: #e0dffe;
+
+  /* Spacing */
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 24px;
+  --space-6: 32px;
+  --space-7: 40px;
+  --space-8: 48px;
+  --space-9: 64px;
+
+  /* Inputs */
+  --input-size-sm: 24px;
+  --input-size-md: 30px;
+  --input-size-lg: 36px;
+}

@@ -1,0 +1,4 @@
+{
+  "extends": "@glyphs/config/tsconfig-base",
+  "include": ["src"]
+}

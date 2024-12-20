@@ -1,0 +1,53 @@
+@layer component {
+  /* Input: button */
+  .btn {
+    display: block;
+    height: var(--input-size-md);
+    padding: 0 var(--space-2);
+    line-height: var(--input-size-md);
+    border: 0;
+    border-radius: var(--space-2);
+
+    &:hover {
+      background: var(--gray-4);
+    }
+
+    &:active {
+      background: var(--gray-5);
+    }
+
+    &.btn-active {
+      background: var(--accent-10);
+    }
+
+    &:focus-visible {
+      outline: 2px solid var(--accent-10);
+      outline-offset: 2px;
+    }
+  }
+
+  .btn-invisible {
+    padding: 0;
+  }
+
+  .btn-sm {
+    height: var(--input-size-sm);
+    line-height: var(--input-size-sm);
+  }
+
+  .btn-lg {
+    height: var(--input-size-lg);
+    line-height: var(--input-size-lg);
+  }
+
+  /* Input: focus */
+  .focus:focus-visible {
+    outline: 2px solid var(--accent-10);
+    outline-offset: 2px;
+  }
+
+  .focus-within:focus-within {
+    outline: 2px solid var(--accent-10);
+    outline-offset: 2px;
+  }
+}

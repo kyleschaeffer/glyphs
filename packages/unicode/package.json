@@ -1,0 +1,33 @@
+{
+  "name": "@glyphs/unicode",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "exports": {
+    "./data/5.0.json": "./data/5.0.json",
+    "./data/6.0.json": "./data/6.0.json",
+    "./data/7.0.json": "./data/7.0.json",
+    "./data/8.0.json": "./data/8.0.json",
+    "./data/9.0.json": "./data/9.0.json",
+    "./data/10.0.json": "./data/10.0.json",
+    "./data/11.0.json": "./data/11.0.json",
+    "./data/12.0.json": "./data/12.0.json",
+    "./data/13.0.json": "./data/13.0.json",
+    "./data/14.0.json": "./data/14.0.json",
+    "./data/15.0.json": "./data/15.0.json",
+    "./data/16.0.json": "./data/16.0.json"
+  },
+  "scripts": {
+    "scrape": "bun ./src/scrape.ts",
+    "format": "prettier -w ./src",
+    "lint": "eslint --ignore-pattern **/data/ --report-unused-disable-directives --max-warnings 0 ."
+  },
+  "dependencies": {
+    "@glyphs/core": "*",
+    "chalk": "^5.4.0"
+  },
+  "devDependencies": {
+    "@glyphs/config": "*",
+    "@types/node": "^22.10.2"
+  }
+}
