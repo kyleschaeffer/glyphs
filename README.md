@@ -1,5 +1,5 @@
 # Glyphs
 
-Collaborative team allocation.
+The handy developer Unicode reference.
 
-[https://glyphs.app](https://glyphs.app)
+[https://glyphs.dev](https://glyphs.dev)
