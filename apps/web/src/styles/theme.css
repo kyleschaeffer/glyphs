@@ -1,49 +1,127 @@
 :root {
-  /* Typography */
-  --font-system: -apple-system, blinkmacsystemfont, sans-serif;
-  --font-serif: serif;
+  /* Color: mono */
+  --mono-1: hsl(246deg 6% 9%);
+  --mono-2: hsl(240deg 5.1% 11.6%);
+  --mono-3: hsl(241deg 5% 14.3%);
+  --mono-4: hsl(242deg 4.9% 16.5%);
+  --mono-5: hsl(243deg 4.9% 18.8%);
+  --mono-6: hsl(244deg 4.9% 21.5%);
+  --mono-7: hsl(245deg 4.9% 25.4%);
+  --mono-8: hsl(247deg 4.8% 32.5%);
+  --mono-9: hsl(252deg 4% 45.2%);
+  --mono-10: hsl(247deg 3.4% 50.7%);
+  --mono-11: hsl(253deg 4% 63.7%);
+  --mono-12: hsl(256deg 6% 93.2%);
 
-  /* Monochrome palette */
-  --gray-1: #111;
-  --gray-2: #191919;
-  --gray-3: #222;
-  --gray-4: #2a2a2a;
-  --gray-5: #313131;
-  --gray-6: #3a3a3a;
-  --gray-7: #484848;
-  --gray-8: #606060;
-  --gray-9: #6e6e6e;
-  --gray-10: #7b7b7b;
-  --gray-11: #b4b4b4;
-  --gray-12: #eee;
+  /* Color: accent */
+  --accent-1: hsl(250deg 20% 10.2%);
+  --accent-2: hsl(255deg 30.3% 12.9%);
+  --accent-3: hsl(253deg 37% 18.4%);
+  --accent-4: hsl(252deg 40.1% 22.5%);
+  --accent-5: hsl(252deg 42.2% 26.2%);
+  --accent-6: hsl(251deg 44.3% 31.1%);
+  --accent-7: hsl(250deg 46.8% 38.9%);
+  --accent-8: hsl(250deg 51.8% 51.2%);
+  --accent-9: hsl(252deg 56% 57.5%);
+  --accent-10: hsl(251deg 63.2% 63.2%);
+  --accent-11: hsl(250deg 95% 76.8%);
+  --accent-12: hsl(252deg 87% 96.4%);
 
-  /* Accent colors */
-  --accent-1: #13131e;
-  --accent-2: #171625;
-  --accent-3: #202248;
-  --accent-4: #262a65;
-  --accent-5: #303374;
-  --accent-6: #3d3e82;
-  --accent-7: #4a4a95;
-  --accent-8: #5958b1;
-  --accent-9: #5b5bd6;
-  --accent-10: #6e6ade;
-  --accent-11: #b1a9ff;
-  --accent-12: #e0dffe;
+  /* Color: black */
+  --black-1: hsl(0deg 0% 0% / 1.2%);
+  --black-2: hsl(0deg 0% 0% / 2.7%);
+  --black-3: hsl(0deg 0% 0% / 4.7%);
+  --black-4: hsl(0deg 0% 0% / 7.1%);
+  --black-5: hsl(0deg 0% 0% / 9%);
+  --black-6: hsl(0deg 0% 0% / 11.4%);
+  --black-7: hsl(0deg 0% 0% / 14.1%);
+  --black-8: hsl(0deg 0% 0% / 22%);
+  --black-9: hsl(0deg 0% 0% / 43.9%);
+  --black-10: hsl(0deg 0% 0% / 47.8%);
+  --black-11: hsl(0deg 0% 0% / 56.5%);
+  --black-12: hsl(0deg 0% 0% / 91%);
 
-  /* Spacing */
-  --space-1: 4px;
-  --space-2: 8px;
-  --space-3: 12px;
-  --space-4: 16px;
-  --space-5: 24px;
-  --space-6: 32px;
-  --space-7: 40px;
+  /* Color: white */
+  --white-1: hsl(0deg 0% 100% / 0%);
+  --white-2: hsl(0deg 0% 100% / 1.3%);
+  --white-3: hsl(0deg 0% 100% / 3.4%);
+  --white-4: hsl(0deg 0% 100% / 5.6%);
+  --white-5: hsl(0deg 0% 100% / 8.6%);
+  --white-6: hsl(0deg 0% 100% / 12.4%);
+  --white-7: hsl(0deg 0% 100% / 17.6%);
+  --white-8: hsl(0deg 0% 100% / 24.9%);
+  --white-9: hsl(0deg 0% 100% / 38.6%);
+  --white-10: hsl(0deg 0% 100% / 44.6%);
+  --white-11: hsl(0deg 0% 100% / 59.2%);
+  --white-12: hsl(0deg 0% 100% / 92.3%);
+
+  /* Color: typography */
+  --highlight-color: var(--accent-7);
+  --outline-color: var(--accent-8);
+
+  /* Font: family */
+  --font-sans: ui-sans-serif, sans-serif;
+  --font-serif: ui-serif, serif;
+  --font-mono: ui-monospace, monospace;
+  --font-body: var(--font-sans);
+  --font-glyph: var(--font-sans);
+
+  /* Font: size */
+  --font-size-xs: 12px;
+  --font-size-sm: 14px;
+  --font-size-md: 16px;
+  --font-size-lg: 20px;
+  --font-size-xl: 32px;
+
+  /* Line */
+  --line-compact: 1.2;
+  --line-normal: 1.4;
+  --line-relaxed: 1.6;
+
+  /* Radii */
+  --radius-0: 0;
+  --radius-1: 2px;
+  --radius-2: 3px;
+  --radius-3: 4px;
+  --radius-4: 8px;
+
+  /* Space */
+  --space-0: 0;
+  --space-1: 2px;
+  --space-2: 4px;
+  --space-3: 8px;
+  --space-4: 12px;
+  --space-5: 16px;
+  --space-6: 24px;
+  --space-7: 32px;
   --space-8: 48px;
   --space-9: 64px;
 
-  /* Inputs */
-  --input-size-sm: 24px;
-  --input-size-md: 30px;
-  --input-size-lg: 36px;
+  /* Layout */
+  --result-gap: var(--space-3);
+  --result-size: 2.5rem;
+}
+
+.theme-light {
+  /* Color: mono */
+  --mono-1: hsl(300deg 20% 99%);
+  --mono-2: hsl(300deg 7.7% 97.5%);
+  --mono-3: hsl(294deg 5.5% 95.3%);
+  --mono-4: hsl(289deg 4.7% 93.3%);
+  --mono-5: hsl(283deg 4.4% 91.3%);
+  --mono-6: hsl(278deg 4.1% 89.1%);
+  --mono-7: hsl(271deg 3.9% 86.3%);
+  --mono-8: hsl(255deg 3.7% 78.8%);
+  --mono-9: hsl(252deg 4% 57.3%);
+  --mono-10: hsl(253deg 3.5% 53.5%);
+  --mono-11: hsl(252deg 4% 44.8%);
+  --mono-12: hsl(260deg 25% 11%);
+
+  /* Color: typography */
+  --highlight-color: var(--accent-10);
+  --outline-color: var(--accent-11);
+
+  body {
+    color-scheme: light;
+  }
 }
