@@ -5,7 +5,7 @@ export async function registerServiceWorker() {
     return
   }
   try {
-    await navigator.serviceWorker.register(new URL('./sw.worker.ts', import.meta.url))
+    await navigator.serviceWorker.register(new URL('./sw.worker', import.meta.url), { type: 'module' })
   } catch (e) {
     log.error('Failed to register service worker', { cause: e as Error })
   }

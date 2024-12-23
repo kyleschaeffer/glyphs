@@ -18,6 +18,8 @@ export const UNICODE_VERSIONS = [
 
 export type UnicodeVersion = (typeof UNICODE_VERSIONS)[number]
 
+export const DEFAULT_UNICODE_VERSION: UnicodeVersion = '16.0'
+
 export type UnicodeData = {
   /** Glyph data */
   g: GlyphData[]

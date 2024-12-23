@@ -1,7 +1,7 @@
 :root {
   /* Typography */
-  --font-system: -apple-system, blinkmacsystemfont, 'Segoe UI', helvetica, arial, sans-serif, 'Apple Color Emoji',
-    'Segoe UI Emoji';
+  --font-system: -apple-system, blinkmacsystemfont, sans-serif;
+  --font-serif: serif;
 
   /* Monochrome palette */
   --gray-1: #111;

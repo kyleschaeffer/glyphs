@@ -2,7 +2,6 @@ import {
   Block,
   Glyph,
   Script,
-  UNICODE_VERSIONS,
   UnicodeData,
   decimalToString,
   decimalToUtf16,
@@ -29,11 +28,9 @@ class SearchController {
   }
 
   private async _loadGlyphs() {
-    const version = UNICODE_VERSIONS.at(-1)
-
     this.loading = true
     try {
-      const unicodeData = (await import(`@glyphs/unicode/data/${version}.json`)) as UnicodeData
+      const unicodeData = (await import('@glyphs/unicode/data/16.0.json')).default as UnicodeData
 
       this.glyphs = new Map()
       this.blocks = new Map()
