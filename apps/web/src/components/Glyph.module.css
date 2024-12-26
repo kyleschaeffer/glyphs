@@ -1,0 +1,82 @@
+.glyph {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-7);
+  padding-block-end: var(--space-7);
+  padding-inline: var(--result-gap);
+  margin-inline: auto;
+}
+
+.head {
+  display: grid;
+  grid-template-columns: var(--result-size) 1fr var(--result-size);
+  align-items: center;
+}
+
+.name {
+  grid-column: 2 / 3;
+  padding: var(--result-gap);
+  font-size: 1.5rem;
+  text-align: center;
+
+  @media screen and (min-width: 500px) {
+    font-size: 1.75rem;
+  }
+
+  @media screen and (min-width: 768px) {
+    font-size: 2rem;
+  }
+}
+
+.close {
+  width: var(--result-size);
+  height: var(--result-size);
+  font-size: 2em;
+  font-weight: 200;
+  line-height: var(--result-size);
+  color: var(--mono-10);
+  text-align: center;
+  background: transparent;
+  border: 0;
+
+  &:hover,
+  &:focus-visible {
+    color: var(--mono-12);
+  }
+}
+
+.section {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+}
+
+.codes {
+  > li + li {
+    margin-block-start: 0.25em;
+  }
+}
+
+.ligature-link {
+  text-decoration: none;
+}
+
+.ligature-name {
+  text-decoration: underline;
+  text-decoration-color: var(--mono-6);
+
+  .ligature-link:hover &,
+  .ligature-link:focus-visible & {
+    text-decoration-color: var(--outline-color);
+  }
+}
+
+.ligature-char {
+  display: inline-block;
+  min-width: 1.5em;
+  text-align: center;
+}
+
+.used-in {
+  font-size: 24px;
+}

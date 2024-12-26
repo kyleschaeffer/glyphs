@@ -1,0 +1,12 @@
+.footer {
+  display: flex;
+  gap: var(--space-7);
+  align-items: center;
+  justify-content: center;
+  padding-block-end: var(--space-7);
+  padding-inline: 1.5em;
+  margin-block-start: var(--result-gap);
+  font-size: var(--font-size-sm);
+  color: var(--mono-9);
+  text-align: center;
+}

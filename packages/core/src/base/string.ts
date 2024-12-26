@@ -1,3 +1,4 @@
+import { Glyph } from '../model/glyph'
 import { titleCase } from './lang'
 
 /**
@@ -210,4 +211,21 @@ export function mergeKeywords(name: string, keywords: string[]): [name: string, 
   const mergedKeywords = new Set([sanitizedName, ...keywords.map(sanitizeWord).filter((w) => w.length)])
   mergedKeywords.delete(sanitizedName)
   return [titleCase(sanitizedName), mergedKeywords.size ? Array.from(mergedKeywords) : undefined]
+}
+
+const HTML_SPECIAL_CHARS = new Set(['"', "'", '&', '<', '>'])
+
+export function htmlEntities(glyph: Glyph): string[] {
+  const entities = []
+
+  if (!HTML_SPECIAL_CHARS.has(glyph.char)) entities.push(glyph.char)
+  if (glyph.entities) glyph.entities.forEach((e) => entities.push(entityToHtml(e)))
+  entities.push(glyph.utf32.map(utf32ToHtml).join(''))
+  entities.push(glyph.decimals.map(decimalToHtml).join(''))
+
+  return entities
+}
+
+export function cssEntities(glyph: Glyph): string[] {
+  return [escapeSingleQuotes(glyph.char), glyph.utf32.map(utf32ToCss).join('')]
 }

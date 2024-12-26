@@ -1,0 +1,29 @@
+.feed {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--result-gap);
+  justify-content: center;
+  padding: var(--result-gap);
+  list-style: none;
+}
+
+.item {
+  display: block;
+  width: var(--result-size);
+  height: var(--result-size);
+  overflow: hidden;
+  font-family: var(--font-glyph);
+  font-size: calc(var(--result-size) * 0.625);
+  line-height: var(--result-size);
+  text-align: center;
+  text-decoration: none;
+  white-space: pre;
+  background: transparent;
+  border: 1px solid var(--mono-3);
+  border-radius: var(--radius-2);
+
+  &:hover,
+  &:focus-visible {
+    background-color: var(--mono-3);
+  }
+}

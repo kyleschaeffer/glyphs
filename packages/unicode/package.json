@@ -24,7 +24,7 @@
   },
   "dependencies": {
     "@glyphs/core": "*",
-    "chalk": "^5.4.0"
+    "chalk": "^5.4.1"
   },
   "devDependencies": {
     "@glyphs/config": "*",

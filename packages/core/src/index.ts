@@ -3,6 +3,7 @@ export * from './async/defer'
 export * from './async/promise'
 export * from './async/throttle'
 
+export * from './base/cache'
 export * from './base/error'
 export * from './base/lang'
 export * from './base/logger'
