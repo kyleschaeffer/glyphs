@@ -1,5 +1,5 @@
 import { useCallback } from 'react'
-import { useAppStore } from '../store/app'
+import { useAppStore } from '../../store/app'
 
 export function useToggleFont() {
   const font = useAppStore((store) => store.font)

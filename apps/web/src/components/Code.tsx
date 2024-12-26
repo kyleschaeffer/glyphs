@@ -1,8 +1,8 @@
 import { escapeSingleQuotes } from '@glyphs/core'
 import { CSSProperties, useMemo } from 'react'
-import { useClipboard } from '../hooks/useClipboard'
 import { bindStyles } from '../utils/browser'
 import styles from './Code.module.css'
+import { useClipboard } from './hooks/useClipboard'
 
 const cx = bindStyles(styles)
 

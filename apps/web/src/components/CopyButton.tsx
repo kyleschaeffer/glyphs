@@ -1,7 +1,7 @@
 import type { ReactNode } from 'react'
-import { useClipboard } from '../hooks/useClipboard'
 import { bindStyles } from '../utils/browser'
 import styles from './CopyButton.module.css'
+import { useClipboard } from './hooks/useClipboard'
 
 const cx = bindStyles(styles)
 

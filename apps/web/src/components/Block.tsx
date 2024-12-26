@@ -2,6 +2,7 @@ import { Glyph, decimalToUtf32 } from '@glyphs/core'
 import { useCallback, useEffect } from 'react'
 import { NavLink, useNavigate } from 'react-router'
 import { useAppStore } from '../store/app'
+import { decodeHtml } from '../utils/browser'
 import { glyphRoute } from '../utils/route'
 import { Footer } from './Footer'
 import { GlyphFeed } from './GlyphFeed'
@@ -51,7 +52,7 @@ export function BlockGlyph(props: BlockGlyphProps) {
   const { glyph } = props
 
   return (
-    <NavLink to={glyphRoute(glyph.char)} title={`${glyph.char} ${glyph.name}`}>
+    <NavLink to={glyphRoute(glyph.char)} title={`${decodeHtml(glyph.char)} ${glyph.name}`}>
       {glyph.char}
     </NavLink>
   )

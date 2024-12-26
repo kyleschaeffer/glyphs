@@ -1,5 +1,5 @@
 import { useEffect } from 'react'
-import { useToggleFont, useToggleTheme } from '../../hooks/useTheme'
+import { useToggleFont, useToggleTheme } from '../hooks/useTheme'
 
 export function InputController() {
   const toggleFont = useToggleFont()

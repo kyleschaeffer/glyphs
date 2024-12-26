@@ -1,8 +1,6 @@
 import {
-  cssEntities,
   decimalToHexEscapeSequence,
   escapeSingleQuotes,
-  htmlEntities,
   slugify,
   utf16ToUnicodeEscapeSequence,
   utf32ToCodePointEscapeSequence,
@@ -10,8 +8,9 @@ import {
 import { useCallback, useEffect } from 'react'
 import { NavLink, useNavigate } from 'react-router'
 import { useAppStore } from '../store/app'
-import { bindStyles } from '../utils/browser'
+import { bindStyles, cssEntities, decodeHtml, htmlEntities } from '../utils/browser'
 import { Character } from './Character'
+import { CharacterCanvas } from './CharacterCanvas'
 import { Code } from './Code'
 import { CopyButton } from './CopyButton'
 import { Footer } from './Footer'
@@ -58,16 +57,16 @@ export function Glyph() {
             ✗
           </button>
         </header>
-        <Character>{glyph.char}</Character>
+        <CharacterCanvas>{glyph.char}</CharacterCanvas>
         <div className="center">
-          <CopyButton text={glyph.char} copyLabel="Copy glyph" />
+          <CopyButton text={decodeHtml(glyph.char)} copyLabel="Copy glyph" />
         </div>
         <div className={cx('section')}>
           <h3>JavaScript:</h3>
           <ul className={cx('codes')} role="list">
             <li>
               <Code prefix="str\A0=\A0'" suffix="'">
-                {escapeSingleQuotes(glyph.char)}
+                {escapeSingleQuotes(decodeHtml(glyph.char))}
               </Code>
             </li>
             {glyph.decimals.length === 1 && glyph.decimals[0]! <= 0xff && (
@@ -174,7 +173,9 @@ export function Glyph() {
                 <span key={i}>
                   {
                     <NavLink className={cx('ligature-link')} to={`/${encodeURIComponent(l)}`}>
-                      <span className={cx('ligature-char')}>{l} </span>
+                      <span className={cx('ligature-char')}>
+                        <Character>{l}</Character>
+                      </span>
                     </NavLink>
                   }
                 </span>
